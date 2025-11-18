@@ -1,0 +1,24 @@
+{
+  "title": "Settings",
+  "language": {
+    "title": "Language",
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "logout": "Logout"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "pushNotifications": "Push Notifications",
+    "emailNotifications": "Email Notifications"
+  },
+  "privacy": {
+    "title": "Privacy",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service"
+  }
+}

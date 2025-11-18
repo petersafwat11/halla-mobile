@@ -1,0 +1,24 @@
+{
+  "title": "الإعدادات",
+  "language": {
+    "title": "اللغة",
+    "english": "English",
+    "arabic": "العربية"
+  },
+  "profile": {
+    "title": "الملف الشخصي",
+    "editProfile": "تعديل الملف الشخصي",
+    "changePassword": "تغيير كلمة المرور",
+    "logout": "تسجيل الخروج"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "pushNotifications": "الإشعارات المباشرة",
+    "emailNotifications": "إشعارات البريد الإلكتروني"
+  },
+  "privacy": {
+    "title": "الخصوصية",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfService": "شروط الخدمة"
+  }
+}

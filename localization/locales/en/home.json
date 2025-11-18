@@ -1,0 +1,17 @@
+{
+  "welcome": "Welcome",
+  "dashboard": {
+    "title": "Dashboard",
+    "stats": {
+      "totalEvents": "Total Events",
+      "upcomingEvents": "Upcoming Events",
+      "completedEvents": "Completed Events"
+    }
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "createEvent": "Create Event",
+    "viewEvents": "View All Events",
+    "manageGuests": "Manage Guests"
+  }
+}

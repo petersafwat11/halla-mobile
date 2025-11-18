@@ -1,0 +1,17 @@
+{
+  "welcome": "مرحباً",
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "stats": {
+      "totalEvents": "إجمالي المناسبات",
+      "upcomingEvents": "المناسبات القادمة",
+      "completedEvents": "المناسبات المكتملة"
+    }
+  },
+  "quickActions": {
+    "title": "الإجراءات السريعة",
+    "createEvent": "إنشاء مناسبة",
+    "viewEvents": "عرض جميع المناسبات",
+    "manageGuests": "إدارة الضيوف"
+  }
+}

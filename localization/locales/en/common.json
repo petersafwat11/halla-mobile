@@ -1,0 +1,30 @@
+{
+  "success": "successful",
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "done": "Done",
+    "retry": "Retry",
+    "refresh": "Refresh"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "noData": "No data available",
+    "error": "Something went wrong",
+    "success": "Operation completed successfully",
+    "networkError": "Network connection error",
+    "tryAgain": "Please try again"
+  },
+  "navigation": {
+    "home": "Home",
+    "events": "Events",
+    "profile": "Profile",
+    "settings": "Settings"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "title": "المناسبات",
+  "createEvent": {
+    "title": "إنشاء مناسبة جديدة",
+    "eventName": "اسم المناسبة",
+    "description": "الوصف",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "location": "الموقع",
+    "guests": "الضيوف"
+  },
+  "eventDetails": {
+    "title": "تفاصيل المناسبة",
+    "attendees": "الحضور",
+    "confirmed": "مؤكد",
+    "pending": "في الانتظار",
+    "declined": "رفض"
+  },
+  "guestList": {
+    "title": "قائمة الضيوف",
+    "addGuest": "إضافة ضيف",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "status": "الحالة"
+  }
+}
