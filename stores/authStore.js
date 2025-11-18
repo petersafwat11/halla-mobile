@@ -4,7 +4,8 @@ import {
   loginWithEmailAPI,
   sendOTPAPI,
   verifyOTPAPI,
-  signupAPI,
+  signupWithPhoneAPI,
+  completeProfileAPI,
   forgotPasswordAPI,
   logoutAPI,
 } from "../services/authService";
@@ -15,7 +16,9 @@ const AUTH_STORAGE_KEY = "@auth_state";
 const initialState = {
   user: null,
   token: null,
-  status: "idle", // 'idle' | 'loading' | 'authenticated' | 'unauthenticated'
+  // 'checking' | 'loading' | 'authenticated' | 'unauthenticated'
+  // 'checking' is used only while restoring session on app start
+  status: "checking",
   error: null,
   // Temporary storage for multi-step flows
   tempMobile: null,
@@ -93,11 +96,11 @@ export const useAuthStore = create((set, get) => ({
     set({ status: "loading", error: null, tempMobile: mobile });
     try {
       await sendOTPAPI({ mobile });
-      set({ status: "idle", error: null });
+      set({ status: "unauthenticated", error: null });
       return { success: true };
     } catch (error) {
       set({
-        status: "idle",
+        status: "unauthenticated",
         error: error.message || "Failed to send OTP",
       });
       return { success: false, error: error.message };
@@ -127,7 +130,7 @@ export const useAuthStore = create((set, get) => ({
       return { success: true };
     } catch (error) {
       set({
-        status: "idle",
+        status: "unauthenticated",
         error: error.message || "Invalid OTP",
       });
       return { success: false, error: error.message };
@@ -135,26 +138,56 @@ export const useAuthStore = create((set, get) => ({
   },
 
   /**
-   * Complete signup with profile details
+   * Step 1: Signup with phone number only
    */
-  signup: async ({ fullName, email, password }) => {
-    const { tempMobile } = get();
-    if (!tempMobile) {
-      return { success: false, error: "Mobile number not found" };
+  signupWithPhone: async ({ mobile }) => {
+    console.log("[AUTH STORE] Setting status to loading");
+    set({ status: "loading", error: null, tempMobile: mobile });
+    try {
+      const { token, user } = await signupWithPhoneAPI({ mobile });
+      // Store token temporarily for completing profile
+      console.log("[AUTH STORE] API success, setting status to idle");
+      set({
+        token,
+        user,
+        status: "unauthenticated",
+        error: null,
+      });
+      console.log("[AUTH STORE] Status set to idle, returning success");
+      return { success: true };
+    } catch (error) {
+      console.log("[AUTH STORE] API failed, setting status to idle");
+      set({
+        status: "unauthenticated",
+        error: error.message || "Signup failed",
+        // Clear tempMobile on failure so UI stays on phone step
+        tempMobile: null,
+      });
+      return { success: false, error: error.message };
+    }
+  },
+
+  /**
+   * Step 2: Complete profile with email, fullName, password
+   */
+  completeProfile: async ({ fullName, email, password }) => {
+    const { token } = get();
+    if (!token) {
+      return { success: false, error: "No signup token found" };
     }
 
     set({ status: "loading", error: null });
     try {
-      const { token, user } = await signupAPI({
-        mobile: tempMobile,
-        fullName,
+      const { token: newToken, user } = await completeProfileAPI({
+        username: fullName, // Map fullName to username for backend
         email,
         password,
+        token,
       });
-      await get().persistAuth(user, token);
+      await get().persistAuth(user, newToken);
       set({
         user,
-        token,
+        token: newToken,
         status: "authenticated",
         error: null,
         tempMobile: null,
@@ -162,8 +195,8 @@ export const useAuthStore = create((set, get) => ({
       return { success: true };
     } catch (error) {
       set({
-        status: "idle",
-        error: error.message || "Signup failed",
+        status: "unauthenticated",
+        error: error.message || "Failed to complete profile",
       });
       return { success: false, error: error.message };
     }
@@ -176,11 +209,11 @@ export const useAuthStore = create((set, get) => ({
     set({ status: "loading", error: null });
     try {
       await forgotPasswordAPI({ email });
-      set({ status: "idle", error: null });
+      set({ status: "unauthenticated", error: null });
       return { success: true };
     } catch (error) {
       set({
-        status: "idle",
+        status: "unauthenticated",
         error: error.message || "Failed to send reset email",
       });
       return { success: false, error: error.message };

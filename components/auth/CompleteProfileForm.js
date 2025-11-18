@@ -4,11 +4,12 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { completeProfileSchema } from "../../utils/schemas/authSchemas";
 import { TextInput, EmailInput, PasswordInput, Button } from "../commen";
-import { useTranslation } from "../../localization";
+import { useTranslation, useLanguage } from "../../localization";
 import FormHeader from "./FormHeader";
 
 const CompleteProfileForm = ({ onSubmit, loading = false }) => {
   const { t } = useTranslation("auth");
+  const { isRTL } = useLanguage();
 
   const {
     control,
@@ -17,7 +18,7 @@ const CompleteProfileForm = ({ onSubmit, loading = false }) => {
     setError,
   } = useForm({
     resolver: zodResolver(completeProfileSchema),
-    mode: "onBlur",
+    mode: "onChange",
     defaultValues: {
       fullName: "",
       email: "",
@@ -41,13 +42,13 @@ const CompleteProfileForm = ({ onSubmit, loading = false }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isRTL && styles.containerRTL]}>
       <FormHeader
         title={t("signup.completeProfileTitle")}
         subtitle={t("signup.completeProfileSubtitle")}
       />
 
-      <View style={styles.form}>
+      <View style={[styles.form, isRTL && styles.formRTL]}>
         <Controller
           control={control}
           name="fullName"
@@ -113,12 +114,13 @@ const CompleteProfileForm = ({ onSubmit, loading = false }) => {
             />
           )}
         />
-
+        <View style={styles.buttonContainer}>
         <Button
           text={t("signup.completeButton")}
           onPress={handleSubmit(onFormSubmit)}
           loading={loading}
         />
+        </View>
       </View>
     </View>
   );
@@ -127,9 +129,21 @@ const CompleteProfileForm = ({ onSubmit, loading = false }) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+    alignItems: "flex-start",
+  },
+  containerRTL: {
+    alignItems: "flex-start",
   },
   form: {
     width: "100%",
+    alignItems: "flex-start",
+  },
+  formRTL: {
+    alignItems: "flex-start",
+  },
+  buttonContainer: {
+    width: "100%",
+    marginTop: 16,
   },
 });
 

@@ -12,6 +12,10 @@ import LoginScreen from "../screens/LoginScreen";
 import SignupScreen from "../screens/SignupScreen";
 import ForgetPasswordScreen from "../screens/ForgetPasswordScreen";
 import PlansScreen from "../screens/PlansScreen";
+import SettingsScreen from "../screens/SettingsScreen";
+import AccountSettingsScreen from "../screens/AccountSettingsScreen";
+import NotificationSettingsScreen from "../screens/NotificationSettingsScreen";
+import TicketsScreen from "../screens/TicketsScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,8 +32,8 @@ function MainTabNavigator() {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Events") {
             iconName = focused ? "calendar" : "calendar-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === "Tickets") {
+            iconName = focused ? "ticket" : "ticket-outline";
           } else if (route.name === "Settings") {
             iconName = focused ? "settings" : "settings-outline";
           }
@@ -47,8 +51,8 @@ function MainTabNavigator() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Plans" component={PlansScreen} />
       <Tab.Screen name="Events" component={HomeScreen} />
-      <Tab.Screen name="Profile" component={HomeScreen} />
-      <Tab.Screen name="Settings" component={HomeScreen} />
+      <Tab.Screen name="Tickets" component={TicketsScreen} />
+      <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
@@ -101,6 +105,11 @@ function MainStack() {
       }}
     >
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+      <Stack.Screen name="AccountSettings" component={AccountSettingsScreen} />
+      <Stack.Screen
+        name="NotificationSettings"
+        component={NotificationSettingsScreen}
+      />
     </Stack.Navigator>
   );
 }
@@ -110,7 +119,7 @@ export default function AppNavigator() {
   const status = useAuthStore((state) => state.status);
 
   // Show loading while checking auth status
-  if (status === "idle") {
+  if (status === "checking") {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#c28e5c" />

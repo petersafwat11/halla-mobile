@@ -4,3 +4,4 @@ export { default as PasswordInput } from "./PasswordInput";
 export { default as MobileInput } from "./MobileInput";
 export { default as OTPInput } from "./OTPInput";
 export { default as Button } from "./Button";
+export { default as ToggleInput } from "./ToggleInput";

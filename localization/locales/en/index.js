@@ -5,6 +5,7 @@ import home from "./home.json";
 import events from "./events.json";
 import settings from "./settings.json";
 import welcome from "./welcome.json";
+import tickets from "./tickets.json";
 
 export default {
   common,
@@ -13,4 +14,5 @@ export default {
   events,
   settings,
   welcome,
+  tickets,
 };

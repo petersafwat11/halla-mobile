@@ -1,0 +1,52 @@
+{
+  "title": "تذاكر الدعم",
+  "emptyState": "لا توجد تذاكر بعد",
+  "emptyStateDescription": "أنشئ تذكرة للحصول على المساعدة من فريق الدعم",
+  "createTicket": "إنشاء تذكرة",
+  "status": {
+    "pending": "في انتظار",
+    "inProgress": "قيد المعالجة",
+    "resolved": "تم الحل",
+    "closed": "مغلق"
+  },
+  "types": {
+    "inquiry": "استفسار",
+    "issue": "مشكلة",
+    "request": "طلب",
+    "suggestion": "اقتراح",
+    "other": "أخرى"
+  },
+  "form": {
+    "title": "إنشاء تذكرة دعم",
+    "editTitle": "تعديل التذكرة",
+    "selectType": "اختر نوع التذكرة",
+    "typeLabel": "النوع",
+    "messagePlaceholder": "اكتب وصفاً تفصيلياً للمشكلة أو السؤال...",
+    "messageLabel": "الرسالة",
+    "cancel": "إلغاء",
+    "create": "إنشاء",
+    "update": "تحديث",
+    "creating": "جاري الإنشاء...",
+    "updating": "جاري التحديث..."
+  },
+  "card": {
+    "created": "تم الإنشاء:",
+    "delete": "حذف",
+    "edit": "تعديل"
+  },
+  "messages": {
+    "createSuccess": "تم إنشاء التذكرة بنجاح",
+    "createError": "فشل إنشاء التذكرة",
+    "updateSuccess": "تم تحديث التذكرة بنجاح",
+    "updateError": "فشل تحديث التذكرة",
+    "deleteSuccess": "تم حذف التذكرة بنجاح",
+    "deleteError": "فشل حذف التذكرة",
+    "loadError": "فشل تحميل التذاكر",
+    "confirmDelete": "هل أنت متأكد من حذف هذه التذكرة؟"
+  },
+  "validation": {
+    "ticketTypeRequired": "الرجاء اختيار نوع التذكرة",
+    "ticketMessageMin": "يجب أن تكون الرسالة 10 أحرف على الأقل",
+    "ticketMessageMax": "يجب ألا تتجاوز الرسالة 500 حرف"
+  }
+}

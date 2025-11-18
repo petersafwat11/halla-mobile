@@ -83,10 +83,10 @@ const PasswordInput = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
-    alignItems: "flex-start",
+    width: "100%",
   },
   containerRTL: {
-    alignItems: "flex-start",
+    // No change needed
   },
   label: {
     fontSize: 14,
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     color: "#2c2c2c",
     marginBottom: 8,
     textAlign: "left",
+    width: "100%",
   },
   labelRTL: {
     textAlign: "right",

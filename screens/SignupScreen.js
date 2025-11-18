@@ -24,40 +24,52 @@ const { width } = Dimensions.get("window");
 export default function SignupScreen({ navigation }) {
   const { t } = useTranslation("auth");
   const toast = useToast();
-  const { sendOTP, verifyOTP, signup, status, getTempMobile } = useAuthStore();
-  const [step, setStep] = useState("mobile"); // mobile, otp, complete
+  const {
+    signupWithPhone,
+    completeProfile,
+    status,
+    getTempMobile,
+    tempMobile,
+  } = useAuthStore();
+  // Derive step from tempMobile in auth store: if we have a temp phone, go to complete profile
+  const step = tempMobile ? "complete" : "mobile"; // mobile, complete
   const loading = status === "loading";
 
+  // Debug: Log step and status changes
+  React.useEffect(() => {
+    console.log("[SIGNUP] Step changed to:", step);
+    console.log("[SIGNUP] Status:", status);
+    console.log("[SIGNUP] Loading:", loading);
+  }, [step, status, loading]);
+
   const handleMobileSubmit = async (data) => {
-    const result = await sendOTP(data);
+    console.log("[SIGNUP] Submitting phone:", data);
+    const result = await signupWithPhone(data);
+    console.log("[SIGNUP] Result:", result);
     if (result.success) {
-      toast.success(t("otp.description"));
-      setStep("otp");
+      console.log("[SIGNUP] Success! Changing step to complete");
+      toast.success("Phone number registered!");
+      // Step will automatically switch to "complete" because tempMobile is set in auth store
     } else {
+      console.log("[SIGNUP] Failed:", result.error);
       toast.error(result.error || t("errors.signupFailed"));
       return { success: false, fieldErrors: { mobile: result.error } };
     }
     return result;
   };
 
-  const handleOTPVerification = async (data) => {
-    const result = await verifyOTP(data);
-    if (result.success) {
-      toast.success(t("otp.verifyButton") + " " + t("common.success"));
-      setStep("complete");
-    } else {
-      toast.error(result.error || t("errors.otpFailed"));
-      return { success: false, fieldErrors: { otp: result.error } };
-    }
-    return result;
-  };
-
   const handleCompleteProfile = async (data) => {
-    const result = await signup(data);
+    console.log("[SIGNUP] Submitting complete profile:", data);
+    const result = await completeProfile(data);
+    console.log("[SIGNUP] Complete profile result:", result);
+    console.log("[SIGNUP] Complete profile result success:", result.success);
+    console.log("[SIGNUP] Complete profile result error:", result.error);
     if (result.success) {
+      console.log("[SIGNUP] Complete profile success!");
       toast.success(t("signup.signupButton") + " " + t("common.success"));
       // Navigation handled automatically by AppNavigator
     } else {
+      console.log("[SIGNUP] Complete profile failed:", result.error);
       toast.error(result.error || t("errors.signupFailed"));
       return { success: false, fieldErrors: { email: result.error } };
     }
@@ -65,7 +77,9 @@ export default function SignupScreen({ navigation }) {
   };
 
   const handleEditPhone = () => {
-    setStep("mobile");
+    console.log("[SIGNUP] Editing phone");
+    // Clearing tempMobile will bring us back to the mobile step
+    // (we can rely on logout or a dedicated action if needed)
   };
 
   const handleLogin = () => {
@@ -86,15 +100,6 @@ export default function SignupScreen({ navigation }) {
               </TouchableOpacity>
             </View>
           </>
-        );
-      case "otp":
-        return (
-          <OTPVerificationForm
-            onSubmit={handleOTPVerification}
-            onEditPhone={handleEditPhone}
-            phoneNumber={`+966${getTempMobile()}`}
-            loading={loading}
-          />
         );
       case "complete":
         return (

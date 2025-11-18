@@ -1,20 +1,61 @@
 {
   "title": "Settings",
+  "tabs": {
+    "account": "Account Settings",
+    "notifications": "Notifications",
+    "about": "About Us",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "logout": "Logout"
+  },
+  "account": {
+    "personalInfo": "Personal Information",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "sendCode": "Send Code",
+    "sending": "Sending...",
+    "verifyCode": "Verify Code",
+    "verifying": "Verifying...",
+    "changePassword": "Change Password",
+    "changePasswordDescription": "Update your password to keep your account secure",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm new password",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "updateSuccess": "Account updated successfully",
+    "updateError": "Failed to update account",
+    "verificationCodeSent": "Verification code sent to your email",
+    "verificationCodeError": "Failed to send verification code",
+    "invalidVerificationCode": "Invalid verification code",
+    "emailVerified": "Email verified successfully",
+    "verificationError": "Failed to verify email"
+  },
+  "notifications": {
+    "appNotifications": "App Notifications",
+    "appNotificationsDescription": "Never miss any notification with instant in-app alerts enabled",
+    "emailNotifications": "Email Notifications",
+    "emailNotificationsDescription": "Get email updates about what's happening while you're offline",
+    "eventUpdates": "Guest Responses",
+    "eventDates": "Event Dates",
+    "packageRenewal": "Package Renewal",
+    "systemInteractions": "System Interactions",
+    "beforeSendingInvitations": "Before Sending Invitations",
+    "afterSendingInvitations": "After Sending Invitations",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "updateSuccess": "Notification preferences updated successfully",
+    "updateError": "Failed to update notification preferences"
+  },
   "language": {
     "title": "Language",
     "english": "English",
     "arabic": "العربية"
-  },
-  "profile": {
-    "title": "Profile",
-    "editProfile": "Edit Profile",
-    "changePassword": "Change Password",
-    "logout": "Logout"
-  },
-  "notifications": {
-    "title": "Notifications",
-    "pushNotifications": "Push Notifications",
-    "emailNotifications": "Email Notifications"
   },
   "privacy": {
     "title": "Privacy",
