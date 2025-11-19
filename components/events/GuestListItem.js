@@ -1,0 +1,294 @@
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useLanguage } from "../../localization";
+
+const GuestListItem = ({ guest, onEdit, onDelete }) => {
+  const { isRTL } = useLanguage();
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case "accepted":
+        return { backgroundColor: "#EAF4EF", color: "#2A8C5B", label: "ساحضر" };
+      case "declined":
+        return { backgroundColor: "#F5ECE4", color: "#8A6541", label: "اعتذر" };
+      case "maybe":
+        return { backgroundColor: "#FEFCE8", color: "#CA8A04", label: "ربما" };
+      default:
+        return { backgroundColor: "#F5ECE4", color: "#8A6541", label: "لم يرد" };
+    }
+  };
+
+  const statusStyle = getStatusStyle(guest.status);
+
+  return (
+    <View style={[styles.container, isRTL && styles.containerRTL]}>
+      {/* Header */}
+      <View style={[styles.header, isRTL && styles.headerRTL]}>
+        {/* Actions */}
+        <View style={[styles.actions, isRTL && styles.actionsRTL]}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => onDelete?.(guest)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.deleteButton}>
+              <Ionicons name="trash-outline" size={16} color="#C0392B" />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => onEdit?.(guest)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.editButton}>
+              <Ionicons name="create-outline" size={16} color="#6B4E33" />
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Guest Info */}
+        <View style={[styles.guestInfo, isRTL && styles.guestInfoRTL]}>
+          <View style={[styles.nameRow, isRTL && styles.nameRowRTL]}>
+            <Text style={[styles.name, isRTL && styles.nameRTL]}>
+              {guest.name || "احمد كمال سمير"}
+            </Text>
+          </View>
+
+          <View style={[styles.contactRow, isRTL && styles.contactRowRTL]}>
+            <View style={[styles.contactItem, isRTL && styles.contactItemRTL]}>
+              <Text style={styles.contactText}>
+                {guest.phone || "966656555"}
+              </Text>
+            </View>
+            <View style={styles.separator}>
+              <Text style={styles.separatorText}>|</Text>
+            </View>
+            <View style={[styles.contactItem, isRTL && styles.contactItemRTL]}>
+              <Text style={styles.contactText}>
+                {guest.email || "ads@outlook.com"}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {/* Response */}
+      <View style={[styles.responseCard, isRTL && styles.responseCardRTL]}>
+        <View style={[styles.responseRow, isRTL && styles.responseRowRTL]}>
+          <Text style={[styles.responseDate, isRTL && styles.responseDateRTL]}>
+            {guest.responseDate || "الثلاثاء  12 مايو | 12:50م"}
+          </Text>
+          <Text style={[styles.responseLabel, isRTL && styles.responseLabelRTL]}>
+            حالة الردود
+          </Text>
+        </View>
+
+        {guest.status === "accepted" && guest.message && (
+          <View style={[styles.messageRow, isRTL && styles.messageRowRTL]}>
+            <Text style={[styles.message, isRTL && styles.messageRTL]}>
+              {guest.message}
+            </Text>
+            <View
+              style={[
+                styles.statusBadge,
+                { backgroundColor: statusStyle.backgroundColor },
+              ]}
+            >
+              <Text style={[styles.statusText, { color: statusStyle.color }]}>
+                {statusStyle.label}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {guest.status !== "accepted" && (
+          <View
+            style={[
+              styles.statusBadge,
+              { backgroundColor: statusStyle.backgroundColor },
+            ]}
+          >
+            <Text style={[styles.statusText, { color: statusStyle.color }]}>
+              {statusStyle.label}
+            </Text>
+          </View>
+        )}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#FFF",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+    borderTopWidth: 1,
+    borderRightWidth: 6,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderColor: "#C28E5C",
+    gap: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  containerRTL: {},
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+  },
+  headerRTL: {
+    flexDirection: "row-reverse",
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  actionsRTL: {
+    flexDirection: "row-reverse",
+  },
+  actionButton: {},
+  deleteButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 9999,
+    backgroundColor: "#F9EBEA",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  editButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 9999,
+    backgroundColor: "#F5ECE4",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  guestInfo: {
+    flex: 1,
+    alignItems: "flex-end",
+    gap: 8,
+  },
+  guestInfoRTL: {},
+  nameRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    gap: 12,
+  },
+  nameRowRTL: {
+    flexDirection: "row-reverse",
+  },
+  name: {
+    fontSize: 14,
+    fontFamily: "Cairo_700Bold",
+    color: "#2C2C2C",
+    lineHeight: 20,
+  },
+  nameRTL: {
+    textAlign: "right",
+  },
+  contactRow: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+    gap: 8,
+  },
+  contactRowRTL: {
+    flexDirection: "row-reverse",
+  },
+  contactItem: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+    gap: 4,
+  },
+  contactItemRTL: {},
+  contactText: {
+    fontSize: 12,
+    fontFamily: "Cairo_500Medium",
+    color: "#656565",
+    lineHeight: 16,
+  },
+  separator: {
+    height: 17,
+    alignItems: "center",
+  },
+  separatorText: {
+    fontSize: 14,
+    fontFamily: "Cairo_500Medium",
+    color: "#656565",
+    lineHeight: 20,
+  },
+  responseCard: {
+    backgroundColor: "#FDFDFD",
+    borderRadius: 8,
+    padding: 8,
+    borderWidth: 1,
+    borderColor: "#F5ECE4",
+    gap: 4,
+  },
+  responseCardRTL: {},
+  responseRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  responseRowRTL: {
+    flexDirection: "row-reverse",
+  },
+  responseDate: {
+    fontSize: 12,
+    fontFamily: "Cairo_400Regular",
+    color: "#656565",
+    lineHeight: 16,
+  },
+  responseDateRTL: {
+    textAlign: "left",
+  },
+  responseLabel: {
+    fontSize: 12,
+    fontFamily: "Cairo_500Medium",
+    color: "#656565",
+    lineHeight: 16,
+  },
+  responseLabelRTL: {
+    textAlign: "right",
+  },
+  messageRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  messageRowRTL: {
+    flexDirection: "row-reverse",
+  },
+  message: {
+    fontSize: 12,
+    fontFamily: "Cairo_400Regular",
+    color: "#2C2C2C",
+    lineHeight: 16,
+  },
+  messageRTL: {
+    textAlign: "right",
+  },
+  statusBadge: {
+    paddingHorizontal: 11,
+    paddingVertical: 3,
+    borderRadius: 9999,
+    alignSelf: "flex-start",
+  },
+  statusText: {
+    fontSize: 12,
+    fontFamily: "Cairo_500Medium",
+    lineHeight: 16,
+  },
+});
+
+export default GuestListItem;

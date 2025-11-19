@@ -1,80 +1,249 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useTranslation } from "../localization";
-import { useAuthStore } from "../stores/authStore";
-import { useToast } from "../contexts/ToastContext";
+import { useLanguage } from "../localization";
+import { Svg, Path, Ellipse } from "react-native-svg";
+import {
+  LastEvent,
+  StatsCards,
+  EventTemplates,
+  MakeYourFirst,
+  DropdownModal,
+} from "../components/home";
 
-export default function HomeScreen() {
-  const { t } = useTranslation("common");
-  const { user, logout } = useAuthStore();
-  const toast = useToast();
+const HomeScreen = () => {
+  const { isRTL } = useLanguage();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [hasEvents, setHasEvents] = useState(true);
 
-  const handleLogout = async () => {
-    await logout();
-    toast.success("Logged out successfully");
+  const mockEvent = {
+    id: 1,
+    title: "حفل زفاف أحمد وفاطمة",
+    guestCount: 150,
+    dateTime: "السبت، 12 /5/2022 - 7:00 مساءً",
+    status: "active",
+    image: null,
+  };
+
+  const handleManagePress = () => {
+    setModalVisible(true);
+  };
+
+  const handleStepSelect = (stepId) => {
+    console.log("Selected step:", stepId);
+  };
+
+  const handleCreateEvent = () => {
+    setModalVisible(true);
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      {/* Header with gradient background */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={20} color="#fff" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+        {/* Texture elements */}
+        <View style={styles.textureLeft}>
+          <View style={styles.textureLine1} />
+          <View style={styles.textureLine2} />
+        </View>
+        <View style={styles.textureRight}>
+          <View style={styles.textureLine1} />
+          <View style={styles.textureLine2} />
+        </View>
+
+        {/* Top Bar */}
+        <View style={styles.topBar}>
+          <View style={styles.topBarLeft}>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="notifications-outline" size={20} color="#F9F4EF" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="chatbubbles-outline" size={20} color="#F9F4EF" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.logoContainer, isRTL && styles.logoContainerRTL]}>
+            <View style={[styles.greetingContainer, isRTL && styles.greetingContainerRTL]}>
+              <Text style={styles.greetingText}>مرحبا</Text>
+              <Text style={styles.organizationName}>مؤسسة الحمد</Text>
+            </View>
+            <Svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <Path
+                d="M31.9773 20.4111C31.6042 20.1856 30.9242 19.8055 29.9854 19.4898C28.6314 19.0259 26.7418 18.678 24.5031 19.0581C23.7509 19.187 22.9566 19.3996 22.1321 19.7153C22.0539 19.7475 21.9757 19.7733 21.8974 19.8055C21.4762 19.973 21.061 20.1792 20.6397 20.4047C20.2787 20.598 19.9236 20.8106 19.5686 21.0425C18.7562 21.5644 17.9558 22.1572 17.1795 22.8014C16.2949 17.0737 16.7282 11.7583 16.9328 9.14892C16.9328 9.13604 16.9508 9.12959 16.9628 9.13604C18.8584 10.4117 18.3289 13.9747 17.9257 14.9991C17.9197 15.0184 17.9437 15.0313 17.9618 15.0184C20.3208 12.0353 19.1714 8.73657 18.6839 7.90544C18.6719 7.88611 18.696 7.86679 18.714 7.87967C19.057 8.17605 19.3339 8.49175 19.5686 8.81389C20.2967 9.81254 20.5675 10.8885 20.6397 11.8421C20.6758 12.3446 20.6638 12.8085 20.6397 13.208C20.6337 13.3175 20.6277 13.4141 20.6157 13.5108C20.6157 13.5237 20.6277 13.5301 20.6397 13.5237C20.6457 13.5237 20.6518 13.5237 20.6518 13.5172C21.2896 12.1771 21.5966 10.154 20.6397 8.18893C20.381 7.65417 20.0319 7.12585 19.5686 6.61686C19.4362 6.46867 19.2917 6.32693 19.1413 6.17875C19.1292 6.16586 19.1413 6.14009 19.1593 6.14653C19.3038 6.18519 19.4362 6.23028 19.5686 6.27538C19.9718 6.42357 20.3268 6.62975 20.6397 6.88102C21.3558 7.448 21.8433 8.22114 22.1321 9.03295C22.3728 9.70301 22.4812 10.3924 22.4812 11.0045C22.4812 11.0302 22.5113 11.0303 22.5173 11.0109C22.9626 9.2649 22.6918 7.9441 22.1321 6.98411C21.735 6.29472 21.1873 5.79216 20.6397 5.43781C20.2666 5.19942 19.8935 5.03191 19.5686 4.92882C19.376 4.86439 19.2075 4.82573 19.057 4.8064C19.033 4.8064 19.039 4.76775 19.063 4.76775C19.2376 4.74842 19.4061 4.74197 19.5686 4.73553C19.9657 4.72909 20.3208 4.76775 20.6397 4.82573C21.2716 4.95459 21.765 5.18654 22.1321 5.45714C22.7339 5.88882 23.0348 6.39781 23.1371 6.60398C23.1431 6.62331 23.1732 6.61042 23.1732 6.59109C23.089 5.66976 22.6918 4.94815 22.1382 4.43271C21.7109 4.03325 21.1873 3.75621 20.6457 3.58869C20.2907 3.48561 19.9296 3.42763 19.5746 3.42118C19.0931 3.41474 18.6298 3.49849 18.2386 3.67889C18.2206 3.68534 18.2085 3.66601 18.2146 3.64668C18.5636 3.11192 19.057 2.78978 19.5746 2.61582C19.9356 2.49985 20.3027 2.45474 20.6457 2.48051C20.9767 2.49984 21.2776 2.57715 21.5243 2.69957C21.5424 2.70601 21.5544 2.68669 21.5424 2.66736C21.2716 2.33878 20.9647 2.08105 20.6457 1.88777C20.3027 1.68159 19.9417 1.55918 19.5746 1.51408C18.6177 1.39811 17.6429 1.83623 16.9929 2.88642C16.9869 2.89931 16.9689 2.89931 16.9628 2.88642C16.8365 2.64803 16.7161 2.38387 16.6078 2.10682C16.349 1.46253 16.1384 0.740934 16.0241 0.0193287C16.018 -0.00644291 15.994 -0.00644291 15.994 0.0193287C15.8796 0.740934 15.663 1.46898 15.4042 2.11327C15.2899 2.39032 15.1756 2.64804 15.0492 2.87998C15.0432 2.89287 15.0251 2.89287 15.0191 2.87998C13.8877 1.04375 11.7635 1.08241 10.4696 2.66736C10.4576 2.68025 10.4696 2.70601 10.4877 2.69957C11.3482 2.26145 12.9791 2.39031 13.7975 3.64668C13.8095 3.66601 13.7915 3.68534 13.7734 3.67889C12.5157 3.11192 10.5659 3.47916 9.52484 4.8064C9.15174 5.27674 8.89899 5.87593 8.8328 6.59109C8.8328 6.61042 8.85687 6.62331 8.8689 6.60398C8.94713 6.44291 9.15174 6.09498 9.52484 5.74062C10.1326 5.1672 11.1918 4.58735 12.943 4.76131C12.967 4.76775 12.967 4.79996 12.949 4.79996C12.0523 4.91594 10.2049 5.77284 9.52484 7.73149C9.22395 8.59484 9.14572 9.67724 9.48272 11.0045C9.48874 11.0238 9.51882 11.0238 9.51882 10.998C9.51882 10.9658 9.51882 10.9401 9.52484 10.9078C9.54289 9.12959 10.4937 6.74572 12.8467 6.14009C12.8647 6.13365 12.8768 6.15941 12.8647 6.1723C10.2349 8.64637 10.4937 11.7003 11.3543 13.5043C11.3663 13.5237 11.3904 13.5172 11.3904 13.4979C11.276 12.132 11.1858 9.70301 13.292 7.86678C13.31 7.8539 13.3341 7.87323 13.3221 7.89256C12.8346 8.73014 11.6852 12.0225 14.0442 15.0055C14.0563 15.0249 14.0863 15.012 14.0803 14.9862C13.6831 13.9682 13.1536 10.3988 15.0432 9.12315C15.0552 9.1167 15.0733 9.12315 15.0733 9.13604C15.2779 11.7454 15.7111 17.0608 14.8265 22.7886C13.304 21.5386 11.6973 20.4433 10.1086 19.799C9.90998 19.7217 9.71741 19.6509 9.53086 19.58C7.888 19.0001 6.38355 18.8391 5.07167 18.9035C2.96544 19.0001 1.35267 19.6766 0.468055 20.147C0.287521 20.2436 0.137073 20.3338 0.0227343 20.4047C-0.0254081 20.4369 0.0106972 20.5078 0.0588396 20.4884C0.197249 20.4433 0.329645 20.3982 0.468055 20.3596C2.08684 19.8699 3.62138 19.7411 5.07167 19.8764C6.65435 20.0245 8.14075 20.4884 9.53086 21.1585C11.4806 22.0992 13.2438 23.4393 14.8386 24.8567C12.5879 26.9571 10.6863 28.9995 9.53086 29.7147C9.47069 29.7469 9.41653 29.7856 9.36237 29.8178C9.08555 29.4119 8.60412 29.1799 8.08057 29.3023C7.62322 29.4119 7.25011 29.8049 7.14781 30.2881C7.05754 30.7198 7.15985 31.1901 7.38853 31.4349C8.00234 32.0921 8.71244 32.1372 9.53086 31.77C11.0895 31.0677 13.0272 28.8642 15.4042 26.5319C15.6028 26.3386 15.8014 26.1389 16.006 25.9456C16.2106 26.1389 16.4092 26.3322 16.6078 26.5254C17.685 27.5821 18.6719 28.6129 19.5746 29.4892C19.9477 29.85 20.3027 30.185 20.6457 30.4814C21.1753 30.9453 21.6748 31.3254 22.1382 31.5896C23.0468 32.105 23.8352 32.1694 24.5092 31.5316C24.5453 31.4994 24.5814 31.4672 24.6175 31.4285C24.7739 31.261 24.9545 30.7133 24.8582 30.2817C24.804 30.0304 24.6777 29.8049 24.5031 29.6309C24.3467 29.4698 24.1421 29.3474 23.9254 29.2959C23.4019 29.1735 22.9205 29.4054 22.6436 29.8113C22.4872 29.7276 22.3187 29.6116 22.1321 29.4763C21.7049 29.1606 21.2054 28.716 20.6397 28.1877C20.3027 27.872 19.9477 27.5241 19.5686 27.1568C18.8344 26.4417 18.028 25.6556 17.1735 24.8503C17.9317 24.1738 18.7321 23.5166 19.5686 22.911C19.9176 22.6597 20.2726 22.4149 20.6397 22.1829C21.1272 21.8737 21.6206 21.5902 22.1321 21.326C22.8964 20.933 23.6847 20.6044 24.5031 20.3531C26.2002 19.8313 28.0236 19.6573 29.9854 19.9923C30.6233 20.1019 31.2732 20.2629 31.9412 20.482C31.9893 20.5142 32.0254 20.4433 31.9773 20.4111Z"
+                fill="white"
+              />
+            </Svg>
+          </View>
+        </View>
+
+        {/* Last Event or Empty State */}
+        <View style={styles.headerContent}>
+          {hasEvents ? (
+            <LastEvent event={mockEvent} onManagePress={handleManagePress} />
+          ) : (
+            <MakeYourFirst onCreatePress={handleCreateEvent} />
+          )}
+        </View>
       </View>
-      <View style={styles.content}>
-        <Text style={styles.title}>{t("navigation.home")}</Text>
-        <Text style={styles.subtitle}>
-          Welcome, {user?.name || user?.email}!
-        </Text>
-      </View>
+
+      {/* Main Content */}
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Stats Cards */}
+        {hasEvents && (
+          <View style={styles.statsSection}>
+            <StatsCards totalEvents={2} activeEvents={2} endedEvents={2} />
+          </View>
+        )}
+
+        {/* Event Templates */}
+        <View style={styles.templatesSection}>
+          <EventTemplates />
+        </View>
+
+        {/* Bottom Spacing */}
+        <View style={styles.bottomSpacing} />
+      </ScrollView>
+
+      {/* Dropdown Modal */}
+      <DropdownModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onStepSelect={handleStepSelect}
+      />
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#F9F4EF",
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    padding: 16,
+    backgroundColor: "#C28E5C",
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    position: "relative",
+    overflow: "hidden",
   },
-  logoutButton: {
+  textureLeft: {
+    position: "absolute",
+    left: -190,
+    top: -86,
+    width: 460,
+    height: 436,
+    opacity: 0.8,
+  },
+  textureRight: {
+    position: "absolute",
+    right: -300,
+    top: -86,
+    width: 460,
+    height: 436,
+    opacity: 0.8,
+  },
+  textureLine1: {
+    width: 470,
+    height: 50,
+    transform: [{ rotate: "129.229deg" }],
+    opacity: 0.8,
+    background:
+      "radial-gradient(8420.27% 85.09% at 8.82% 45.53%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.00) 100%)",
+    position: "absolute",
+    top: 34,
+  },
+  textureLine2: {
+    width: 495,
+    height: 50,
+    transform: [{ rotate: "129.229deg" }],
+    opacity: 0.8,
+    background:
+      "radial-gradient(8420.27% 85.09% at 8.82% 45.53%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.00) 100%)",
+    position: "absolute",
+    left: 116,
+    top: 0,
+  },
+  topBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingTop: 8,
+    paddingBottom: 0,
+  },
+  topBarLeft: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#c28e5c",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
-    gap: 6,
+    gap: 24,
   },
-  logoutText: {
-    color: "#fff",
-    fontSize: 14,
-    fontFamily: "Cairo_600SemiBold",
-  },
-  content: {
-    flex: 1,
+  iconButton: {
+    width: 32,
+    height: 32,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontFamily: "Cairo_700Bold",
-    color: "#2c2c2c",
-    marginBottom: 8,
-    textAlign: "center",
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    padding: 4,
   },
-  subtitle: {
-    fontSize: 16,
+  logoContainerRTL: {
+    flexDirection: "row-reverse",
+  },
+  greetingContainer: {
+    flexDirection: "column",
+    alignItems: "flex-end",
+    gap: 4,
+  },
+  greetingContainerRTL: {},
+  greetingText: {
+    fontSize: 12,
     fontFamily: "Cairo_400Regular",
-    color: "#666",
-    textAlign: "center",
+    color: "#FFF",
+    lineHeight: 16,
+    textAlign: "right",
+  },
+  organizationName: {
+    fontSize: 16,
+    fontFamily: "Cairo_700Bold",
+    color: "#FFF",
+    lineHeight: 24,
+    letterSpacing: 0.08,
+    textAlign: "right",
+  },
+  headerContent: {
+    paddingHorizontal: 24,
+    paddingTop: 0,
+    paddingBottom: 24,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingTop: 16,
+  },
+  statsSection: {
+    marginBottom: 16,
+  },
+  templatesSection: {
+    paddingHorizontal: 24,
+    marginBottom: 16,
+  },
+  bottomSpacing: {
+    height: 100,
   },
 });
+
+export default HomeScreen;

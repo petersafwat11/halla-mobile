@@ -16,6 +16,8 @@ import SettingsScreen from "../screens/SettingsScreen";
 import AccountSettingsScreen from "../screens/AccountSettingsScreen";
 import NotificationSettingsScreen from "../screens/NotificationSettingsScreen";
 import TicketsScreen from "../screens/TicketsScreen";
+import Marketplace from "../screens/Marketplace";
+import EventsScreen from "../screens/EventsScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,9 +38,10 @@ function MainTabNavigator() {
             iconName = focused ? "ticket" : "ticket-outline";
           } else if (route.name === "Settings") {
             iconName = focused ? "settings" : "settings-outline";
-          }
-          if (route.name === "Plans") {
+          } else if (route.name === "Plans") {
             iconName = focused ? "pricetag" : "pricetag-outline";
+          } else if (route.name === "Marketplace") {
+            iconName = focused ? "storefront" : "storefront-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -49,8 +52,22 @@ function MainTabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen
+        name="Events"
+        component={EventsScreen}
+        options={{
+          title: "Events",
+          tabBarIcon: ({ focused, color, size }) => (
+            <Ionicons
+              name={focused ? "calendar" : "calendar-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen name="Marketplace" component={Marketplace} />
       <Tab.Screen name="Plans" component={PlansScreen} />
-      <Tab.Screen name="Events" component={HomeScreen} />
       <Tab.Screen name="Tickets" component={TicketsScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
