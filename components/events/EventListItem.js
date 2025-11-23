@@ -1,20 +1,38 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLanguage } from "../../localization";
 
 const EventListItem = ({ event, onPress }) => {
   const { isRTL } = useLanguage();
 
+  // Format date and time
+  const formatDateTime = () => {
+    if (event.date) {
+      const date = new Date(event.date);
+      const dateStr = date.toLocaleDateString("ar-SA", {
+        weekday: "short",
+        day: "numeric",
+        month: "numeric",
+      });
+      const timeStr = event.time || "";
+      return `${dateStr}${timeStr ? " - " + timeStr : ""}`;
+    }
+    return event.dateTime || "غير محدد";
+  };
+
+  // Calculate total guest count
+  const guestCount = event.totalInvites || event.guestCount || 0;
+
+  // Get guest stats from backend format
+  const confirmed = event.confirmed || 0;
+  const declined = event.declined || 0;
+  const noResponse = event.noResponse || event.maybe || event.invited || 0;
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "active":
+      case "live":
         return { backgroundColor: "#EAF4EF", color: "#2A8C5B" };
       case "ended":
         return { backgroundColor: "#F2F2F2", color: "#656565" };
@@ -33,30 +51,32 @@ const EventListItem = ({ event, onPress }) => {
         <View style={[styles.textContent, isRTL && styles.textContentRTL]}>
           {/* Title and Status */}
           <View style={[styles.titleRow, isRTL && styles.titleRowRTL]}>
+            <Text style={[styles.title, isRTL && styles.titleRTL]}>
+              {event.title || "مناسبة بدون عنوان"}
+            </Text>
             <View
-              style={[styles.statusBadge, { backgroundColor: statusStyle.backgroundColor }]}
+              style={[
+                styles.statusBadge,
+                { backgroundColor: statusStyle.backgroundColor },
+              ]}
             >
               <Text style={[styles.statusText, { color: statusStyle.color }]}>
                 {event.status === "active" ? "نشط" : "انتهت"}
               </Text>
             </View>
-            <Text style={[styles.title, isRTL && styles.titleRTL]}>
-              {event.title}
-            </Text>
           </View>
 
           {/* Details */}
           <View style={[styles.details, isRTL && styles.detailsRTL]}>
-            {/* Guest Count */}
-            <View style={[styles.detailItem, isRTL && styles.detailItemRTL]}>
-              <Text style={styles.detailText}>{event.guestCount} ضيف</Text>
-              <Ionicons name="people-outline" size={12} color="#C28E5C" />
-            </View>
-
             {/* Date and Time */}
             <View style={[styles.detailItem, isRTL && styles.detailItemRTL]}>
-              <Text style={styles.detailText}>{event.dateTime}</Text>
               <Ionicons name="calendar-outline" size={12} color="#C28E5C" />
+              <Text style={styles.detailText}>{formatDateTime()}</Text>
+            </View>
+            {/* Guest Count */}
+            <View style={[styles.detailItem, isRTL && styles.detailItemRTL]}>
+              <Ionicons name="people-outline" size={12} color="#C28E5C" />
+              <Text style={styles.detailText}>{guestCount} ضيف</Text>
             </View>
           </View>
         </View>
@@ -77,19 +97,19 @@ const EventListItem = ({ event, onPress }) => {
       <View style={[styles.statsRow, isRTL && styles.statsRowRTL]}>
         <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
           <Text style={styles.statLabel}>لم يرد: </Text>
-          <Text style={styles.statValue}>{event.noResponse || 15}</Text>
+          <Text style={styles.statValue}>{noResponse}</Text>
           <View style={[styles.statDot, { backgroundColor: "#A0A0A0" }]} />
         </View>
 
         <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
           <Text style={styles.statLabel}>معتذر: </Text>
-          <Text style={styles.statValue}>{event.declined || 15}</Text>
+          <Text style={styles.statValue}>{declined}</Text>
           <View style={[styles.statDot, { backgroundColor: "#C0392B" }]} />
         </View>
 
         <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
           <Text style={styles.statLabel}>موافق: </Text>
-          <Text style={styles.statValue}>{event.accepted || 120}</Text>
+          <Text style={styles.statValue}>{confirmed}</Text>
           <View style={[styles.statDot, { backgroundColor: "#2A8C5B" }]} />
         </View>
       </View>
@@ -160,7 +180,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,

@@ -13,35 +13,55 @@ import { useLanguage } from "../../localization";
 const EventDetails = ({ event, onStatsPress, onBack }) => {
   const { isRTL } = useLanguage();
 
+  // Format backend data
+  const title = event.eventDetails?.title || event.title || "مناسبة بدون عنوان";
+  const eventType = event.eventDetails?.type || event.type || "أخرى";
+  const location = event.eventDetails?.location || event.location || "غير محدد";
+  const description =
+    event.eventDetails?.description || event.description || "";
+
+  // Format date and time
+  const formatDateTime = () => {
+    const eventDate = event.eventDetails?.date || event.date;
+    const eventTime = event.eventDetails?.time || event.time;
+    if (eventDate) {
+      const date = new Date(eventDate);
+      const dateStr = date.toLocaleDateString("ar-SA", {
+        weekday: "long",
+        day: "numeric",
+        month: "numeric",
+        year: "numeric",
+      });
+      return `${dateStr}${eventTime ? " - " + eventTime : ""}`;
+    }
+    return event.dateTime || "غير محدد";
+  };
+
+  // Calculate guest count and moderators
+  const guestCount = event.guestList?.length || event.totalInvites || 0;
+  const moderatorsCount =
+    event.supervisorsList?.length || event.moderatorsCount || 0;
+
+  // Get guest stats
+  const confirmed =
+    event.confirmed ||
+    event.guestList?.filter((g) => g.status === "confirmed").length ||
+    0;
+  const declined =
+    event.declined ||
+    event.guestList?.filter((g) => g.status === "declined").length ||
+    0;
+  const noResponse =
+    event.noResponse ||
+    event.maybe ||
+    event.invited ||
+    event.guestList?.filter((g) =>
+      ["no-response", "maybe", "invited"].includes(g.status)
+    ).length ||
+    0;
+
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={[styles.header, isRTL && styles.headerRTL]}>
-        <TouchableOpacity
-          onPress={onBack}
-          style={styles.backButton}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name="alert-circle-outline"
-            size={32}
-            color="#F9F4EF"
-          />
-        </TouchableOpacity>
-
-        <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
-          تفاصيل المناسبة
-        </Text>
-
-        <TouchableOpacity
-          onPress={onBack}
-          style={styles.closeButton}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="close" size={24} color="#F9F4EF" />
-        </TouchableOpacity>
-      </View>
-
       {/* Content */}
       <ScrollView
         style={styles.content}
@@ -68,10 +88,16 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
         {/* Event Title */}
         <View style={[styles.titleSection, isRTL && styles.titleSectionRTL]}>
           <Text style={[styles.eventType, isRTL && styles.eventTypeRTL]}>
-            حفل زفاف
+            {eventType === "wedding"
+              ? "حفل زفاف"
+              : eventType === "birthday"
+              ? "عيد ميلاد"
+              : eventType === "graduation"
+              ? "تخرج"
+              : "مناسبة"}
           </Text>
           <Text style={[styles.eventTitle, isRTL && styles.eventTitleRTL]}>
-            {event.title}
+            {title}
           </Text>
         </View>
 
@@ -80,32 +106,38 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
           {/* Row 1 */}
           <View style={[styles.infoRow, isRTL && styles.infoRowRTL]}>
             {/* Guest Count */}
-            <View style={[styles.infoItem, isRTL && styles.infoItemRTL]}>
-              <View style={[styles.infoContent, isRTL && styles.infoContentRTL]}>
+            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="people-outline" size={16} color="#C28E5C" />
+              </View>
+
+              <View
+                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+              >
                 <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
                   ضيف مدعو
                 </Text>
                 <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
-                  {event.guestCount || 250}
+                  {guestCount}
                 </Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <Ionicons name="people-outline" size={16} color="#C28E5C" />
               </View>
             </View>
 
             {/* Moderators */}
-            <View style={[styles.infoItem, isRTL && styles.infoItemRTL]}>
-              <View style={[styles.infoContent, isRTL && styles.infoContentRTL]}>
+            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="person-add-outline" size={16} color="#C28E5C" />
+              </View>
+
+              <View
+                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+              >
                 <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
                   مشرف
                 </Text>
                 <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
-                  {event.moderatorsCount || 2}
+                  {moderatorsCount}
                 </Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <Ionicons name="person-add-outline" size={16} color="#C28E5C" />
               </View>
             </View>
           </View>
@@ -113,45 +145,59 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
           {/* Row 2 */}
           <View style={[styles.infoRow, isRTL && styles.infoRowRTL]}>
             {/* Date Time */}
-            <View style={[styles.infoItemFull, isRTL && styles.infoItemFullRTL]}>
-              <View style={[styles.infoContent, isRTL && styles.infoContentRTL]}>
+            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="calendar-outline" size={16} color="#C28E5C" />
+              </View>
+
+              <View
+                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+              >
                 <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
                   التوقيت
                 </Text>
                 <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
-                  {event.dateTime || "12 مارس , 21:51"}
+                  {formatDateTime()}
                 </Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <Ionicons name="calendar-outline" size={16} color="#C28E5C" />
               </View>
             </View>
 
             {/* Location */}
-            <View style={[styles.infoItem, isRTL && styles.infoItemRTL]}>
-              <View style={[styles.infoContent, isRTL && styles.infoContentRTL]}>
+            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+              <View style={styles.iconContainer}>
+                <Ionicons name="location-outline" size={16} color="#C28E5C" />
+              </View>
+
+              <View
+                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+              >
                 <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
                   العنوان
                 </Text>
                 <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
-                  {event.location || "250"}
+                  {location}
                 </Text>
-              </View>
-              <View style={styles.iconContainer}>
-                <Ionicons name="location-outline" size={16} color="#C28E5C" />
               </View>
             </View>
           </View>
         </View>
 
         {/* Description */}
-        <View style={[styles.descriptionCard, isRTL && styles.descriptionCardRTL]}>
-          <Text style={[styles.descriptionTitle, isRTL && styles.descriptionTitleRTL]}>
+        <View
+          style={[styles.descriptionCard, isRTL && styles.descriptionCardRTL]}
+        >
+          <Text
+            style={[
+              styles.descriptionTitle,
+              isRTL && styles.descriptionTitleRTL,
+            ]}
+          >
             تفاصيل المناسبة
           </Text>
-          <Text style={[styles.descriptionText, isRTL && styles.descriptionTextRTL]}>
-            {event.description ||
-              "يسر عائلة الحاج ابراهيم كمال عبد الحليم  دعوتكم لحضور حفل الزفاف نجله فى قاعه الامير"}
+          <Text
+            style={[styles.descriptionText, isRTL && styles.descriptionTextRTL]}
+          >
+            {description || "لا يوجد وصف للمناسبة"}
           </Text>
         </View>
 
@@ -159,19 +205,19 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
         <View style={[styles.statsCard, isRTL && styles.statsCardRTL]}>
           <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
             <Text style={styles.statLabel}>لم يرد: </Text>
-            <Text style={styles.statValue}>{event.noResponse || 15}</Text>
+            <Text style={styles.statValue}>{noResponse}</Text>
             <View style={[styles.statDot, { backgroundColor: "#A0A0A0" }]} />
           </View>
 
           <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
             <Text style={styles.statLabel}>معتذر: </Text>
-            <Text style={styles.statValue}>{event.declined || 15}</Text>
+            <Text style={styles.statValue}>{declined}</Text>
             <View style={[styles.statDot, { backgroundColor: "#C0392B" }]} />
           </View>
 
           <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
             <Text style={styles.statLabel}>موافق: </Text>
-            <Text style={styles.statValue}>{event.accepted || 120}</Text>
+            <Text style={styles.statValue}>{confirmed}</Text>
             <View style={[styles.statDot, { backgroundColor: "#2A8C5B" }]} />
           </View>
         </View>
@@ -327,6 +373,14 @@ const styles = StyleSheet.create({
   },
   infoItemRTL: {
     flexDirection: "row-reverse",
+  },
+  infoItemHalf: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+    flex: 1,
+    minWidth: "48%",
+    maxWidth: "48%",
   },
   infoItemFull: {
     flexDirection: "row",

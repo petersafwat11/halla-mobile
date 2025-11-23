@@ -38,7 +38,9 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
     }
   }, [visible]);
 
-  if (!vendor) return null;
+  if (!vendor) {
+    return null;
+  }
 
   const handleCall = (phone) => {
     Linking.openURL(`tel:${phone}`);
@@ -65,12 +67,9 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
           activeOpacity={1}
           onPress={onClose}
         />
-        
+
         <Animated.View
-          style={[
-            styles.container,
-            { transform: [{ translateY: slideAnim }] },
-          ]}
+          style={[styles.container, { transform: [{ translateY: slideAnim }] }]}
         >
           <ScrollView
             style={styles.scrollView}
@@ -81,16 +80,22 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
             <View style={styles.header}>
               <Image
                 source={{
-                  uri: vendor.image || "https://api.builder.io/api/v1/image/assets/TEMP/fcdfb1891ef72b7b32774a9d251821471803e423",
+                  uri:
+                    vendor.image ||
+                    "https://api.builder.io/api/v1/image/assets/TEMP/fcdfb1891ef72b7b32774a9d251821471803e423",
                 }}
                 style={styles.headerImage}
                 resizeMode="cover"
               />
               <LinearGradient
-                colors={["rgba(0, 0, 0, 0.60)", "rgba(0, 0, 0, 0.40)", "rgba(0, 0, 0, 0.70)"]}
+                colors={[
+                  "rgba(0, 0, 0, 0.60)",
+                  "rgba(0, 0, 0, 0.40)",
+                  "rgba(0, 0, 0, 0.70)",
+                ]}
                 style={styles.gradient}
               />
-              
+
               <View style={styles.headerContent}>
                 <TouchableOpacity
                   style={styles.closeButton}
@@ -99,8 +104,10 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                 >
                   <Ionicons name="close" size={24} color="#FFF" />
                 </TouchableOpacity>
-                
-                <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
+
+                <Text
+                  style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}
+                >
                   {vendor.name}
                 </Text>
               </View>
@@ -110,11 +117,15 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
             <View style={styles.content}>
               {/* Service Duration */}
               <View style={styles.infoCard}>
-                <View style={[styles.infoHeader, isRTL && styles.infoHeaderRTL]}>
+                <View
+                  style={[styles.infoHeader, isRTL && styles.infoHeaderRTL]}
+                >
                   <View style={styles.iconBadge}>
                     <Ionicons name="time-outline" size={14} color="#2563EB" />
                   </View>
-                  <Text style={[styles.infoTitle, isRTL && styles.infoTitleRTL]}>
+                  <Text
+                    style={[styles.infoTitle, isRTL && styles.infoTitleRTL]}
+                  >
                     مدة تنفيذ الخدمة
                   </Text>
                 </View>
@@ -125,11 +136,15 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
 
               {/* Price Range */}
               <View style={styles.infoCard}>
-                <View style={[styles.infoHeader, isRTL && styles.infoHeaderRTL]}>
+                <View
+                  style={[styles.infoHeader, isRTL && styles.infoHeaderRTL]}
+                >
                   <View style={[styles.iconBadge, styles.iconBadgeYellow]}>
                     <Ionicons name="cash-outline" size={14} color="#D97706" />
                   </View>
-                  <Text style={[styles.infoTitle, isRTL && styles.infoTitleRTL]}>
+                  <Text
+                    style={[styles.infoTitle, isRTL && styles.infoTitleRTL]}
+                  >
                     نطاق السعر
                   </Text>
                 </View>
@@ -140,24 +155,39 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
 
               {/* What's Included */}
               <View style={styles.includedCard}>
-                <Text style={[styles.includedTitle, isRTL && styles.includedTitleRTL]}>
+                <Text
+                  style={[
+                    styles.includedTitle,
+                    isRTL && styles.includedTitleRTL,
+                  ]}
+                >
                   ما هو مدرج
                 </Text>
-                
+
                 <View style={styles.includedList}>
-                  {(vendor.included || [
-                    "جلسة تصوير الخطوبة",
-                    "حقوق الطباعة متضمنة",
-                    "خيارات التصوير الفوتوغرافي بالطائرات بدون طيار",
-                    "ألبوم صور رقمي",
-                    "تغطية ليوم كامل",
-                  ]).map((item, index) => (
+                  {(
+                    vendor.included || [
+                      "جلسة تصوير الخطوبة",
+                      "حقوق الطباعة متضمنة",
+                      "خيارات التصوير الفوتوغرافي بالطائرات بدون طيار",
+                      "ألبوم صور رقمي",
+                      "تغطية ليوم كامل",
+                    ]
+                  ).map((item, index) => (
                     <View
                       key={index}
-                      style={[styles.includedItem, isRTL && styles.includedItemRTL]}
+                      style={[
+                        styles.includedItem,
+                        isRTL && styles.includedItemRTL,
+                      ]}
                     >
                       <View style={styles.bullet} />
-                      <Text style={[styles.includedText, isRTL && styles.includedTextRTL]}>
+                      <Text
+                        style={[
+                          styles.includedText,
+                          isRTL && styles.includedTextRTL,
+                        ]}
+                      >
                         {item}
                       </Text>
                     </View>
@@ -168,26 +198,48 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
               {/* Vendor Info */}
               <View style={styles.vendorCard}>
                 <View style={styles.vendorHeader}>
-                  <View style={[styles.vendorInfo, isRTL && styles.vendorInfoRTL]}>
+                  <View
+                    style={[styles.vendorInfo, isRTL && styles.vendorInfoRTL]}
+                  >
                     <View style={styles.vendorDetails}>
-                      <Text style={[styles.vendorName, isRTL && styles.vendorNameRTL]}>
+                      <Text
+                        style={[
+                          styles.vendorName,
+                          isRTL && styles.vendorNameRTL,
+                        ]}
+                      >
                         {vendor.companyName || "التهامى للتصوير والموسيقى"}
                       </Text>
-                      
-                      <View style={[styles.vendorStats, isRTL && styles.vendorStatsRTL]}>
+
+                      <View
+                        style={[
+                          styles.vendorStats,
+                          isRTL && styles.vendorStatsRTL,
+                        ]}
+                      >
                         <View style={[styles.stat, isRTL && styles.statRTL]}>
-                          <Text style={styles.statValue}>({vendor.reviewCount || "127"} شخص)</Text>
-                          <Text style={styles.statLabel}>{vendor.rating || "4.9"}</Text>
+                          <Text style={styles.statValue}>
+                            ({vendor.reviewCount || "127"} شخص)
+                          </Text>
+                          <Text style={styles.statLabel}>
+                            {vendor.rating || "4.9"}
+                          </Text>
                           <Ionicons name="star" size={12} color="#262626" />
                         </View>
-                        
+
                         <View style={[styles.stat, isRTL && styles.statRTL]}>
-                          <Text style={styles.statValue}>{vendor.experience || "10"} سنوات</Text>
-                          <Ionicons name="briefcase-outline" size={12} color="#737373" />
+                          <Text style={styles.statValue}>
+                            {vendor.experience || "10"} سنوات
+                          </Text>
+                          <Ionicons
+                            name="briefcase-outline"
+                            size={12}
+                            color="#737373"
+                          />
                         </View>
                       </View>
                     </View>
-                    
+
                     {vendor.logo && (
                       <Image
                         source={{ uri: vendor.logo }}
@@ -200,57 +252,110 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
 
                 {/* Contact Information */}
                 <View style={styles.contactSection}>
-                  <Text style={[styles.contactTitle, isRTL && styles.contactTitleRTL]}>
+                  <Text
+                    style={[
+                      styles.contactTitle,
+                      isRTL && styles.contactTitleRTL,
+                    ]}
+                  >
                     معلومات الاتصال
                   </Text>
-                  
+
                   <View style={styles.contactList}>
                     {vendor.location && (
                       <TouchableOpacity
-                        style={[styles.contactItem, isRTL && styles.contactItemRTL]}
+                        style={[
+                          styles.contactItem,
+                          isRTL && styles.contactItemRTL,
+                        ]}
                         activeOpacity={0.7}
                       >
-                        <Ionicons name="location-outline" size={16} color="#737373" />
-                        <Text style={[styles.contactText, isRTL && styles.contactTextRTL]}>
+                        <Ionicons
+                          name="location-outline"
+                          size={16}
+                          color="#737373"
+                        />
+                        <Text
+                          style={[
+                            styles.contactText,
+                            isRTL && styles.contactTextRTL,
+                          ]}
+                        >
                           {vendor.location}
                         </Text>
                       </TouchableOpacity>
                     )}
-                    
+
                     {vendor.website && (
                       <TouchableOpacity
-                        style={[styles.contactItem, isRTL && styles.contactItemRTL]}
+                        style={[
+                          styles.contactItem,
+                          isRTL && styles.contactItemRTL,
+                        ]}
                         onPress={() => handleWebsite(vendor.website)}
                         activeOpacity={0.7}
                       >
-                        <Ionicons name="globe-outline" size={16} color="#737373" />
-                        <Text style={[styles.contactText, isRTL && styles.contactTextRTL]}>
+                        <Ionicons
+                          name="globe-outline"
+                          size={16}
+                          color="#737373"
+                        />
+                        <Text
+                          style={[
+                            styles.contactText,
+                            isRTL && styles.contactTextRTL,
+                          ]}
+                        >
                           {vendor.website}
                         </Text>
                       </TouchableOpacity>
                     )}
-                    
+
                     {vendor.email && (
                       <TouchableOpacity
-                        style={[styles.contactItem, isRTL && styles.contactItemRTL]}
+                        style={[
+                          styles.contactItem,
+                          isRTL && styles.contactItemRTL,
+                        ]}
                         onPress={() => handleEmail(vendor.email)}
                         activeOpacity={0.7}
                       >
-                        <Ionicons name="mail-outline" size={16} color="#737373" />
-                        <Text style={[styles.contactText, isRTL && styles.contactTextRTL]}>
+                        <Ionicons
+                          name="mail-outline"
+                          size={16}
+                          color="#737373"
+                        />
+                        <Text
+                          style={[
+                            styles.contactText,
+                            isRTL && styles.contactTextRTL,
+                          ]}
+                        >
                           {vendor.email}
                         </Text>
                       </TouchableOpacity>
                     )}
-                    
+
                     {vendor.phone && (
                       <TouchableOpacity
-                        style={[styles.contactItem, isRTL && styles.contactItemRTL]}
+                        style={[
+                          styles.contactItem,
+                          isRTL && styles.contactItemRTL,
+                        ]}
                         onPress={() => handleCall(vendor.phone)}
                         activeOpacity={0.7}
                       >
-                        <Ionicons name="call-outline" size={16} color="#737373" />
-                        <Text style={[styles.contactText, isRTL && styles.contactTextRTL]}>
+                        <Ionicons
+                          name="call-outline"
+                          size={16}
+                          color="#737373"
+                        />
+                        <Text
+                          style={[
+                            styles.contactText,
+                            isRTL && styles.contactTextRTL,
+                          ]}
+                        >
                           {vendor.phone}
                         </Text>
                       </TouchableOpacity>
@@ -287,7 +392,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   scrollView: {
-    flex: 1,
+    maxHeight: SCREEN_HEIGHT * 0.9,
   },
   scrollContent: {
     paddingBottom: 40,

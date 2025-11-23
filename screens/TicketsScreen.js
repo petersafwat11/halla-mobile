@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useLanguage, useTranslation } from "../localization";
 import { useAuthStore } from "../stores/authStore";
 import { useToast } from "../contexts/ToastContext";
@@ -22,12 +23,14 @@ import {
   updateTicketAPI,
   deleteTicketAPI,
 } from "../services/ticketsService";
+import { TopBar } from "../components/plans";
 
 export default function TicketsScreen() {
   const { isRTL } = useLanguage();
   const { t } = useTranslation("tickets");
   const toast = useToast();
   const { token } = useAuthStore();
+  const navigation = useNavigation();
 
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -150,6 +153,12 @@ export default function TicketsScreen() {
     setEditingTicket(null);
   };
 
+  const handleBack = () => {
+    if (navigation?.canGoBack()) {
+      navigation.goBack();
+    }
+  };
+
   const handleSubmit = (data) => {
     if (editingTicket) {
       handleUpdateTicket(data);
@@ -183,83 +192,87 @@ export default function TicketsScreen() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container} edges={["top"]}>
-        <View style={[styles.header, isRTL && styles.headerRTL]}>
-          <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
-            {t("title")}
-          </Text>
-        </View>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#c28e5c" />
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
+        <View style={styles.container}>
+          <TopBar
+            title={t("title")}
+            showBack={navigation?.canGoBack?.()}
+            onBack={handleBack}
+          />
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#c28e5c" />
+          </View>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      {/* Header */}
-      <View style={[styles.header, isRTL && styles.headerRTL]}>
-        <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
-          {t("title")}
-        </Text>
-      </View>
+    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+      <View style={styles.container}>
+        <TopBar
+          title={t("title")}
+          showBack={navigation?.canGoBack?.()}
+          onBack={handleBack}
+        />
 
-      {/* Tickets List */}
-      <FlatList
-        data={tickets}
-        renderItem={renderTicket}
-        keyExtractor={(item) => item._id}
-        contentContainerStyle={[
-          styles.listContent,
-          tickets.length === 0 && styles.listContentEmpty,
-        ]}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={renderEmpty}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#c28e5c"
-            colors={["#c28e5c"]}
-          />
-        }
-      />
+        <FlatList
+          data={tickets}
+          renderItem={renderTicket}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={[
+            styles.listContent,
+            tickets.length === 0 && styles.listContentEmpty,
+          ]}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={renderEmpty}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#c28e5c"
+              colors={["#c28e5c"]}
+            />
+          }
+        />
 
-      {/* Floating Action Button */}
-      <Animated.View
-        style={[
-          styles.fabContainer,
-          isRTL && styles.fabContainerRTL,
-          { transform: [{ scale: fabScale }] },
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.fab}
-          onPress={() => setModalVisible(true)}
-          activeOpacity={0.8}
+        <Animated.View
+          style={[
+            styles.fabContainer,
+            isRTL && styles.fabContainerRTL,
+            { transform: [{ scale: fabScale }] },
+          ]}
         >
-          <Ionicons name="add" size={28} color="#fff" />
-        </TouchableOpacity>
-      </Animated.View>
+          <TouchableOpacity
+            style={styles.fab}
+            onPress={() => setModalVisible(true)}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="add" size={28} color="#fff" />
+          </TouchableOpacity>
+        </Animated.View>
 
-      {/* Create/Edit Modal */}
-      <TicketModal
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        onSubmit={handleSubmit}
-        initialData={
-          editingTicket
-            ? { type: editingTicket.type, message: editingTicket.message }
-            : null
-        }
-        loading={submitting}
-      />
+        <TicketModal
+          visible={modalVisible}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmit}
+          initialData={
+            editingTicket
+              ? { type: editingTicket.type, message: editingTicket.message }
+              : null
+          }
+          loading={submitting}
+        />
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#C28E5C",
+  },
   container: {
     flex: 1,
     backgroundColor: "#f8f8f8",

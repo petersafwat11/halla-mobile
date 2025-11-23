@@ -15,7 +15,11 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
       case "maybe":
         return { backgroundColor: "#FEFCE8", color: "#CA8A04", label: "ربما" };
       default:
-        return { backgroundColor: "#F5ECE4", color: "#8A6541", label: "لم يرد" };
+        return {
+          backgroundColor: "#F5ECE4",
+          color: "#8A6541",
+          label: "لم يرد",
+        };
     }
   };
 
@@ -25,6 +29,25 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
     <View style={[styles.container, isRTL && styles.containerRTL]}>
       {/* Header */}
       <View style={[styles.header, isRTL && styles.headerRTL]}>
+        {/* Guest Info */}
+        <View style={[styles.guestInfo, isRTL && styles.guestInfoRTL]}>
+          <View style={[styles.nameRow, isRTL && styles.nameRowRTL]}>
+            <Text style={[styles.name, isRTL && styles.nameRTL]}>
+              {guest.name || "احمد كمال سمير"}
+            </Text>
+          </View>
+
+          <View style={[styles.contactRow, isRTL && styles.contactRowRTL]}>
+            <View style={[styles.contactItem, isRTL && styles.contactItemRTL]}>
+              <Text style={styles.contactText}>
+                {guest.phone || "966656555"}
+              </Text>
+            </View>
+            <View style={styles.separator}>
+              <Text style={styles.separatorText}>|</Text>
+            </View>
+          </View>
+        </View>
         {/* Actions */}
         <View style={[styles.actions, isRTL && styles.actionsRTL]}>
           <TouchableOpacity
@@ -46,31 +69,6 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
             </View>
           </TouchableOpacity>
         </View>
-
-        {/* Guest Info */}
-        <View style={[styles.guestInfo, isRTL && styles.guestInfoRTL]}>
-          <View style={[styles.nameRow, isRTL && styles.nameRowRTL]}>
-            <Text style={[styles.name, isRTL && styles.nameRTL]}>
-              {guest.name || "احمد كمال سمير"}
-            </Text>
-          </View>
-
-          <View style={[styles.contactRow, isRTL && styles.contactRowRTL]}>
-            <View style={[styles.contactItem, isRTL && styles.contactItemRTL]}>
-              <Text style={styles.contactText}>
-                {guest.phone || "966656555"}
-              </Text>
-            </View>
-            <View style={styles.separator}>
-              <Text style={styles.separatorText}>|</Text>
-            </View>
-            <View style={[styles.contactItem, isRTL && styles.contactItemRTL]}>
-              <Text style={styles.contactText}>
-                {guest.email || "ads@outlook.com"}
-              </Text>
-            </View>
-          </View>
-        </View>
       </View>
 
       {/* Response */}
@@ -79,41 +77,23 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
           <Text style={[styles.responseDate, isRTL && styles.responseDateRTL]}>
             {guest.responseDate || "الثلاثاء  12 مايو | 12:50م"}
           </Text>
-          <Text style={[styles.responseLabel, isRTL && styles.responseLabelRTL]}>
+          <Text
+            style={[styles.responseLabel, isRTL && styles.responseLabelRTL]}
+          >
             حالة الردود
           </Text>
         </View>
 
-        {guest.status === "accepted" && guest.message && (
-          <View style={[styles.messageRow, isRTL && styles.messageRowRTL]}>
-            <Text style={[styles.message, isRTL && styles.messageRTL]}>
-              {guest.message}
-            </Text>
-            <View
-              style={[
-                styles.statusBadge,
-                { backgroundColor: statusStyle.backgroundColor },
-              ]}
-            >
-              <Text style={[styles.statusText, { color: statusStyle.color }]}>
-                {statusStyle.label}
-              </Text>
-            </View>
-          </View>
-        )}
-
-        {guest.status !== "accepted" && (
-          <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: statusStyle.backgroundColor },
-            ]}
-          >
-            <Text style={[styles.statusText, { color: statusStyle.color }]}>
-              {statusStyle.label}
-            </Text>
-          </View>
-        )}
+        <View
+          style={[
+            styles.statusBadge,
+            { backgroundColor: statusStyle.backgroundColor },
+          ]}
+        >
+          <Text style={[styles.statusText, { color: statusStyle.color }]}>
+            {statusStyle.label}
+          </Text>
+        </View>
       </View>
     </View>
   );

@@ -1,13 +1,28 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLanguage } from "../../localization";
 
-const ModeratorListItem = ({ moderator }) => {
+const ModeratorListItem = ({ moderator, onEdit, onDelete }) => {
   const { isRTL } = useLanguage();
+
+  const handleDelete = () => {
+    Alert.alert("تأكيد الحذف", "هل أنت متأكد من حذف هذا المشرف؟", [
+      { text: "إلغاء", style: "cancel" },
+      {
+        text: "حذف",
+        style: "destructive",
+        onPress: () => onDelete && onDelete(moderator),
+      },
+    ]);
+  };
 
   return (
     <View style={[styles.container, isRTL && styles.containerRTL]}>
+      {/* Crown Icon */}
+      <View style={styles.crownContainer}>
+        <Ionicons name="ribbon-outline" size={24} color="#C28E5C" />
+      </View>
       {/* Left Content */}
       <View style={[styles.leftContent, isRTL && styles.leftContentRTL]}>
         <View style={[styles.nameSection, isRTL && styles.nameSectionRTL]}>
@@ -20,9 +35,21 @@ const ModeratorListItem = ({ moderator }) => {
         </View>
       </View>
 
-      {/* Crown Icon */}
-      <View style={styles.crownContainer}>
-        <Ionicons name="ribbon-outline" size={24} color="#C28E5C" />
+      {/* Actions */}
+      <View style={[styles.actions, isRTL && styles.actionsRTL]}>
+        {onEdit && (
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => onEdit(moderator)}
+          >
+            <Ionicons name="create-outline" size={20} color="#C28E5C" />
+          </TouchableOpacity>
+        )}
+        {onDelete && (
+          <TouchableOpacity style={styles.actionButton} onPress={handleDelete}>
+            <Ionicons name="trash-outline" size={20} color="#C0392B" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -40,23 +67,24 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderColor: "#C28E5C",
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
+    justifyContent: "flex-start",
+    gap: 8,
   },
   containerRTL: {
     flexDirection: "row-reverse",
   },
   leftContent: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
     alignItems: "center",
     gap: 8,
-    flex: 1,
+    // flex: 1,
   },
   leftContentRTL: {
     flexDirection: "row-reverse",
@@ -91,6 +119,24 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: "center",
     alignItems: "center",
+  },
+  actions: {
+    flexDirection: "row",
+    gap: 8,
+    marginLeft: "auto",
+  },
+  actionsRTL: {
+    flexDirection: "row-reverse",
+    marginLeft: 0,
+    marginRight: "auto",
+  },
+  actionButton: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: "#F5F5F5",
   },
 });
 

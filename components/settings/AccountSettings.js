@@ -380,26 +380,30 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    paddingVertical: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#c28e5c",
     alignItems: "center",
+    maxWidth: 140,
   },
   cancelButtonRTL: {
     // No specific RTL style needed
   },
   cancelButtonText: {
     color: "#c28e5c",
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
   },
   saveButton: {
     flex: 1,
-    paddingVertical: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 8,
     backgroundColor: "#c28e5c",
     alignItems: "center",
+    maxWidth: 140,
   },
   saveButtonRTL: {
     // No specific RTL style needed
@@ -409,7 +413,7 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: "#fff",
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
   },
 });

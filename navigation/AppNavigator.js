@@ -55,16 +55,16 @@ function MainTabNavigator() {
       <Tab.Screen
         name="Events"
         component={EventsScreen}
-        options={{
-          title: "Events",
-          tabBarIcon: ({ focused, color, size }) => (
-            <Ionicons
-              name={focused ? "calendar" : "calendar-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
+        // options={{
+        //   title: "Events",
+        // tabBarIcon: ({ focused, color, size }) => (
+        //   <Ionicons
+        //     name={focused ? "calendar" : "calendar-outline"}
+        //     size={size}
+        //     color={color}
+        //   />
+        // ),
+        // }}
       />
       <Tab.Screen name="Marketplace" component={Marketplace} />
       <Tab.Screen name="Plans" component={PlansScreen} />

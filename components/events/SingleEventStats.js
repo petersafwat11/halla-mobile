@@ -5,60 +5,70 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLanguage } from "../../localization";
+import { useAuthStore } from "../../stores/authStore";
+import {
+  addGuest,
+  addSupervisor,
+  updateSupervisor,
+  deleteSupervisor,
+} from "../../services/eventsService2";
 import StatsCards from "./StatsCards";
 import TabsSearchAndFilters from "./TabsSearchAndFilters";
 import EventList from "./EventList";
 import GuestListItem from "./GuestListItem";
 import ModeratorListItem from "./ModeratorListItem";
+import AddGuestOrModeratorPopup from "./AddGuestOrmoderatorPopup";
 
-const SingleEventStats = ({ event, onBack }) => {
+const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
   const { isRTL } = useLanguage();
+  const { token } = useAuthStore();
   const [activeTab, setActiveTab] = useState("guests");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupLoading, setPopupLoading] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
 
-  // Mock data - replace with actual data
-  const guests = [
-    {
-      id: "1",
-      name: "احمد كمال سمير",
-      phone: "966656555",
-      email: "ads@outlook.com",
-      status: "declined",
-      responseDate: "الثلاثاء  12 مايو | 12:50م",
-    },
-    {
-      id: "2",
-      name: "احمد كمال سمير",
-      phone: "966656555",
-      email: "ads@outlook.com",
-      status: "accepted",
-      message: "الف مبروك للعروسين",
-      responseDate: "الثلاثاء  12 مايو | 12:50م",
-    },
-    {
-      id: "3",
-      name: "احمد كمال سمير",
-      phone: "966656555",
-      email: "ads@outlook.com",
-      status: "accepted",
-      message: "الف مبروك للعروسين",
-      responseDate: "الثلاثاء  12 مايو | 12:50م",
-    },
-  ];
+  // Format response date to Arabic
+  const formatResponseDate = (respondAt) => {
+    if (!respondAt) return "لم يرد بعد";
+    const date = new Date(respondAt);
+    return date.toLocaleDateString("ar-SA", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
-  const moderators = [
-    { id: "1", name: "أحمد كمال ابراهيم", phone: "96605196749" },
-    { id: "2", name: "محمد علي حسن", phone: "96605196750" },
-  ];
+  // Format guests from backend data
+  const guests = (stats?.guests || []).map((guest) => ({
+    id: guest.guestId,
+    name: guest.name || "ضيف",
+    phone: guest.phone || "",
+    email: guest.email || "not provided",
+    status: guest.status === "confirmed" ? "accepted" : guest.status,
+    responseDate: formatResponseDate(guest.respondAt),
+    addedBy: guest.addedBy,
+  }));
 
-  const stats = {
-    accepted: event?.stats?.accepted || 89,
-    declined: event?.stats?.declined || 12,
-    maybe: event?.stats?.maybe || 23,
-    pending: event?.stats?.pending || 26,
+  // Format moderators from backend data
+  const moderators = (stats?.supervisors || []).map((supervisor) => ({
+    id: supervisor._id || supervisor.id,
+    name: supervisor.name || "مشرف",
+    phone: supervisor.phone || "",
+  }));
+
+  // Use stats from backend
+  const guestStats = {
+    accepted: stats?.confirmed || 0,
+    declined: stats?.declined || 0,
+    maybe: stats?.maybe || 0,
+    pending: stats?.noResponse || 0,
   };
 
   const handleTabChange = (tab) => {
@@ -74,48 +84,90 @@ const SingleEventStats = ({ event, onBack }) => {
     console.log("Filter pressed");
   };
 
+  const handleAddPress = () => {
+    setEditingItem(null);
+    setShowPopup(true);
+  };
+
+  const handlePopupClose = () => {
+    setShowPopup(false);
+    setEditingItem(null);
+  };
+
+  const handlePopupSave = async (data) => {
+    try {
+      setPopupLoading(true);
+
+      if (activeTab === "guests") {
+        if (editingItem) {
+          // Edit guest (not implemented yet)
+          Alert.alert("تنبيه", "تعديل الضيف غير متاح حالياً");
+        } else {
+          // Add guest
+          await addGuest(event._id || event.id, data, token);
+          Alert.alert("نجاح", "تم إضافة الضيف بنجاح");
+        }
+      } else {
+        if (editingItem) {
+          // Edit moderator
+          await updateSupervisor(
+            event._id || event.id,
+            editingItem.id,
+            data,
+            token
+          );
+          Alert.alert("نجاح", "تم تعديل المشرف بنجاح");
+        } else {
+          // Add moderator
+          await addSupervisor(event._id || event.id, data, token);
+          Alert.alert("نجاح", "تم إضافة المشرف بنجاح");
+        }
+      }
+
+      setShowPopup(false);
+      setEditingItem(null);
+      if (onRefresh) onRefresh();
+    } catch (error) {
+      console.error("Error saving:", error);
+      Alert.alert("خطأ", error.message || "حدث خطأ أثناء الحفظ");
+    } finally {
+      setPopupLoading(false);
+    }
+  };
+
+  const handleModeratorEdit = (moderator) => {
+    setEditingItem(moderator);
+    setShowPopup(true);
+  };
+
+  const handleModeratorDelete = async (moderator) => {
+    try {
+      await deleteSupervisor(event._id || event.id, moderator.id, token);
+      Alert.alert("نجاح", "تم حذف المشرف بنجاح");
+      if (onRefresh) onRefresh();
+    } catch (error) {
+      console.error("Error deleting moderator:", error);
+      Alert.alert("خطأ", error.message || "حدث خطأ أثناء الحذف");
+    }
+  };
+
   const currentData = activeTab === "guests" ? guests : moderators;
   const ListItemComponent =
     activeTab === "guests" ? GuestListItem : ModeratorListItem;
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={[styles.header, isRTL && styles.headerRTL]}>
-        <TouchableOpacity
-          onPress={() => {}}
-          style={styles.actionButton}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.actionButtonText}>رسالة تذكيرية</Text>
-        </TouchableOpacity>
-
-        <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
-          تفاصيل المناسبة
-        </Text>
-
-        <TouchableOpacity
-          onPress={onBack}
-          style={styles.backButton}
-          activeOpacity={0.7}
-        >
-          <Ionicons
-            name={isRTL ? "arrow-forward" : "arrow-back"}
-            size={16}
-            color="#F9F4EF"
-          />
-        </TouchableOpacity>
-      </View>
-
       {/* Stats Cards */}
       <View style={styles.statsContainer}>
         <View style={styles.statsCard}>
           <View style={styles.statsCardHeader}>
-            <Text style={[styles.statsCardTitle, isRTL && styles.statsCardTitleRTL]}>
+            <Text
+              style={[styles.statsCardTitle, isRTL && styles.statsCardTitleRTL]}
+            >
               متابعة الحضور
             </Text>
           </View>
-          <StatsCards stats={stats} />
+          <StatsCards stats={guestStats} />
         </View>
       </View>
 
@@ -137,7 +189,11 @@ const SingleEventStats = ({ event, onBack }) => {
               key={item.id}
               {...(activeTab === "guests"
                 ? { guest: item }
-                : { moderator: item })}
+                : {
+                    moderator: item,
+                    onEdit: handleModeratorEdit,
+                    onDelete: handleModeratorDelete,
+                  })}
               index={index}
             />
           ))}
@@ -145,11 +201,25 @@ const SingleEventStats = ({ event, onBack }) => {
       </View>
 
       {/* Floating Add Button */}
-      <TouchableOpacity style={styles.floatingButton} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={styles.floatingButton}
+        activeOpacity={0.7}
+        onPress={handleAddPress}
+      >
         <View style={styles.floatingButtonInner}>
           <Ionicons name="person-add-outline" size={30} color="#FFF" />
         </View>
       </TouchableOpacity>
+
+      {/* Add Guest/Moderator Popup */}
+      <AddGuestOrModeratorPopup
+        visible={showPopup}
+        onClose={handlePopupClose}
+        onSave={handlePopupSave}
+        type={activeTab === "guests" ? "guest" : "moderator"}
+        initialData={editingItem}
+        loading={popupLoading}
+      />
     </View>
   );
 };
@@ -197,8 +267,22 @@ const styles = StyleSheet.create({
     color: "#FFF",
     lineHeight: 16,
   },
+  reminderButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  reminderButtonText: {
+    fontSize: 12,
+    fontFamily: "Cairo_600SemiBold",
+    color: "#FFF",
+  },
   statsContainer: {
-    padding: 24,
+    paddingVertical: 24,
+    paddingHorizontal: 12,
   },
   statsCard: {
     backgroundColor: "#FFF",
@@ -236,6 +320,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+    marginHorizontal: 12,
   },
   list: {
     flex: 1,
@@ -246,7 +331,7 @@ const styles = StyleSheet.create({
   floatingButton: {
     position: "absolute",
     right: 24,
-    bottom: 120,
+    bottom: 100,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,

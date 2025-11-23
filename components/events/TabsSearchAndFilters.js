@@ -9,7 +9,11 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useLanguage } from "../../localization";
 
-const TabsSearchAndFilters = ({ onTabChange, onSearchChange, onFilterPress }) => {
+const TabsSearchAndFilters = ({
+  onTabChange,
+  onSearchChange,
+  onFilterPress,
+}) => {
   const { isRTL } = useLanguage();
   const [activeTab, setActiveTab] = useState("guests");
 
@@ -22,31 +26,6 @@ const TabsSearchAndFilters = ({ onTabChange, onSearchChange, onFilterPress }) =>
     <View style={styles.container}>
       {/* Tabs */}
       <View style={[styles.tabsContainer, isRTL && styles.tabsContainerRTL]}>
-        <TouchableOpacity
-          style={[
-            styles.tab,
-            activeTab === "moderators" && styles.tabActive,
-            isRTL && styles.tabRTL,
-          ]}
-          onPress={() => handleTabPress("moderators")}
-          activeOpacity={0.7}
-        >
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === "moderators" && styles.tabTextActive,
-              isRTL && styles.tabTextRTL,
-            ]}
-          >
-            المشرفين
-          </Text>
-          <Ionicons
-            name="people-outline"
-            size={16}
-            color={activeTab === "moderators" ? "#2C2C2C" : "#656565"}
-          />
-        </TouchableOpacity>
-
         <View style={styles.tabWrapper}>
           <TouchableOpacity
             style={[
@@ -74,12 +53,49 @@ const TabsSearchAndFilters = ({ onTabChange, onSearchChange, onFilterPress }) =>
           </TouchableOpacity>
           {activeTab === "guests" && <View style={styles.activeIndicator} />}
         </View>
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            activeTab === "moderators" && styles.tabActive,
+            isRTL && styles.tabRTL,
+          ]}
+          onPress={() => handleTabPress("moderators")}
+          activeOpacity={0.7}
+        >
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === "moderators" && styles.tabTextActive,
+              isRTL && styles.tabTextRTL,
+            ]}
+          >
+            المشرفين
+          </Text>
+          <Ionicons
+            name="people-outline"
+            size={16}
+            color={activeTab === "moderators" ? "#2C2C2C" : "#656565"}
+          />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.divider} />
 
       {/* Search and Filter */}
-      <View style={[styles.searchContainer, isRTL && styles.searchContainerRTL]}>
+      <View
+        style={[styles.searchContainer, isRTL && styles.searchContainerRTL]}
+      >
+        {/* Search Input */}
+        <View style={[styles.searchInput, isRTL && styles.searchInputRTL]}>
+          <Ionicons name="search-outline" size={16} color="#767676" />
+          <TextInput
+            placeholder="اسم المدعو"
+            placeholderTextColor="#656565"
+            style={[styles.input, isRTL && styles.inputRTL]}
+            onChangeText={onSearchChange}
+          />
+        </View>
+
         {/* Filter Button */}
         <TouchableOpacity
           style={[styles.filterButton, isRTL && styles.filterButtonRTL]}
@@ -91,17 +107,6 @@ const TabsSearchAndFilters = ({ onTabChange, onSearchChange, onFilterPress }) =>
           </Text>
           <Ionicons name="options-outline" size={16} color="#767676" />
         </TouchableOpacity>
-
-        {/* Search Input */}
-        <View style={[styles.searchInput, isRTL && styles.searchInputRTL]}>
-          <Ionicons name="search-outline" size={16} color="#767676" />
-          <TextInput
-            placeholder="اسم المدعو"
-            placeholderTextColor="#656565"
-            style={[styles.input, isRTL && styles.inputRTL]}
-            onChangeText={onSearchChange}
-          />
-        </View>
       </View>
     </View>
   );
@@ -181,8 +186,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     backgroundColor: "#F7F7F7",
     borderRadius: 8,
   },
@@ -203,10 +208,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 12,
     backgroundColor: "#F2F2F2",
     borderRadius: 8,
+    height: 36,
   },
   searchInputRTL: {
     flexDirection: "row-reverse",

@@ -14,29 +14,34 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLanguage } from "../../localization";
 import Button from "../commen/Button";
 
-const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBack }) => {
+const PaymentSummery = ({
+  selectedPlan,
+  additionalFeatures = [],
+  onConfirm,
+  onBack,
+}) => {
   const { isRTL } = useLanguage();
   const [discountCode, setDiscountCode] = useState("");
   const [isApplyingCode, setIsApplyingCode] = useState(false);
 
   const calculateTotal = () => {
     let total = parseInt(selectedPlan?.price || 0);
-    
+
     // Add additional features cost
-    additionalFeatures.forEach(feature => {
+    additionalFeatures.forEach((feature) => {
       // Extract price from feature price string
       const priceMatch = feature.price.match(/(\d+)/);
       if (priceMatch) {
         total += parseInt(priceMatch[0]);
       }
     });
-    
+
     return total;
   };
 
   const calculateAdditionalTotal = () => {
     let total = 0;
-    additionalFeatures.forEach(feature => {
+    additionalFeatures.forEach((feature) => {
       const priceMatch = feature.price.match(/(\d+)/);
       if (priceMatch) {
         total += parseInt(priceMatch[0]);
@@ -72,12 +77,19 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
           </View>
 
           <View style={styles.planSummaryCard}>
-            <View style={[styles.planSummaryHeader, isRTL && styles.planSummaryHeaderRTL]}>
+            <View
+              style={[
+                styles.planSummaryHeader,
+                isRTL && styles.planSummaryHeaderRTL,
+              ]}
+            >
               <View style={styles.planBadge}>
                 <Ionicons name="flash" size={16} color="#C28E5C" />
                 <Text style={styles.planBadgeText}>{selectedPlan?.name}</Text>
               </View>
-              <View style={[styles.planPriceRow, isRTL && styles.planPriceRowRTL]}>
+              <View
+                style={[styles.planPriceRow, isRTL && styles.planPriceRowRTL]}
+              >
                 <Text style={styles.planPriceUnit}>/شهر</Text>
                 <View style={styles.planPriceValue}>
                   <Text style={styles.planPriceCurrency}>﷼</Text>
@@ -94,7 +106,12 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
 
           {additionalFeatures.length > 0 && (
             <View style={styles.additionalFeaturesCard}>
-              <View style={[styles.additionalHeader, isRTL && styles.additionalHeaderRTL]}>
+              <View
+                style={[
+                  styles.additionalHeader,
+                  isRTL && styles.additionalHeaderRTL,
+                ]}
+              >
                 <Text style={[styles.additionalPrice, isRTL && styles.textRTL]}>
                   ﷼ {calculateAdditionalTotal()}
                 </Text>
@@ -106,7 +123,10 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
               {additionalFeatures.map((feature, index) => (
                 <View
                   key={index}
-                  style={[styles.additionalFeatureRow, isRTL && styles.additionalFeatureRowRTL]}
+                  style={[
+                    styles.additionalFeatureRow,
+                    isRTL && styles.additionalFeatureRowRTL,
+                  ]}
                 >
                   <View style={styles.additionalFeaturePrice}>
                     <Text style={styles.additionalFeaturePriceText}>﷼</Text>
@@ -114,7 +134,12 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
                       {feature.price.match(/(\d+)/)?.[0]}
                     </Text>
                   </View>
-                  <Text style={[styles.additionalFeatureName, isRTL && styles.textRTL]}>
+                  <Text
+                    style={[
+                      styles.additionalFeatureName,
+                      isRTL && styles.textRTL,
+                    ]}
+                  >
                     {feature.name} ({feature.quantity || "10"} {feature.unit})
                   </Text>
                 </View>
@@ -123,7 +148,9 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
           )}
 
           <View style={styles.subscriptionNote}>
-            <Text style={[styles.subscriptionNoteText, isRTL && styles.textRTL]}>
+            <Text
+              style={[styles.subscriptionNoteText, isRTL && styles.textRTL]}
+            >
               يبدأ الاشتراك فوراً بعد الدفع
             </Text>
           </View>
@@ -137,7 +164,12 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
             </Text>
           </View>
 
-          <View style={[styles.discountInputContainer, isRTL && styles.discountInputContainerRTL]}>
+          <View
+            style={[
+              styles.discountInputContainer,
+              isRTL && styles.discountInputContainerRTL,
+            ]}
+          >
             <TouchableOpacity
               style={styles.applyButton}
               onPress={handleApplyDiscount}
@@ -170,7 +202,9 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
               </Text>
               <View style={styles.summaryPrice}>
                 <Text style={styles.summaryPriceText}>﷼</Text>
-                <Text style={styles.summaryPriceValue}>{selectedPlan?.price}</Text>
+                <Text style={styles.summaryPriceValue}>
+                  {selectedPlan?.price}
+                </Text>
               </View>
             </View>
 
@@ -204,11 +238,7 @@ const PaymentSummery = ({ selectedPlan, additionalFeatures = [], onConfirm, onBa
       </ScrollView>
 
       <View style={styles.footer}>
-        <Button
-          text="الذهاب للدفع"
-          onPress={onConfirm}
-          size="large"
-        />
+        <Button text="الذهاب للدفع" onPress={onConfirm} size="large" />
       </View>
     </KeyboardAvoidingView>
   );

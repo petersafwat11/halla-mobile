@@ -7,6 +7,7 @@ import {
   VendorCards,
   MoreInfoPopup,
 } from "../components/marketplace";
+import FilterPopup from "../components/marketplace/FilterPopup";
 
 // Mock data - replace with actual API call
 const MOCK_VENDORS = [
@@ -17,7 +18,8 @@ const MOCK_VENDORS = [
     rating: "4.9",
     reviewCount: "127",
     price: "250",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e",
+    image:
+      "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e",
     tags: ["فعاليات الشركات", "تصوير حفلات الزفاف", "جلسات بورتريه"],
     duration: "8-12 ساعة",
     priceRange: "2,500 دولار - 8,000 دولار",
@@ -41,7 +43,8 @@ const MOCK_VENDORS = [
     rating: "4.9",
     reviewCount: "127",
     price: "250",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e",
+    image:
+      "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e",
     tags: ["فعاليات الشركات", "تصوير حفلات الزفاف", "جلسات بورتريه"],
     duration: "8-12 ساعة",
     priceRange: "2,500 دولار - 8,000 دولار",
@@ -65,7 +68,8 @@ const MOCK_VENDORS = [
     rating: "4.9",
     reviewCount: "127",
     price: "250",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e",
+    image:
+      "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e",
     tags: ["فعاليات الشركات", "تصوير حفلات الزفاف", "جلسات بورتريه"],
     duration: "8-12 ساعة",
     priceRange: "2,500 دولار - 8,000 دولار",
@@ -92,6 +96,7 @@ const Marketplace = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [showFilterPopup, setShowFilterPopup] = useState(false);
 
   // Filter vendors based on search query
   useEffect(() => {
@@ -115,11 +120,11 @@ const Marketplace = ({ navigation }) => {
   };
 
   const handleFilterPress = () => {
-    // Implement filter modal/sheet
-    console.log("Filter pressed");
+    setShowFilterPopup(true);
   };
 
   const handleVendorCallPress = (vendor) => {
+    console.log("Vendor pressed:", vendor);
     setSelectedVendor(vendor);
     setShowPopup(true);
   };
@@ -169,6 +174,11 @@ const Marketplace = ({ navigation }) => {
         visible={showPopup}
         vendor={selectedVendor}
         onClose={handleClosePopup}
+      />
+
+      <FilterPopup
+        visible={showFilterPopup}
+        onClose={() => setShowFilterPopup(false)}
       />
     </SafeAreaView>
   );

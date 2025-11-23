@@ -43,7 +43,7 @@ const SearchAndFilter = ({ onSearch, onFilterPress, searchQuery }) => {
         />
         <TextInput
           style={[styles.searchInput, isRTL && styles.searchInputRTL]}
-          placeholder="ابحث عن أي شيء ..."
+          placeholder="ابحث عن أي شيء..."
           placeholderTextColor="#656565"
           value={searchQuery}
           onChangeText={onSearch}

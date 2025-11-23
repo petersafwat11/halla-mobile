@@ -31,7 +31,14 @@ const DropdownSelector = ({ value, onChange, options, label, isRTL }) => {
   );
 };
 
-const FeatureCard = ({ feature, isEnabled, onToggle, quantity, onQuantityChange, isRTL }) => {
+const FeatureCard = ({
+  feature,
+  isEnabled,
+  onToggle,
+  quantity,
+  onQuantityChange,
+  isRTL,
+}) => {
   const scaleValue = React.useRef(new Animated.Value(1)).current;
 
   const handleToggle = (value) => {
@@ -52,21 +59,13 @@ const FeatureCard = ({ feature, isEnabled, onToggle, quantity, onQuantityChange,
 
   return (
     <Animated.View
-      style={[
-        styles.featureCard,
-        { transform: [{ scale: scaleValue }] },
-      ]}
+      style={[styles.featureCard, { transform: [{ scale: scaleValue }] }]}
     >
       <View style={[styles.featureHeader, isRTL && styles.featureHeaderRTL]}>
-        <Switch
-          value={isEnabled}
-          onValueChange={handleToggle}
-          trackColor={{ false: "#E5E7EA", true: "#d4a574" }}
-          thumbColor="#FFF"
-          ios_backgroundColor="#E5E7EA"
-        />
         <View style={[styles.featureInfo, isRTL && styles.featureInfoRTL]}>
-          <View style={[styles.featureTitleRow, isRTL && styles.featureTitleRowRTL]}>
+          <View
+            style={[styles.featureTitleRow, isRTL && styles.featureTitleRowRTL]}
+          >
             <Text style={[styles.featureTitle, isRTL && styles.textRTL]}>
               {feature.name}
             </Text>
@@ -76,6 +75,14 @@ const FeatureCard = ({ feature, isEnabled, onToggle, quantity, onQuantityChange,
             <Text style={styles.priceLabel}>﷼</Text>
           </View>
         </View>
+
+        <Switch
+          value={isEnabled}
+          onValueChange={handleToggle}
+          trackColor={{ false: "#E5E7EA", true: "#d4a574" }}
+          thumbColor="#FFF"
+          ios_backgroundColor="#E5E7EA"
+        />
       </View>
       <Text style={[styles.featureDescription, isRTL && styles.textRTL]}>
         {feature.description}
@@ -84,10 +91,39 @@ const FeatureCard = ({ feature, isEnabled, onToggle, quantity, onQuantityChange,
   );
 };
 
-const SimpleFeatureCard = ({ feature, isEnabled, onToggle, quantity, onQuantityChange, isRTL }) => {
+const SimpleFeatureCard = ({
+  feature,
+  isEnabled,
+  onToggle,
+  quantity,
+  onQuantityChange,
+  isRTL,
+}) => {
   return (
     <View style={styles.simpleFeatureCard}>
-      <View style={[styles.simpleFeatureHeader, isRTL && styles.simpleFeatureHeaderRTL]}>
+      <View
+        style={[
+          styles.simpleFeatureHeader,
+          isRTL && styles.simpleFeatureHeaderRTL,
+        ]}
+      >
+        <View
+          style={[
+            styles.simpleFeatureInfo,
+            isRTL && styles.simpleFeatureInfoRTL,
+          ]}
+        >
+          <Text style={[styles.simpleFeatureTitle, isRTL && styles.textRTL]}>
+            {feature.name}
+          </Text>
+          <View
+            style={[styles.simplePriceRow, isRTL && styles.simplePriceRowRTL]}
+          >
+            <Text style={styles.simplePrice}>{feature.price}</Text>
+            <Text style={styles.simplePriceUnit}>{feature.unit}</Text>
+            <Text style={styles.simpleQuantity}>{feature.quantity}</Text>
+          </View>
+        </View>
         {feature.hasQuantity && (
           <DropdownSelector
             value={quantity || "20"}
@@ -97,16 +133,6 @@ const SimpleFeatureCard = ({ feature, isEnabled, onToggle, quantity, onQuantityC
             isRTL={isRTL}
           />
         )}
-        <View style={[styles.simpleFeatureInfo, isRTL && styles.simpleFeatureInfoRTL]}>
-          <Text style={[styles.simpleFeatureTitle, isRTL && styles.textRTL]}>
-            {feature.name}
-          </Text>
-          <View style={[styles.simplePriceRow, isRTL && styles.simplePriceRowRTL]}>
-            <Text style={styles.simplePrice}>{feature.price}</Text>
-            <Text style={styles.simplePriceUnit}>{feature.unit}</Text>
-            <Text style={styles.simpleQuantity}>{feature.quantity}</Text>
-          </View>
-        </View>
       </View>
       <Text style={[styles.simpleFeatureDescription, isRTL && styles.textRTL]}>
         {feature.description}
@@ -117,21 +143,21 @@ const SimpleFeatureCard = ({ feature, isEnabled, onToggle, quantity, onQuantityC
 
 const AddionalFeatures = ({ selectedPlan, onConfirm, onBack }) => {
   const { isRTL } = useLanguage();
-  
+
   const [enabledFeatures, setEnabledFeatures] = useState({});
   const [quantities, setQuantities] = useState({});
 
   const toggleFeature = (featureId) => {
-    setEnabledFeatures(prev => ({
+    setEnabledFeatures((prev) => ({
       ...prev,
-      [featureId]: !prev[featureId]
+      [featureId]: !prev[featureId],
     }));
   };
 
   const updateQuantity = (featureId, value) => {
-    setQuantities(prev => ({
+    setQuantities((prev) => ({
       ...prev,
-      [featureId]: value
+      [featureId]: value,
     }));
   };
 
@@ -172,52 +198,54 @@ const AddionalFeatures = ({ selectedPlan, onConfirm, onBack }) => {
     {
       id: "custom_report",
       name: "تقرير مخصص",
-      price: "1 مناسبة/ 75﷼",
+      price: "1 مناسبة/ 75",
       description: "تقرير تفصيلي حسب الحضور، التفاعل، التحليلات",
     },
     {
       id: "multi_qr",
       name: "QR متعدد النقاط (Multi-Entry)",
-      price: "1 مناسبة/ 75﷼",
+      price: "1 مناسبة/ 75",
       description: "تفعيل الدخول عبر عدة بوابات بنفس الـ QR",
     },
     {
       id: "custom_design",
       name: "تصميم دعوة مخصصة",
-      price: "1 مناسبة/ 250﷼",
+      price: "1 مناسبة/ 250",
       description: "إعداد دعوة جديدة كليًا حسب رغبة العميل",
     },
     {
       id: "direct_support",
       name: "دعم فني مباشر",
-      price: "1 مناسبة/ 100﷼",
+      price: "1 مناسبة/ 100",
       description: "أولوية الدعم عبر الهاتف أو واتساب أثناء الحدث",
     },
     {
       id: "advanced_protection",
       name: "حماية متقدمة للدعوة",
-      price: "1 مرة واحدة/ 300﷼",
+      price: "1 مرة واحدة/ 300",
       description: "إضافة كلمات مرور خاصة لبعض الضيوف",
     },
     {
       id: "custom_domain",
       name: "نطاق فرعي مخصص",
-      price: "1 مرة واحدة/ 300﷼",
+      price: "1 مرة واحدة/ 300",
       description: "إعداد نطاق مثل: invite.yourbrand.com",
     },
   ];
 
   const handleConfirm = () => {
     const selectedFeatures = Object.keys(enabledFeatures)
-      .filter(key => enabledFeatures[key])
-      .map(key => {
-        const feature = [...simpleFeatures, ...toggleFeatures].find(f => f.id === key);
+      .filter((key) => enabledFeatures[key])
+      .map((key) => {
+        const feature = [...simpleFeatures, ...toggleFeatures].find(
+          (f) => f.id === key
+        );
         return {
           ...feature,
           quantity: quantities[key] || feature.quantity,
         };
       });
-    
+
     onConfirm(selectedFeatures);
   };
 
@@ -338,6 +366,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     marginBottom: 8,
+    width: "100%",
   },
   simpleFeatureHeaderRTL: {
     flexDirection: "row-reverse",
@@ -372,11 +401,10 @@ const styles = StyleSheet.create({
     color: "#020817",
   },
   simpleFeatureInfo: {
-    flex: 1,
-    alignItems: "flex-end",
+    alignItems: "flex-start",
   },
   simpleFeatureInfoRTL: {
-    alignItems: "flex-start",
+    alignItems: "flex-end",
   },
   simpleFeatureTitle: {
     fontFamily: "Cairo_700Bold",
@@ -421,19 +449,19 @@ const styles = StyleSheet.create({
   },
   featureHeader: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 8,
+    width: "100%",
   },
   featureHeaderRTL: {
     flexDirection: "row-reverse",
   },
   featureInfo: {
-    flex: 1,
-    alignItems: "flex-end",
+    alignItems: "flex-start",
   },
   featureInfoRTL: {
-    alignItems: "flex-start",
+    alignItems: "flex-end",
   },
   featureTitleRow: {
     flexDirection: "row",

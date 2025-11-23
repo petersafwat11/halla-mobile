@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   createButton: {
     flexDirection: "row",
     height: 40,
-    paddingVertical: 16,
+    paddingVertical: 8,
     paddingHorizontal: 8,
     justifyContent: "center",
     alignItems: "center",
