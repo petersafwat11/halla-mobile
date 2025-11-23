@@ -6,25 +6,24 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLanguage } from "../../localization";
 import TextInput from "../commen/TextInput";
 import MobileInput from "../commen/MobileInput";
 
 // Validation schemas
 const guestSchema = z.object({
   name: z.string().min(2, "الاسم يجب أن يكون حرفين على الأقل"),
-  phone: z.string().min(9, "رقم الجوال غير صحيح"),
+  phone: z.string().min(9, "رقم الجوال غير صحيح")
 });
 
 const moderatorSchema = z.object({
   name: z.string().min(2, "الاسم يجب أن يكون حرفين على الأقل"),
-  phone: z.string().min(9, "رقم الجوال غير صحيح"),
+  phone: z.string().min(9, "رقم الجوال غير صحيح")
 });
 
 const AddGuestOrModeratorPopup = ({
@@ -33,9 +32,8 @@ const AddGuestOrModeratorPopup = ({
   onSave,
   type, // "guest" or "moderator"
   initialData = null,
-  loading = false,
+  loading = false
 }) => {
-  const { isRTL } = useLanguage();
   const isGuest = type === "guest";
   const isEdit = !!initialData;
 
@@ -43,13 +41,13 @@ const AddGuestOrModeratorPopup = ({
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
     resolver: zodResolver(isGuest ? guestSchema : moderatorSchema),
     defaultValues: initialData || {
       name: "",
-      phone: "",
-    },
+      phone: ""
+    }
   });
 
   React.useEffect(() => {
@@ -75,10 +73,10 @@ const AddGuestOrModeratorPopup = ({
       onRequestClose={handleClose}
     >
       <View style={styles.overlay}>
-        <View style={[styles.container, isRTL && styles.containerRTL]}>
+        <View style={styles.container}>
           {/* Header */}
-          <View style={[styles.header, isRTL && styles.headerRTL]}>
-            <Text style={[styles.title, isRTL && styles.titleRTL]}>
+          <View style={styles.header}>
+            <Text style={styles.title}>
               {isEdit
                 ? isGuest
                   ? "تعديل ضيف"
@@ -142,7 +140,7 @@ const AddGuestOrModeratorPopup = ({
           </ScrollView>
 
           {/* Footer Buttons */}
-          <View style={[styles.footer, isRTL && styles.footerRTL]}>
+          <View style={styles.footer}>
             <TouchableOpacity
               style={[styles.button, styles.cancelButton]}
               onPress={handleClose}
@@ -157,8 +155,7 @@ const AddGuestOrModeratorPopup = ({
               style={[
                 styles.button,
                 styles.saveButton,
-                loading && styles.saveButtonDisabled,
-              ]}
+                loading && styles.saveButtonDisabled]}
               onPress={handleSubmit(onSubmit)}
               disabled={loading}
             >
@@ -183,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 20
   },
   container: {
     backgroundColor: "#FFF",
@@ -195,77 +192,63 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
-    elevation: 8,
-  },
-  containerRTL: {},
-  header: {
+    elevation: 8
+  },header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
-  },
-  headerRTL: {
-    flexDirection: "row-reverse",
-  },
-  title: {
+    borderBottomColor: "#F0F0F0"
+  },title: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    flex: 1,
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  closeButton: {
+    flex: 1
+  },closeButton: {
     width: 32,
     height: 32,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   content: {
-    flex: 1,
+    flex: 1
   },
   contentContainer: {
-    padding: 20,
+    padding: 20
   },
   footer: {
     flexDirection: "row",
     gap: 12,
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
-  },
-  footerRTL: {
-    flexDirection: "row-reverse",
-  },
-  button: {
+    borderTopColor: "#F0F0F0"
+  },  button: {
     flex: 1,
     height: 48,
     borderRadius: 12,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   cancelButton: {
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F5F5F5"
   },
   saveButton: {
-    backgroundColor: "#C28E5C",
+    backgroundColor: "#C28E5C"
   },
   saveButtonDisabled: {
-    opacity: 0.6,
+    opacity: 0.6
   },
   buttonText: {
     fontSize: 15,
-    fontFamily: "Cairo_600SemiBold",
+    fontFamily: "Cairo_600SemiBold"
   },
   cancelButtonText: {
-    color: "#656565",
+    color: "#656565"
   },
   saveButtonText: {
-    color: "#FFF",
-  },
+    color: "#FFF"
+  }
 });
 
 export default AddGuestOrModeratorPopup;

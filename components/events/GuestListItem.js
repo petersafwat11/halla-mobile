@@ -1,11 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
-
 const GuestListItem = ({ guest, onEdit, onDelete }) => {
-  const { isRTL } = useLanguage();
-
   const getStatusStyle = (status) => {
     switch (status) {
       case "accepted":
@@ -18,7 +14,7 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
         return {
           backgroundColor: "#F5ECE4",
           color: "#8A6541",
-          label: "لم يرد",
+          label: "لم يرد"
         };
     }
   };
@@ -26,19 +22,19 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
   const statusStyle = getStatusStyle(guest.status);
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
+    <View style={styles.container}>
       {/* Header */}
-      <View style={[styles.header, isRTL && styles.headerRTL]}>
+      <View style={styles.header}>
         {/* Guest Info */}
-        <View style={[styles.guestInfo, isRTL && styles.guestInfoRTL]}>
-          <View style={[styles.nameRow, isRTL && styles.nameRowRTL]}>
-            <Text style={[styles.name, isRTL && styles.nameRTL]}>
+        <View style={styles.guestInfo}>
+          <View style={styles.nameRow}>
+            <Text style={styles.name}>
               {guest.name || "احمد كمال سمير"}
             </Text>
           </View>
 
-          <View style={[styles.contactRow, isRTL && styles.contactRowRTL]}>
-            <View style={[styles.contactItem, isRTL && styles.contactItemRTL]}>
+          <View style={styles.contactRow}>
+            <View style={styles.contactItem}>
               <Text style={styles.contactText}>
                 {guest.phone || "966656555"}
               </Text>
@@ -49,7 +45,7 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
           </View>
         </View>
         {/* Actions */}
-        <View style={[styles.actions, isRTL && styles.actionsRTL]}>
+        <View style={styles.actions}>
           <TouchableOpacity
             style={styles.actionButton}
             onPress={() => onDelete?.(guest)}
@@ -72,13 +68,13 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
       </View>
 
       {/* Response */}
-      <View style={[styles.responseCard, isRTL && styles.responseCardRTL]}>
-        <View style={[styles.responseRow, isRTL && styles.responseRowRTL]}>
-          <Text style={[styles.responseDate, isRTL && styles.responseDateRTL]}>
+      <View style={styles.responseCard}>
+        <View style={styles.responseRow}>
+          <Text style={styles.responseDate}>
             {guest.responseDate || "الثلاثاء  12 مايو | 12:50م"}
           </Text>
           <Text
-            style={[styles.responseLabel, isRTL && styles.responseLabelRTL]}
+            style={styles.responseLabel}
           >
             حالة الردود
           </Text>
@@ -87,8 +83,7 @@ const GuestListItem = ({ guest, onEdit, onDelete }) => {
         <View
           style={[
             styles.statusBadge,
-            { backgroundColor: statusStyle.backgroundColor },
-          ]}
+            { backgroundColor: statusStyle.backgroundColor }]}
         >
           <Text style={[styles.statusText, { color: statusStyle.color }]}>
             {statusStyle.label}
@@ -115,32 +110,22 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
-  },
-  containerRTL: {},
-  header: {
+    elevation: 2
+  },header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-  headerRTL: {
-    flexDirection: "row-reverse",
-  },
-  actions: {
+    alignItems: "flex-start"
+  },actions: {
     flexDirection: "row",
-    gap: 8,
-  },
-  actionsRTL: {
-    flexDirection: "row-reverse",
-  },
-  actionButton: {},
+    gap: 8
+  },  actionButton: {},
   deleteButton: {
     width: 32,
     height: 32,
     borderRadius: 9999,
     backgroundColor: "#F9EBEA",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   editButton: {
     width: 32,
@@ -148,63 +133,47 @@ const styles = StyleSheet.create({
     borderRadius: 9999,
     backgroundColor: "#F5ECE4",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   guestInfo: {
     flex: 1,
     alignItems: "flex-end",
-    gap: 8,
-  },
-  guestInfoRTL: {},
-  nameRow: {
+    gap: 8
+  },  nameRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    gap: 12,
-  },
-  nameRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  name: {
+    gap: 12
+  },  name: {
     fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    lineHeight: 20,
-  },
-  nameRTL: {
-    textAlign: "right",
-  },
-  contactRow: {
+    lineHeight: 20
+  },  contactRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "flex-start",
-    gap: 8,
-  },
-  contactRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  contactItem: {
+    gap: 8
+  },  contactItem: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "flex-start",
-    gap: 4,
-  },
-  contactItemRTL: {},
-  contactText: {
+    gap: 4
+  },  contactText: {
     fontSize: 12,
     fontFamily: "Cairo_500Medium",
     color: "#656565",
-    lineHeight: 16,
+    lineHeight: 16
   },
   separator: {
     height: 17,
-    alignItems: "center",
+    alignItems: "center"
   },
   separatorText: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
     color: "#656565",
-    lineHeight: 20,
+    lineHeight: 20
   },
   responseCard: {
     backgroundColor: "#FDFDFD",
@@ -212,63 +181,41 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     borderColor: "#F5ECE4",
-    gap: 4,
-  },
-  responseCardRTL: {},
-  responseRow: {
+    gap: 4
+  },  responseRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-  },
-  responseRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  responseDate: {
+    alignItems: "center"
+  },  responseDate: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    lineHeight: 16,
-  },
-  responseDateRTL: {
-    textAlign: "left",
-  },
-  responseLabel: {
+    lineHeight: 16
+  },  responseLabel: {
     fontSize: 12,
     fontFamily: "Cairo_500Medium",
     color: "#656565",
-    lineHeight: 16,
-  },
-  responseLabelRTL: {
-    textAlign: "right",
-  },
-  messageRow: {
+    lineHeight: 16
+  },  messageRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-  },
-  messageRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  message: {
+    gap: 8
+  },  message: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
-  },
-  messageRTL: {
-    textAlign: "right",
-  },
-  statusBadge: {
+    lineHeight: 16
+  },  statusBadge: {
     paddingHorizontal: 11,
     paddingVertical: 3,
     borderRadius: 9999,
-    alignSelf: "flex-start",
+    alignSelf: "flex-start"
   },
   statusText: {
     fontSize: 12,
     fontFamily: "Cairo_500Medium",
-    lineHeight: 16,
-  },
+    lineHeight: 16
+  }
 });
 
 export default GuestListItem;

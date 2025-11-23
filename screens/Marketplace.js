@@ -28,8 +28,7 @@ const MOCK_VENDORS = [
       "حقوق الطباعة متضمنة",
       "خيارات التصوير الفوتوغرافي بالطائرات بدون طيار",
       "ألبوم صور رقمي",
-      "تغطية ليوم كامل",
-    ],
+      "تغطية ليوم كامل"],
     companyName: "التهامى للتصوير والموسيقى",
     experience: "10",
     website: "www.smitchellphoto.com",
@@ -53,8 +52,7 @@ const MOCK_VENDORS = [
       "حقوق الطباعة متضمنة",
       "خيارات التصوير الفوتوغرافي بالطائرات بدون طيار",
       "ألب��م صور رقمي",
-      "تغطية ليوم كامل",
-    ],
+      "تغطية ليوم كامل"],
     companyName: "التهامى للتصوير والموسيقى",
     experience: "10",
     website: "www.smitchellphoto.com",
@@ -78,15 +76,13 @@ const MOCK_VENDORS = [
       "حقوق الطباعة متضمنة",
       "خيارات التصوير الفوتوغرافي بالطائرات بدون طيار",
       "ألبوم صور رقمي",
-      "تغطية ليوم كامل",
-    ],
+      "تغطية ليوم كامل"],
     companyName: "التهامى للتصوير والموسيقى",
     experience: "10",
     website: "www.smitchellphoto.com",
     email: "sarah@smitchellphoto.com",
     phone: "+1 (555) 123-4567",
-  },
-];
+  }];
 
 const Marketplace = ({ navigation }) => {
   const [vendors, setVendors] = useState(MOCK_VENDORS);

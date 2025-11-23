@@ -266,12 +266,27 @@ export const validateStepData = (stepNumber, formData) => {
   switch (stepNumber) {
     case 1:
       // Event Details
+      const hasValidEventTime =
+        formData.eventTime &&
+        typeof formData.eventTime === "string" &&
+        formData.eventTime.trim() !== "";
+
+      const hasValidEventName =
+        formData.eventName &&
+        typeof formData.eventName === "string" &&
+        formData.eventName.trim() !== "";
+
+      const hasValidAddress =
+        formData.address?.address &&
+        typeof formData.address.address === "string" &&
+        formData.address.address.trim() !== "";
+
       return !!(
         formData.eventType &&
-        formData.eventName &&
+        hasValidEventName &&
         formData.eventDate &&
-        formData.eventTime &&
-        formData.address?.address
+        hasValidEventTime &&
+        hasValidAddress
       );
 
     case 2:
@@ -421,7 +436,7 @@ export const getDefaultFormValues = () => ({
   eventType: "",
   eventName: "",
   eventDate: null,
-  eventTime: "12:00 PM",
+  eventTime: "",
   address: {
     address: "",
     latitude: 24.7136,

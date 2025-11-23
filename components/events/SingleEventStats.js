@@ -5,16 +5,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
+  Alert
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
 import { useAuthStore } from "../../stores/authStore";
 import {
   addGuest,
   addSupervisor,
   updateSupervisor,
-  deleteSupervisor,
+  deleteSupervisor
 } from "../../services/eventsService2";
 import StatsCards from "./StatsCards";
 import TabsSearchAndFilters from "./TabsSearchAndFilters";
@@ -24,7 +23,6 @@ import ModeratorListItem from "./ModeratorListItem";
 import AddGuestOrModeratorPopup from "./AddGuestOrmoderatorPopup";
 
 const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
-  const { isRTL } = useLanguage();
   const { token } = useAuthStore();
   const [activeTab, setActiveTab] = useState("guests");
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,7 +39,7 @@ const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
       day: "numeric",
       month: "long",
       hour: "2-digit",
-      minute: "2-digit",
+      minute: "2-digit"
     });
   };
 
@@ -53,14 +51,14 @@ const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
     email: guest.email || "not provided",
     status: guest.status === "confirmed" ? "accepted" : guest.status,
     responseDate: formatResponseDate(guest.respondAt),
-    addedBy: guest.addedBy,
+    addedBy: guest.addedBy
   }));
 
   // Format moderators from backend data
   const moderators = (stats?.supervisors || []).map((supervisor) => ({
     id: supervisor._id || supervisor.id,
     name: supervisor.name || "مشرف",
-    phone: supervisor.phone || "",
+    phone: supervisor.phone || ""
   }));
 
   // Use stats from backend
@@ -68,7 +66,7 @@ const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
     accepted: stats?.confirmed || 0,
     declined: stats?.declined || 0,
     maybe: stats?.maybe || 0,
-    pending: stats?.noResponse || 0,
+    pending: stats?.noResponse || 0
   };
 
   const handleTabChange = (tab) => {
@@ -162,7 +160,7 @@ const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
         <View style={styles.statsCard}>
           <View style={styles.statsCardHeader}>
             <Text
-              style={[styles.statsCardTitle, isRTL && styles.statsCardTitleRTL]}
+              style={styles.statsCardTitle}
             >
               متابعة الحضور
             </Text>
@@ -192,7 +190,7 @@ const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
                 : {
                     moderator: item,
                     onEdit: handleModeratorEdit,
-                    onDelete: handleModeratorDelete,
+                    onDelete: handleModeratorDelete
                   })}
               index={index}
             />
@@ -227,7 +225,7 @@ const SingleEventStats = ({ event, stats, onBack, onRefresh }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9F4EF",
+    backgroundColor: "#F9F4EF"
   },
   header: {
     backgroundColor: "#C28E5C",
@@ -236,36 +234,28 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerRTL: {
-    flexDirection: "row-reverse",
-  },
-  backButton: {
+    alignItems: "center"
+  },backButton: {
     width: 24,
     height: 24,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   headerTitle: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#FFF",
     textAlign: "center",
-    flex: 1,
-  },
-  headerTitleRTL: {
-    textAlign: "center",
-  },
-  actionButton: {
+    flex: 1
+  },  actionButton: {
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   actionButtonText: {
     fontSize: 12,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
-    lineHeight: 16,
+    lineHeight: 16
   },
   reminderButton: {
     backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -273,16 +263,16 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 6,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   reminderButtonText: {
     fontSize: 12,
     fontFamily: "Cairo_600SemiBold",
-    color: "#FFF",
+    color: "#FFF"
   },
   statsContainer: {
     paddingVertical: 24,
-    paddingHorizontal: 12,
+    paddingHorizontal: 12
   },
   statsCard: {
     backgroundColor: "#FFF",
@@ -291,26 +281,22 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 3
   },
   statsCardHeader: {
     padding: 8,
     borderBottomWidth: 1,
     borderBottomColor: "#F2F2F2",
     borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    borderTopRightRadius: 12
   },
   statsCardTitle: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
-    textAlign: "right",
-  },
-  statsCardTitleRTL: {
-    textAlign: "right",
-  },
-  listContainer: {
+    textAlign: "right"
+  },  listContainer: {
     flex: 1,
     backgroundColor: "#FFF",
     borderTopLeftRadius: 12,
@@ -320,13 +306,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
-    marginHorizontal: 12,
+    marginHorizontal: 12
   },
   list: {
-    flex: 1,
+    flex: 1
   },
   listContent: {
-    padding: 12,
+    padding: 12
   },
   floatingButton: {
     position: "absolute",
@@ -336,7 +322,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-    elevation: 8,
+    elevation: 8
   },
   floatingButtonInner: {
     width: 60,
@@ -344,8 +330,8 @@ const styles = StyleSheet.create({
     borderRadius: 105,
     backgroundColor: "#C28E5C",
     justifyContent: "center",
-    alignItems: "center",
-  },
+    alignItems: "center"
+  }
 });
 
 export default SingleEventStats;

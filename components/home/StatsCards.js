@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useLanguage } from "../../localization";
 import { Svg, Path } from "react-native-svg";
 
 const CalendarIcon = ({ color }) => (
@@ -232,8 +231,6 @@ const CalendarRemoveIcon = ({ color }) => (
 );
 
 const StatsCards = ({ totalEvents = 2, activeEvents = 2, endedEvents = 2 }) => {
-  const { isRTL } = useLanguage();
-
   const cards = [
     {
       label: "الكل",
@@ -252,11 +249,10 @@ const StatsCards = ({ totalEvents = 2, activeEvents = 2, endedEvents = 2 }) => {
       value: endedEvents,
       icon: <CalendarRemoveIcon color="#C0392B" />,
       bgColor: "#F9EBEA",
-    },
-  ];
+    }];
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
+    <View style={styles.container}>
       {cards.map((card, index) => (
         <View
           key={index}
@@ -277,11 +273,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 16,
     paddingHorizontal: 24,
-  },
-  containerRTL: {
-    flexDirection: "row-reverse",
-  },
-  card: {
+  },card: {
     flex: 1,
     padding: 12,
     flexDirection: "column",

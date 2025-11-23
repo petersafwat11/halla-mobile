@@ -5,14 +5,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Animated,
+  Animated
 } from "react-native";
-import { useFormContext, Controller } from "react-hook-form";
-import { useLanguage } from "../../localization";
+import { useFormContext } from "react-hook-form";
 import EventTemplates from "../home/EventTemplates";
 import TextInput from "../commen/TextInput";
 import TextAreaInput from "../commen/TextAreaInput";
-import ColorPicker from "../commen/ColorPicker";
+import ColorPicker from "../commen/colorPicker";
 import DropdownInput from "../commen/DropdownInput";
 import PreviewInvitation from "./PreviewInvitation";
 import Svg, { Path } from "react-native-svg";
@@ -119,14 +118,13 @@ const FONT_OPTIONS = [
   { label: "Roboto", value: "Roboto" },
   { label: "IBM Plex Sans Arabic", value: "IBM Plex Sans Arabic" },
   { label: "Noto Sans Arabic", value: "Noto Sans Arabic" },
-  { label: "Amiri", value: "Amiri" },
-];
+  { label: "Amiri", value: "Amiri" }];
 
 const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
-  const { isRTL } = useLanguage();
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [showPreview, setShowPreview] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 
   const formData = watch();
   const eventDate = formData.eventDate;
@@ -137,7 +135,7 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   }, []);
 
@@ -156,8 +154,7 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
       "سبتمبر",
       "أكتوبر",
       "نوفمبر",
-      "ديسمبر",
-    ];
+      "ديسمبر"];
     return `${d.getDate()} ${
       arabicMonths[d.getMonth()]
     } ${d.getFullYear()} , ${eventTime}`;
@@ -165,6 +162,18 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
 
   const handlePreview = () => {
     setShowPreview(true);
+  };
+
+  const handleTemplateSelect = (template) => {
+    setSelectedTemplateId(template.id);
+    // Store template data in form
+    setValue("selectedTemplate", template, { shouldValidate: true });
+    setValue("templateImage", template.image, { shouldValidate: true });
+
+    // Call parent callback if provided
+    if (onSelectTemplate) {
+      onSelectTemplate(template);
+    }
   };
 
   return (
@@ -175,105 +184,60 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
       >
         {/* Template Selection Section */}
         <View style={styles.templateSection}>
-          <EventTemplates />
+          <EventTemplates
+            onSelectTemplate={handleTemplateSelect}
+            selectedTemplateId={selectedTemplateId}
+          />
         </View>
 
         {/* Form Title */}
-        <Text style={[styles.formTitle, isRTL && styles.formTitleRTL]}>
+        <Text style={styles.formTitle}>
           تصميم قالب الدعوة
         </Text>
 
         {/* Form Fields */}
         <View style={styles.formContainer}>
           {/* Introduction/Opening */}
-          <Controller
-            control={control}
+          <TextAreaInput
             name="templateIntroduction"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <TextAreaInput
-                label="مقدمة"
-                placeholder="ادخل نص الرسالة"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={error?.message}
-                numberOfLines={4}
-                maxLength={500}
-              />
-            )}
+            label="مقدمة"
+            placeholder="ادخل نص الرسالة"
+            numberOfLines={4}
+            maxLength={500}
           />
 
           {/* Bride's Name */}
-          <Controller
-            control={control}
+          <TextInput
             name="templateBrideName"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <TextInput
-                label="اسم العروسة"
-                placeholder="ادخل اسم العروسة"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={error?.message}
-              />
-            )}
+            label="اسم العروسة"
+            placeholder="ادخل اسم العروسة"
           />
 
           {/* Groom's Name */}
-          <Controller
-            control={control}
+          <TextInput
             name="templateGroomName"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <TextInput
-                label="اسم العريس"
-                placeholder="ادخل اسم العريس"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={error?.message}
-              />
-            )}
+            label="اسم العريس"
+            placeholder="ادخل اسم العريس"
           />
 
           {/* Message to Guests */}
-          <Controller
-            control={control}
+          <TextInput
             name="templateGuestMessage"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <TextInput
-                label="رساله للضيوف"
-                placeholder="ادخل نص الرسالة"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={error?.message}
-              />
-            )}
+            label="رساله للضيوف"
+            placeholder="ادخل نص الرسالة"
           />
 
           {/* Event Timing (Read-only from Step 1) */}
           <View style={styles.inputGroup}>
-            <Text style={[styles.label, isRTL && styles.labelRTL]}>
+            <Text style={styles.label}>
               توقيت المناسبة
             </Text>
             <View
-              style={[styles.readOnlyInput, isRTL && styles.readOnlyInputRTL]}
+              style={styles.readOnlyInput}
             >
               <CalendarIcon />
               <Text
-                style={[styles.readOnlyText, isRTL && styles.readOnlyTextRTL]}
+                style={styles.readOnlyText}
               >
                 {formatDate(eventDate) || "22 مايو 2025 , 11:38 م"}
               </Text>
@@ -282,19 +246,17 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
 
           {/* Event Location (Read-only from Step 1) */}
           <View style={styles.inputGroup}>
-            <Text style={[styles.label, isRTL && styles.labelRTL]}>
+            <Text style={styles.label}>
               عنوان الحفل
             </Text>
             <View
-              style={[styles.readOnlyInput, isRTL && styles.readOnlyInputRTL]}
+              style={styles.readOnlyInput}
             >
               <LocationIcon />
               <Text
                 style={[
                   styles.readOnlyText,
-                  isRTL && styles.readOnlyTextRTL,
-                  !location && styles.placeholderText,
-                ]}
+                  !location && styles.placeholderText]}
               >
                 {location || "ادخل عنوان الحفل"}
               </Text>
@@ -302,54 +264,26 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
           </View>
 
           {/* Closing Message */}
-          <Controller
-            control={control}
+          <TextInput
             name="templateClosingMessage"
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
-              <TextInput
-                label="رسالة ختامية"
-                placeholder="ادخل نص الرسالة"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                error={error?.message}
-              />
-            )}
+            label="رسالة ختامية"
+            placeholder="ادخل نص الرسالة"
           />
 
           {/* Primary Color */}
-          <Controller
-            control={control}
+          <ColorPicker
             name="templatePrimaryColor"
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <ColorPicker
-                label="اللون الأساسي"
-                placeholder="اختر اللون الأساسى"
-                value={value}
-                onColorSelect={onChange}
-                error={error?.message}
-              />
-            )}
+            label="اللون الأساسي"
+            placeholder="اختر اللون الأساسى"
           />
 
           {/* Font Name */}
-          <Controller
-            control={control}
+          <DropdownInput
             name="templateFont"
-            render={({ field: { onChange, value }, fieldState: { error } }) => (
-              <DropdownInput
-                label="الخط المطلوب"
-                placeholder="مثل: inter, cairo"
-                value={value}
-                onSelect={(option) => onChange(option.value)}
-                options={FONT_OPTIONS}
-                error={error?.message}
-                modalTitle="اختر الخط"
-              />
-            )}
+            label="الخط المطلوب"
+            placeholder="مثل: inter, cairo"
+            options={FONT_OPTIONS}
+            modalTitle="اختر الخط"
           />
 
           {/* Preview Button */}
@@ -374,7 +308,7 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
         templateImage={formData.templateImage}
         templateData={{
           brideName: formData.templateBrideName,
-          groomName: formData.templateGroomName,
+          groomName: formData.templateGroomName
         }}
         eventDate={eventDate}
         eventTime={eventTime}
@@ -386,13 +320,13 @@ const StepThree = ({ selectedTemplate, onSelectTemplate }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   scrollContent: {
-    paddingBottom: 24,
+    paddingBottom: 24
   },
   templateSection: {
-    marginBottom: 24,
+    marginBottom: 24
   },
   formTitle: {
     fontSize: 16,
@@ -400,30 +334,20 @@ const styles = StyleSheet.create({
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.08,
-    marginBottom: 16,
-    textAlign: "left",
-  },
-  formTitleRTL: {
-    textAlign: "right",
-  },
-  formContainer: {
-    gap: 0,
+    marginBottom: 16
+    },  formContainer: {
+    gap: 0
   },
   inputGroup: {
-    marginBottom: 16,
+    marginBottom: 16
   },
   label: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
     color: "#2C2C2C",
     marginBottom: 8,
-    paddingHorizontal: 8,
-    textAlign: "left",
-  },
-  labelRTL: {
-    textAlign: "right",
-  },
-  readOnlyInput: {
+    paddingHorizontal: 8
+    },readOnlyInput: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 12,
@@ -437,25 +361,17 @@ const styles = StyleSheet.create({
     borderColor: "#DFDFDF",
     backgroundColor: "#FFF",
     minHeight: 48,
-    gap: 12,
-  },
-  readOnlyInputRTL: {
-    flexDirection: "row-reverse",
-  },
-  readOnlyText: {
+    gap: 12
+  },  readOnlyText: {
     flex: 1,
     fontSize: 16,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.08,
-    textAlign: "right",
-  },
-  readOnlyTextRTL: {
-    textAlign: "right",
-  },
-  placeholderText: {
-    color: "#767676",
+    textAlign: "right"
+  },  placeholderText: {
+    color: "#767676"
   },
   previewButton: {
     marginTop: 8,
@@ -469,15 +385,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 3
   },
   previewButtonText: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
     lineHeight: 24,
-    letterSpacing: 0.08,
-  },
+    letterSpacing: 0.08
+  }
 });
 
 export default StepThree;

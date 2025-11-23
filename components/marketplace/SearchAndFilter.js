@@ -5,13 +5,10 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Animated,
+  Animated
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
-
 const SearchAndFilter = ({ onSearch, onFilterPress, searchQuery }) => {
-  const { isRTL } = useLanguage();
   const [isFocused, setIsFocused] = useState(false);
   const scaleAnim = React.useRef(new Animated.Value(1)).current;
 
@@ -20,19 +17,18 @@ const SearchAndFilter = ({ onSearch, onFilterPress, searchQuery }) => {
       Animated.timing(scaleAnim, {
         toValue: 0.95,
         duration: 100,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(scaleAnim, {
         toValue: 1,
         duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
+        useNativeDriver: true
+      })]).start();
     onFilterPress && onFilterPress();
   };
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
+    <View style={styles.container}>
       {/* Search Input */}
       <View style={[styles.searchContainer, isFocused && styles.searchFocused]}>
         <Ionicons
@@ -42,7 +38,7 @@ const SearchAndFilter = ({ onSearch, onFilterPress, searchQuery }) => {
           style={styles.searchIcon}
         />
         <TextInput
-          style={[styles.searchInput, isRTL && styles.searchInputRTL]}
+          style={styles.searchInput}
           placeholder="ابحث عن أي شيء..."
           placeholderTextColor="#656565"
           value={searchQuery}
@@ -59,7 +55,7 @@ const SearchAndFilter = ({ onSearch, onFilterPress, searchQuery }) => {
           onPress={handleFilterPress}
           activeOpacity={0.8}
         >
-          <Text style={[styles.filterText, isRTL && styles.filterTextRTL]}>
+          <Text style={styles.filterText}>
             تصفية
           </Text>
         </TouchableOpacity>
@@ -74,12 +70,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     paddingHorizontal: 24,
-    paddingVertical: 10,
-  },
-  containerRTL: {
-    flexDirection: "row-reverse",
-  },
-  searchContainer: {
+    paddingVertical: 10
+  },searchContainer: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
@@ -89,24 +81,20 @@ const styles = StyleSheet.create({
     borderColor: "#F2F2F2",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    height: 48,
+    height: 48
   },
   searchFocused: {
-    borderColor: "#C28E5C",
+    borderColor: "#C28E5C"
   },
   searchIcon: {
-    marginRight: 8,
+    marginRight: 8
   },
   searchInput: {
     flex: 1,
     fontFamily: "Cairo_400Regular",
     fontSize: 16,
-    color: "#2C2C2C",
-  },
-  searchInputRTL: {
-    textAlign: "right",
-  },
-  filterButton: {
+    color: "#2C2C2C"
+  },  filterButton: {
     backgroundColor: "#FFF",
     borderRadius: 12,
     borderWidth: 1,
@@ -115,16 +103,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     height: 48,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   filterText: {
     fontFamily: "Cairo_400Regular",
     fontSize: 14,
-    color: "#656565",
-  },
-  filterTextRTL: {
-    textAlign: "right",
-  },
-});
+    color: "#656565"
+  },});
 
 export default SearchAndFilter;

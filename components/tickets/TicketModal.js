@@ -9,7 +9,7 @@ import {
   ScrollView,
   Animated,
   KeyboardAvoidingView,
-  Platform,
+  Platform
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
@@ -18,7 +18,6 @@ import { ticketSchema } from "../../utils/schemas/ticketSchema";
 import { useLanguage, useTranslation } from "../../localization";
 
 const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
-  const { isRTL } = useLanguage();
   const { t } = useTranslation("tickets");
 
   const slideAnim = React.useRef(new Animated.Value(300)).current;
@@ -31,13 +30,13 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    watch
   } = useForm({
     resolver: zodResolver(ticketSchema),
     defaultValues: initialData || {
       type: "",
-      message: "",
-    },
+      message: ""
+    }
   });
 
   const selectedType = watch("type");
@@ -48,27 +47,25 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 300,
-          useNativeDriver: true,
+          useNativeDriver: true
         }),
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
+          useNativeDriver: true
+        })]).start();
     } else {
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: 300,
           duration: 250,
-          useNativeDriver: true,
+          useNativeDriver: true
         }),
         Animated.timing(fadeAnim, {
           toValue: 0,
           duration: 250,
-          useNativeDriver: true,
-        }),
-      ]).start();
+          useNativeDriver: true
+        })]).start();
     }
   }, [visible]);
 
@@ -100,13 +97,11 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
         <Animated.View
           style={[
             styles.modalContainer,
-            isRTL && styles.modalContainerRTL,
-            { transform: [{ translateY: slideAnim }] },
-          ]}
+            { transform: [{ translateY: slideAnim }] }]}
         >
           {/* Header */}
-          <View style={[styles.header, isRTL && styles.headerRTL]}>
-            <Text style={[styles.title, isRTL && styles.titleRTL]}>
+          <View style={styles.header}>
+            <Text style={styles.title}>
               {initialData ? t("form.editTitle") : t("form.title")}
             </Text>
             <TouchableOpacity
@@ -126,7 +121,7 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
           >
             {/* Type Selection */}
             <View style={styles.section}>
-              <Text style={[styles.label, isRTL && styles.labelRTL]}>
+              <Text style={styles.label}>
                 {t("form.typeLabel")}
               </Text>
               <Controller
@@ -135,27 +130,21 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
                 render={({ field: { onChange, value } }) => (
                   <View
                     style={[
-                      styles.typesContainer,
-                      isRTL && styles.typesContainerRTL,
-                    ]}
+                      styles.typesContainer]}
                   >
                     {ticketTypes.map((type) => (
                       <TouchableOpacity
                         key={type}
                         style={[
                           styles.typeButton,
-                          value === type && styles.typeButtonActive,
-                          isRTL && styles.typeButtonRTL,
-                        ]}
+                          value === type && styles.typeButtonActive]}
                         onPress={() => onChange(type)}
                         activeOpacity={0.7}
                       >
                         <Text
                           style={[
                             styles.typeButtonText,
-                            value === type && styles.typeButtonTextActive,
-                            isRTL && styles.typeButtonTextRTL,
-                          ]}
+                            value === type && styles.typeButtonTextActive]}
                         >
                           {t(`types.${type}`)}
                         </Text>
@@ -165,7 +154,7 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
                 )}
               />
               {errors.type && (
-                <Text style={[styles.errorText, isRTL && styles.errorTextRTL]}>
+                <Text style={styles.errorText}>
                   {t(errors.type.message)}
                 </Text>
               )}
@@ -173,7 +162,7 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
 
             {/* Message Input */}
             <View style={styles.section}>
-              <Text style={[styles.label, isRTL && styles.labelRTL]}>
+              <Text style={styles.label}>
                 {t("form.messageLabel")}
               </Text>
               <Controller
@@ -183,9 +172,7 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
                   <TextInput
                     style={[
                       styles.textArea,
-                      isRTL && styles.textAreaRTL,
-                      errors.message && styles.textAreaError,
-                    ]}
+                      errors.message && styles.textAreaError]}
                     placeholder={t("form.messagePlaceholder")}
                     placeholderTextColor="#999"
                     value={value}
@@ -198,7 +185,7 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
                 )}
               />
               {errors.message && (
-                <Text style={[styles.errorText, isRTL && styles.errorTextRTL]}>
+                <Text style={styles.errorText}>
                   {t(errors.message.message)}
                 </Text>
               )}
@@ -206,9 +193,9 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
           </ScrollView>
 
           {/* Actions */}
-          <View style={[styles.actions, isRTL && styles.actionsRTL]}>
+          <View style={styles.actions}>
             <TouchableOpacity
-              style={[styles.cancelButton, isRTL && styles.cancelButtonRTL]}
+              style={styles.cancelButton}
               onPress={handleClose}
               disabled={loading}
               activeOpacity={0.7}
@@ -219,9 +206,7 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
             <TouchableOpacity
               style={[
                 styles.submitButton,
-                isRTL && styles.submitButtonRTL,
-                loading && styles.submitButtonDisabled,
-              ]}
+                loading && styles.submitButtonDisabled]}
               onPress={handleSubmit(handleFormSubmit)}
               disabled={loading}
               activeOpacity={0.7}
@@ -246,100 +231,72 @@ const TicketModal = ({ visible, onClose, onSubmit, initialData, loading }) => {
 const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: "flex-end"
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)"
   },
   modalContainer: {
     backgroundColor: "#fff",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: "90%",
-    paddingBottom: 20,
-  },
-  modalContainerRTL: {
-    // No specific RTL style needed
-  },
-  header: {
+    paddingBottom: 20
+  },  header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
-  },
-  headerRTL: {
-    flexDirection: "row-reverse",
-  },
-  title: {
+    borderBottomColor: "#f0f0f0"
+  },title: {
     fontSize: 20,
     fontFamily: "Cairo_700Bold",
     color: "#2c2c2c",
-    flex: 1,
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  closeButton: {
+    flex: 1
+  },closeButton: {
     width: 40,
     height: 40,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   body: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 20
   },
   section: {
-    marginBottom: 24,
+    marginBottom: 24
   },
   label: {
     fontSize: 15,
     fontFamily: "Cairo_600SemiBold",
     color: "#2c2c2c",
-    marginBottom: 12,
-  },
-  labelRTL: {
-    textAlign: "right",
-  },
-  typesContainer: {
+    marginBottom: 12
+  },typesContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 8,
-  },
-  typesContainerRTL: {
-    flexDirection: "row-reverse",
-  },
-  typeButton: {
+    gap: 8
+  },  typeButton: {
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#e0e0e0",
-    backgroundColor: "#fff",
+    backgroundColor: "#fff"
   },
   typeButtonActive: {
     backgroundColor: "#c28e5c",
-    borderColor: "#c28e5c",
-  },
-  typeButtonRTL: {
-    // No specific RTL style needed
-  },
-  typeButtonText: {
+    borderColor: "#c28e5c"
+  },  typeButtonText: {
     fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
-    color: "#666",
+    color: "#666"
   },
   typeButtonTextActive: {
-    color: "#fff",
-  },
-  typeButtonTextRTL: {
-    textAlign: "right",
-  },
-  textArea: {
+    color: "#fff"
+  },  textArea: {
     borderWidth: 1,
     borderColor: "#e0e0e0",
     borderRadius: 12,
@@ -347,65 +304,45 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Cairo_400Regular",
     color: "#2c2c2c",
-    minHeight: 120,
-  },
-  textAreaRTL: {
-    textAlign: "right",
-  },
-  textAreaError: {
-    borderColor: "#e74c3c",
+    minHeight: 120
+  },  textAreaError: {
+    borderColor: "#e74c3c"
   },
   errorText: {
     fontSize: 13,
     fontFamily: "Cairo_400Regular",
     color: "#e74c3c",
-    marginTop: 4,
-  },
-  errorTextRTL: {
-    textAlign: "right",
-  },
-  actions: {
+    marginTop: 4
+  },actions: {
     flexDirection: "row",
     paddingHorizontal: 20,
-    gap: 12,
-  },
-  actionsRTL: {
-    flexDirection: "row-reverse",
-  },
-  cancelButton: {
+    gap: 12
+  },  cancelButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#c28e5c",
-    alignItems: "center",
-  },
-  cancelButtonRTL: {
-    // No specific RTL style needed
-  },
-  cancelButtonText: {
+    alignItems: "center"
+  },  cancelButtonText: {
     fontSize: 15,
     fontFamily: "Cairo_600SemiBold",
-    color: "#c28e5c",
+    color: "#c28e5c"
   },
   submitButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 12,
     backgroundColor: "#c28e5c",
-    alignItems: "center",
-  },
-  submitButtonRTL: {
-    // No specific RTL style needed
-  },
-  submitButtonDisabled: {
-    backgroundColor: "#e0e0e0",
+    alignItems: "center"
+  },  submitButtonDisabled: {
+    backgroundColor: "#e0e0e0"
   },
   submitButtonText: {
     fontSize: 15,
     fontFamily: "Cairo_600SemiBold",
-    color: "#fff",
-  },
+    color: "#fff"
+  }
 });
 
 export default TicketModal;

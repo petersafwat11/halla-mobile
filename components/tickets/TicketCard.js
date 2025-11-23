@@ -4,13 +4,12 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
+  Animated
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLanguage, useTranslation } from "../../localization";
 
 const TicketCard = ({ ticket, onDelete, onEdit, index }) => {
-  const { isRTL } = useLanguage();
   const { t } = useTranslation("tickets");
 
   const scaleAnim = React.useRef(new Animated.Value(0)).current;
@@ -21,7 +20,7 @@ const TicketCard = ({ ticket, onDelete, onEdit, index }) => {
       delay: index * 100,
       tension: 50,
       friction: 7,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   }, []);
 
@@ -57,28 +56,24 @@ const TicketCard = ({ ticket, onDelete, onEdit, index }) => {
     <Animated.View
       style={[
         styles.container,
-        isRTL && styles.containerRTL,
-        { transform: [{ scale: scaleAnim }] },
-      ]}
+        { transform: [{ scale: scaleAnim }] }]}
     >
       {/* Top Section: Status and Actions */}
-      <View style={[styles.top, isRTL && styles.topRTL]}>
+      <View style={styles.top}>
         <View
           style={[
             styles.statusBadge,
-            { backgroundColor: `${statusColor}20` },
-            isRTL && styles.statusBadgeRTL,
-          ]}
+            { backgroundColor: `${statusColor}20` }]}
         >
           <Text style={[styles.statusText, { color: statusColor }]}>
             {t(`status.${ticket.status}`)}
           </Text>
         </View>
 
-        <View style={[styles.actions, isRTL && styles.actionsRTL]}>
+        <View style={styles.actions}>
           {ticket.status === "pending" && (
             <TouchableOpacity
-              style={[styles.actionButton, isRTL && styles.actionButtonRTL]}
+              style={styles.actionButton}
               onPress={() => onEdit(ticket)}
               activeOpacity={0.7}
             >
@@ -90,7 +85,7 @@ const TicketCard = ({ ticket, onDelete, onEdit, index }) => {
           )}
 
           <TouchableOpacity
-            style={[styles.actionButton, isRTL && styles.actionButtonRTL]}
+            style={styles.actionButton}
             onPress={() => onDelete(ticket._id)}
             activeOpacity={0.7}
           >
@@ -103,22 +98,22 @@ const TicketCard = ({ ticket, onDelete, onEdit, index }) => {
       </View>
 
       {/* Type */}
-      <Text style={[styles.type, isRTL && styles.typeRTL]}>
+      <Text style={styles.type}>
         {t(`types.${ticket.type}`)}
       </Text>
 
       {/* Bottom Section: Date and Message */}
-      <View style={[styles.bottom, isRTL && styles.bottomRTL]}>
-        <View style={[styles.dateContainer, isRTL && styles.dateContainerRTL]}>
-          <Text style={[styles.createdLabel, isRTL && styles.createdLabelRTL]}>
+      <View style={styles.bottom}>
+        <View style={styles.dateContainer}>
+          <Text style={styles.createdLabel}>
             {t("card.created")}
           </Text>
-          <Text style={[styles.date, isRTL && styles.dateRTL]}>{date}</Text>
-          <Text style={[styles.time, isRTL && styles.timeRTL]}>{time}</Text>
+          <Text style={styles.date}>{date}</Text>
+          <Text style={styles.time}>{time}</Text>
         </View>
 
         <Text
-          style={[styles.message, isRTL && styles.messageRTL]}
+          style={styles.message}
           numberOfLines={2}
         >
           {ticket.message}
@@ -140,113 +135,65 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
-    elevation: 2,
-  },
-  containerRTL: {
-    // No specific RTL style needed
-  },
-  top: {
+    elevation: 2
+  },top: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 12,
-  },
-  topRTL: {
-    flexDirection: "row-reverse",
-  },
-  statusBadge: {
+    marginBottom: 12
+  },  statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 20,
-  },
-  statusBadgeRTL: {
-    // No specific RTL style needed
-  },
-  statusText: {
+    borderRadius: 20
+  },  statusText: {
     fontSize: 13,
-    fontFamily: "Cairo_600SemiBold",
+    fontFamily: "Cairo_600SemiBold"
   },
   actions: {
     flexDirection: "row",
-    gap: 12,
-  },
-  actionsRTL: {
-    flexDirection: "row-reverse",
-  },
-  actionButton: {
+    gap: 12
+  },  actionButton: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-  },
-  actionButtonRTL: {
-    flexDirection: "row-reverse",
-  },
-  actionText: {
+    gap: 4
+  },  actionText: {
     fontSize: 13,
-    fontFamily: "Cairo_600SemiBold",
+    fontFamily: "Cairo_600SemiBold"
   },
   editText: {
-    color: "#3498db",
+    color: "#3498db"
   },
   deleteText: {
-    color: "#e74c3c",
+    color: "#e74c3c"
   },
   type: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2c2c2c",
-    marginBottom: 12,
-  },
-  typeRTL: {
-    textAlign: "right",
-  },
-  bottom: {
-    gap: 8,
-  },
-  bottomRTL: {
-    // No specific RTL style needed
-  },
-  dateContainer: {
+    marginBottom: 12
+  },  bottom: {
+    gap: 8
+  },  dateContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-  },
-  dateContainerRTL: {
-    flexDirection: "row-reverse",
-  },
-  createdLabel: {
+    gap: 6
+  },  createdLabel: {
     fontSize: 13,
     fontFamily: "Cairo_600SemiBold",
-    color: "#666",
-  },
-  createdLabelRTL: {
-    textAlign: "right",
-  },
-  date: {
+    color: "#666"
+  },  date: {
     fontSize: 13,
     fontFamily: "Cairo_400Regular",
-    color: "#666",
-  },
-  dateRTL: {
-    textAlign: "right",
-  },
-  time: {
+    color: "#666"
+  },  time: {
     fontSize: 13,
     fontFamily: "Cairo_400Regular",
-    color: "#999",
-  },
-  timeRTL: {
-    textAlign: "right",
-  },
-  message: {
+    color: "#999"
+  },  message: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#666",
-    lineHeight: 20,
-  },
-  messageRTL: {
-    textAlign: "right",
-  },
-});
+    lineHeight: 20
+  },});
 
 export default TicketCard;

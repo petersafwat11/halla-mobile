@@ -7,7 +7,7 @@ import {
   Animated,
   Image,
 } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpSchema } from "../../utils/schemas/authSchemas";
 import { OTPInput, Button } from "../commen";
@@ -25,18 +25,15 @@ const OTPVerificationForm = ({
   const [canResend, setCanResend] = useState(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm({
+  const methods = useForm({
     resolver: zodResolver(otpSchema),
     mode: "onChange",
     defaultValues: {
       otp: "",
     },
   });
+
+  const { handleSubmit, setError } = methods;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -78,58 +75,56 @@ const OTPVerificationForm = ({
   };
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-      <View style={styles.header}>
-        <View style={styles.iconContainer}>
-          <Text style={styles.iconText}>📱</Text>
+    <FormProvider {...methods}>
+      <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+        <View style={styles.header}>
+          <View style={styles.iconContainer}>
+            <Text style={styles.iconText}>📱</Text>
+          </View>
+          <Text style={styles.title}>{t("otp.title")}</Text>
         </View>
-        <Text style={styles.title}>{t("otp.title")}</Text>
-      </View>
 
-      <View style={styles.description}>
-        <Text style={styles.descriptionText}>
-          {t("otp.description")} {phoneNumber}
-        </Text>
-        <Text style={styles.descriptionText}>
-          {t("otp.descriptionContinue")}
-        </Text>
-        <TouchableOpacity
-          onPress={handleResend}
-          disabled={!canResend}
-          style={styles.resendContainer}
-        >
-          <Text
-            style={[styles.resendText, !canResend && styles.resendTextDisabled]}
-          >
-            {t("otp.resendCode")}{" "}
-            {!canResend && `(${timer} ${t("otp.resendTimer")})`}
+        <View style={styles.description}>
+          <Text style={styles.descriptionText}>
+            {t("otp.description")} {phoneNumber}
           </Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.descriptionText}>
+            {t("otp.descriptionContinue")}
+          </Text>
+          <TouchableOpacity
+            onPress={handleResend}
+            disabled={!canResend}
+            style={styles.resendContainer}
+          >
+            <Text
+              style={[
+                styles.resendText,
+                !canResend && styles.resendTextDisabled,
+              ]}
+            >
+              {t("otp.resendCode")}{" "}
+              {!canResend && `(${timer} ${t("otp.resendTimer")})`}
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-      <Controller
-        control={control}
-        name="otp"
-        render={({ field: { onChange, value } }) => (
-          <OTPInput
-            value={value}
-            onChange={onChange}
-            error={errors.otp && t(errors.otp.message)}
+        <OTPInput name="otp" />
+
+        <View style={styles.bottom}>
+          <Button
+            text={t("otp.verifyButton")}
+            onPress={handleSubmit(onFormSubmit)}
+            loading={loading}
           />
-        )}
-      />
-
-      <View style={styles.bottom}>
-        <Button
-          text={t("otp.verifyButton")}
-          onPress={handleSubmit(onFormSubmit)}
-          loading={loading}
-        />
-        <TouchableOpacity onPress={onEditPhone} style={styles.editPhoneButton}>
-          <Text style={styles.editPhoneText}>{t("otp.editPhone")}</Text>
-        </TouchableOpacity>
-      </View>
-    </Animated.View>
+          <TouchableOpacity
+            onPress={onEditPhone}
+            style={styles.editPhoneButton}
+          >
+            <Text style={styles.editPhoneText}>{t("otp.editPhone")}</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    </FormProvider>
   );
 };
 

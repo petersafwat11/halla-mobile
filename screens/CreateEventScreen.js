@@ -10,9 +10,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
-import { useLanguage } from "../localization";
 import EventsService from "../services/EventsService";
 import { Ionicons } from "@expo/vector-icons";
+import TopBar from "../components/plans/TopBar";
+import YourEventManagedByUsPopup from "../components/createEvent/yourEventManagedByUsPopup";
 
 // Import step components
 import StepOne from "../components/createEvent/StepOne";
@@ -28,8 +29,9 @@ const CreateEventScreen = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showInfoPopup, setShowInfoPopup] = useState(false);
   const navigation = useNavigation();
-  const { t, isRTL } = useLanguage();
+  const { t } = useLanguage();
 
   // Initialize form with default values
   const methods = useForm({
@@ -101,8 +103,7 @@ const CreateEventScreen = () => {
             {
               text: "حسناً",
               onPress: () => navigation.navigate("Events"),
-            },
-          ]);
+            }]);
         } else {
           Alert.alert("خطأ", result.error);
         }
@@ -187,12 +188,64 @@ const CreateEventScreen = () => {
   const stepInfo = getStepInfo();
 
   // ============================================================================
+  // TOP BAR ACTIONS
+  // ============================================================================
+
+  const handleClose = () => {
+    Alert.alert(
+      "إلغاء إنشاء المناسبة",
+      "هل أنت متأكد من إلغاء إنشاء المناسبة؟ سيتم فقدان جميع البيانات.",
+      [
+        { text: "استمرار", style: "cancel" },
+        {
+          text: "إلغاء",
+          style: "destructive",
+          onPress: () => navigation.goBack(),
+        }]
+    );
+  };
+
+  const handleContactUs = () => {
+    setShowInfoPopup(false);
+    // TODO: Navigate to contact us or open contact method
+    Alert.alert("تواصل معنا", "سيتم توجيهك لصفحة التواصل قريباً");
+  };
+
+  const topBarRightContent = (
+    <TouchableOpacity
+      style={styles.infoButton}
+      onPress={() => setShowInfoPopup(true)}
+      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+    >
+      <View style={styles.infoIconContainer}>
+        <Ionicons name="information" size={20} color="#C28E5C" />
+      </View>
+    </TouchableOpacity>
+  );
+
+  const topBarLeftContent = (
+    <TouchableOpacity
+      style={styles.closeButton}
+      onPress={handleClose}
+      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+    >
+      <Ionicons name="close" size={24} color="#F9F4EF" />
+    </TouchableOpacity>
+  );
+
+  // ============================================================================
   // RENDER
   // ============================================================================
 
   return (
     <FormProvider {...methods}>
       <SafeAreaView style={styles.container}>
+        {/* Top Bar */}
+        <TopBar
+          title="انشاء مناسبة"
+          rightContent={topBarRightContent}
+          leftContent={topBarLeftContent}
+        />
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -239,6 +292,7 @@ const CreateEventScreen = () => {
           eventTitle={formData.eventName || ""}
           invitationMessage={formData.invitationMessage || ""}
           templateImage={formData.templateImage}
+          selectedTemplate={formData.selectedTemplate}
           templateData={{
             brideName: formData.templateBrideName,
             groomName: formData.templateGroomName,
@@ -246,6 +300,13 @@ const CreateEventScreen = () => {
           eventDate={formData.eventDate}
           eventTime={formData.eventTime}
           location={formData.address?.address || ""}
+        />
+
+        {/* Info Popup */}
+        <YourEventManagedByUsPopup
+          visible={showInfoPopup}
+          onClose={() => setShowInfoPopup(false)}
+          onContactUs={handleContactUs}
         />
       </SafeAreaView>
     </FormProvider>
@@ -290,6 +351,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
+  },
+  infoButton: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  infoIconContainer: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: "#F9F4EF",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F9F4EF",
+  },
+  closeButton: {
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

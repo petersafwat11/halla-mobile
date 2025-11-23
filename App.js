@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, I18nManager } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as Font from "expo-font";
@@ -24,8 +24,17 @@ SplashScreen.preventAutoHideAsync();
 
 // Main app content component
 function AppContent() {
-  const { hasSelectedLanguage, changeLanguage } = useLanguage();
+  const { hasSelectedLanguage, changeLanguage, isRTL } = useLanguage();
   const restoreSession = useAuthStore((state) => state.restoreSession);
+
+  // Set RTL direction based on language
+  React.useEffect(() => {
+    if (I18nManager.isRTL !== isRTL) {
+      I18nManager.forceRTL(isRTL);
+      // Note: In production, you might need to reload the app for RTL changes to take full effect
+      // Updates.reloadAsync(); // Uncomment if using expo-updates
+    }
+  }, [isRTL]);
 
   // Restore auth session on mount
   React.useEffect(() => {

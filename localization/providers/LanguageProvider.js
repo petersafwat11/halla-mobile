@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { I18nManager } from "react-native";
 import { I18nextProvider } from "react-i18next";
 import i18n, { i18nConfig } from "../config/i18nConfig";
 import { languageStorage } from "../../utils/languageStorage";
@@ -43,10 +44,13 @@ export const LanguageProvider = ({ children }) => {
       const hasSelected = await languageStorage.hasSelectedLanguage();
       setHasSelectedLanguage(hasSelected);
 
+      let selectedLang = i18nConfig.defaultLocale;
+
       if (hasSelected) {
         // Use saved language if user has selected one
         const savedLanguage = await languageStorage.getLanguage();
         if (savedLanguage && i18nConfig.locales.includes(savedLanguage)) {
+          selectedLang = savedLanguage;
           setCurrentLanguage(savedLanguage);
           await i18n.changeLanguage(savedLanguage);
         } else {
@@ -60,12 +64,19 @@ export const LanguageProvider = ({ children }) => {
         setCurrentLanguage(i18nConfig.defaultLocale);
         await i18n.changeLanguage(i18nConfig.defaultLocale);
       }
+
+      // Set RTL direction globally
+      const shouldBeRTL = i18nConfig.isRTL(selectedLang);
+      if (I18nManager.isRTL !== shouldBeRTL) {
+        I18nManager.forceRTL(shouldBeRTL);
+      }
     } catch (error) {
       console.error("Error initializing language:", error);
       // Fallback to default locale
       setCurrentLanguage(i18nConfig.defaultLocale);
       await i18n.changeLanguage(i18nConfig.defaultLocale);
       setHasSelectedLanguage(false);
+      I18nManager.forceRTL(false);
     } finally {
       setIsLoading(false);
     }
@@ -78,6 +89,12 @@ export const LanguageProvider = ({ children }) => {
         await i18n.changeLanguage(languageCode);
         await languageStorage.saveLanguage(languageCode);
         setHasSelectedLanguage(true);
+
+        // Set RTL direction globally
+        const shouldBeRTL = i18nConfig.isRTL(languageCode);
+        if (I18nManager.isRTL !== shouldBeRTL) {
+          I18nManager.forceRTL(shouldBeRTL);
+        }
       }
     } catch (error) {
       console.error("Error changing language:", error);

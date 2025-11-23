@@ -1,11 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
-
 const LastEvent = ({ event, onManagePress }) => {
-  const { isRTL } = useLanguage();
-
   if (!event) return null;
 
   // Format backend data
@@ -23,7 +19,7 @@ const LastEvent = ({ event, onManagePress }) => {
         weekday: "long",
         day: "numeric",
         month: "numeric",
-        year: "numeric",
+        year: "numeric"
       });
       const timeStr = event.eventDetails?.time || "";
       return `${dateStr}${timeStr ? " - " + timeStr : ""}`;
@@ -51,21 +47,20 @@ const LastEvent = ({ event, onManagePress }) => {
   const maybe = event.guestList?.status?.maybe || 0;
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
+    <View style={styles.container}>
       {/* Main Content */}
-      <View style={[styles.contentRow, isRTL && styles.contentRowRTL]}>
+      <View style={styles.contentRow}>
         {/* Text Content */}
-        <View style={[styles.textContent, isRTL && styles.textContentRTL]}>
+        <View style={styles.textContent}>
           {/* Title and Status */}
-          <View style={[styles.titleRow, isRTL && styles.titleRowRTL]}>
-            <Text style={[styles.title, isRTL && styles.titleRTL]}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>
               {title}
             </Text>
             <View
               style={[
                 styles.statusBadge,
-                { backgroundColor: statusStyle.backgroundColor },
-              ]}
+                { backgroundColor: statusStyle.backgroundColor }]}
             >
               <Text style={[styles.statusText, { color: statusStyle.color }]}>
                 {statusStyle.text}
@@ -74,15 +69,15 @@ const LastEvent = ({ event, onManagePress }) => {
           </View>
 
           {/* Details */}
-          <View style={[styles.details, isRTL && styles.detailsRTL]}>
+          <View style={styles.details}>
             {/* Guest Count */}
-            <View style={[styles.detailItem, isRTL && styles.detailItemRTL]}>
+            <View style={styles.detailItem}>
               <Ionicons name="people-outline" size={12} color="#C28E5C" />
               <Text style={styles.detailText}>{guestCount} ضيف</Text>
             </View>
 
             {/* Date and Time */}
-            <View style={[styles.detailItem, isRTL && styles.detailItemRTL]}>
+            <View style={styles.detailItem}>
               <Ionicons name="calendar-outline" size={12} color="#C28E5C" />
               <Text style={styles.detailText}>{formatDateTime()}</Text>
             </View>
@@ -102,20 +97,20 @@ const LastEvent = ({ event, onManagePress }) => {
       </View>
 
       {/* Stats Row */}
-      <View style={[styles.statsRow, isRTL && styles.statsRowRTL]}>
-        <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+      <View style={styles.statsRow}>
+        <View style={styles.statItem}>
           <Text style={styles.statLabel}>{maybe}</Text>
           <Text style={styles.statLabel}>لم يرد: </Text>
           <View style={[styles.statDot, { backgroundColor: "#A0A0A0" }]} />
         </View>
 
-        <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+        <View style={styles.statItem}>
           <Text style={styles.statLabel}>{declined}</Text>
           <Text style={styles.statLabel}>معتذر: </Text>
           <View style={[styles.statDot, { backgroundColor: "#C0392B" }]} />
         </View>
 
-        <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+        <View style={styles.statItem}>
           <Text style={styles.statLabel}>{confirmed}</Text>
           <Text style={styles.statLabel}>موافق: </Text>
           <View style={[styles.statDot, { backgroundColor: "#2A8C5B" }]} />
@@ -150,96 +145,72 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
-  },
-  containerRTL: {},
-  contentRow: {
+    elevation: 2
+  },contentRow: {
     flexDirection: "row",
-    gap: 16,
-  },
-  contentRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  textContent: {
+    gap: 16
+  },  textContent: {
     flex: 1,
     gap: 8,
-    justifyContent: "center",
-  },
-  textContentRTL: {
-    alignItems: "flex-end",
-  },
-  titleRow: {
+    justifyContent: "center"
+  },  titleRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    gap: 12,
-  },
-  titleRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  statusBadge: {
+    gap: 12
+  },  statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 2,
-    borderRadius: 9999,
+    borderRadius: 9999
   },
   statusText: {
     fontSize: 12,
     fontFamily: "Cairo_500Medium",
     lineHeight: 16,
-    letterSpacing: 0.06,
+    letterSpacing: 0.06
   },
   title: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
-    letterSpacing: 0.024,
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  details: {
+    letterSpacing: 0.024
+  },details: {
     gap: 8,
-    alignItems: "flex-end",
-  },
-  detailsRTL: {},
-  detailItem: {
+    alignItems: "flex-end"
+  },  detailItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-  },
-  detailItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  detailText: {
+    gap: 8
+  },  detailText: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
     lineHeight: 16,
-    letterSpacing: 0.06,
+    letterSpacing: 0.06
   },
   imageContainer: {
     width: 54,
     height: 56,
     borderRadius: 8,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   image: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover",
+    resizeMode: "cover"
   },
   placeholderImage: {
     width: "100%",
     height: "100%",
     backgroundColor: "#F2F2F2",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   placeholderRect: {
     width: "100%",
     height: "100%",
-    backgroundColor: "#F2F2F2",
+    backgroundColor: "#F2F2F2"
   },
   statsRow: {
     flexDirection: "row",
@@ -247,29 +218,21 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     backgroundColor: "#F7F7F7",
-    borderRadius: 8,
-  },
-  statsRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  statItem: {
+    borderRadius: 8
+  },  statItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-  },
-  statItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  statLabel: {
+    gap: 4
+  },  statLabel: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
+    lineHeight: 16
   },
   statDot: {
     width: 12,
     height: 12,
-    borderRadius: 9999,
+    borderRadius: 9999
   },
   manageButton: {
     flexDirection: "row",
@@ -280,15 +243,15 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 4,
-    height: 32,
+    height: 32
   },
   manageButtonText: {
     fontSize: 12,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
     lineHeight: 16,
-    letterSpacing: 0.06,
-  },
+    letterSpacing: 0.06
+  }
 });
 
 export default LastEvent;

@@ -11,12 +11,9 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import { useLanguage } from "../../localization";
-
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const FilterPopup = ({ visible, onClose }) => {
-  const { isRTL } = useLanguage();
   const slideAnim = React.useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   const [selectedCountry, setSelectedCountry] = useState("الكل");
@@ -31,8 +28,7 @@ const FilterPopup = ({ visible, onClose }) => {
     "الكويت",
     "قطر",
     "البحرين",
-    "عمان",
-  ];
+    "عمان"];
 
   const eventTypeOptions = [
     "الكل",
@@ -40,16 +36,14 @@ const FilterPopup = ({ visible, onClose }) => {
     "حفلات تخرج",
     "مناسبات شركات",
     "حفلات أعياد ميلاد",
-    "مناسبات دينية",
-  ];
+    "مناسبات دينية"];
 
   const priceOptions = [
     "الكل",
     "أقل من 500 ريال",
     "500 - 1000 ريال",
     "1000 - 2000 ريال",
-    "أكثر من 2000 ريال",
-  ];
+    "أكثر من 2000 ريال"];
 
   const sections = [
     { id: "1", name: "قسم 1", count: 15 },
@@ -61,8 +55,7 @@ const FilterPopup = ({ visible, onClose }) => {
     { id: "7", name: "قسم 7", count: 15 },
     { id: "8", name: "قسم 8", count: 15 },
     { id: "9", name: "قسم 9", count: 15 },
-    { id: "10", name: "قسم 10", count: 15 },
-  ];
+    { id: "10", name: "قسم 10", count: 15 }];
 
   React.useEffect(() => {
     if (visible) {
@@ -99,14 +92,13 @@ const FilterPopup = ({ visible, onClose }) => {
             styles.popup,
             {
               transform: [{ translateY: slideAnim }],
-            },
-          ]}
+            }]}
         >
-          <View style={[styles.header, isRTL && styles.headerRTL]}>
+          <View style={styles.header}>
             <TouchableOpacity onPress={onClose} activeOpacity={0.7}>
               <Ionicons name="close" size={24} color="#2C2C2C" />
             </TouchableOpacity>
-            <Text style={[styles.title, isRTL && styles.titleRTL]}>
+            <Text style={styles.title}>
               الفلاتر
             </Text>
             <View style={styles.placeholder} />
@@ -118,7 +110,7 @@ const FilterPopup = ({ visible, onClose }) => {
           >
             {/* Country Filter */}
             <View style={styles.filterGroup}>
-              <Text style={[styles.label, isRTL && styles.textRTL]}>البلد</Text>
+              <Text style={styles.label}>البلد</Text>
               <View style={styles.pickerContainer}>
                 <Picker
                   selectedValue={selectedCountry}
@@ -134,7 +126,7 @@ const FilterPopup = ({ visible, onClose }) => {
 
             {/* Event Type Filter */}
             <View style={styles.filterGroup}>
-              <Text style={[styles.label, isRTL && styles.textRTL]}>
+              <Text style={styles.label}>
                 نوع المناسبة
               </Text>
               <View style={styles.pickerContainer}>
@@ -152,7 +144,7 @@ const FilterPopup = ({ visible, onClose }) => {
 
             {/* Price Filter */}
             <View style={styles.filterGroup}>
-              <Text style={[styles.label, isRTL && styles.textRTL]}>السعر</Text>
+              <Text style={styles.label}>السعر</Text>
               <View style={styles.pickerContainer}>
                 <Picker
                   selectedValue={selectedPrice}
@@ -168,7 +160,7 @@ const FilterPopup = ({ visible, onClose }) => {
 
             {/* Sections Dropdown */}
             <View style={styles.filterGroup}>
-              <Text style={[styles.label, isRTL && styles.textRTL]}>
+              <Text style={styles.label}>
                 الأقسام
               </Text>
               <View style={styles.pickerContainer}>
@@ -239,21 +231,13 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#F2F2F2",
-  },
-  headerRTL: {
-    flexDirection: "row-reverse",
-  },
-  title: {
+  },title: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     textAlign: "center",
     flex: 1,
-  },
-  titleRTL: {
-    textAlign: "center",
-  },
-  placeholder: {
+  },placeholder: {
     width: 24,
     height: 24,
   },
@@ -280,11 +264,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     height: 50,
-  },
-  textRTL: {
-    textAlign: "right",
-  },
-  footer: {
+  },footer: {
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: "#F2F2F2",

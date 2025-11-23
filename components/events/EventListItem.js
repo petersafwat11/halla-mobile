@@ -1,11 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
-
 const EventListItem = ({ event, onPress }) => {
-  const { isRTL } = useLanguage();
-
   // Format date and time
   const formatDateTime = () => {
     if (event.date) {
@@ -13,7 +9,7 @@ const EventListItem = ({ event, onPress }) => {
       const dateStr = date.toLocaleDateString("ar-SA", {
         weekday: "short",
         day: "numeric",
-        month: "numeric",
+        month: "numeric"
       });
       const timeStr = event.time || "";
       return `${dateStr}${timeStr ? " - " + timeStr : ""}`;
@@ -44,21 +40,20 @@ const EventListItem = ({ event, onPress }) => {
   const statusStyle = getStatusStyle(event.status);
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
+    <View style={styles.container}>
       {/* Main Content */}
-      <View style={[styles.contentRow, isRTL && styles.contentRowRTL]}>
+      <View style={styles.contentRow}>
         {/* Text Content */}
-        <View style={[styles.textContent, isRTL && styles.textContentRTL]}>
+        <View style={styles.textContent}>
           {/* Title and Status */}
-          <View style={[styles.titleRow, isRTL && styles.titleRowRTL]}>
-            <Text style={[styles.title, isRTL && styles.titleRTL]}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>
               {event.title || "مناسبة بدون عنوان"}
             </Text>
             <View
               style={[
                 styles.statusBadge,
-                { backgroundColor: statusStyle.backgroundColor },
-              ]}
+                { backgroundColor: statusStyle.backgroundColor }]}
             >
               <Text style={[styles.statusText, { color: statusStyle.color }]}>
                 {event.status === "active" ? "نشط" : "انتهت"}
@@ -67,14 +62,14 @@ const EventListItem = ({ event, onPress }) => {
           </View>
 
           {/* Details */}
-          <View style={[styles.details, isRTL && styles.detailsRTL]}>
+          <View style={styles.details}>
             {/* Date and Time */}
-            <View style={[styles.detailItem, isRTL && styles.detailItemRTL]}>
+            <View style={styles.detailItem}>
               <Ionicons name="calendar-outline" size={12} color="#C28E5C" />
               <Text style={styles.detailText}>{formatDateTime()}</Text>
             </View>
             {/* Guest Count */}
-            <View style={[styles.detailItem, isRTL && styles.detailItemRTL]}>
+            <View style={styles.detailItem}>
               <Ionicons name="people-outline" size={12} color="#C28E5C" />
               <Text style={styles.detailText}>{guestCount} ضيف</Text>
             </View>
@@ -94,20 +89,20 @@ const EventListItem = ({ event, onPress }) => {
       </View>
 
       {/* Stats Row */}
-      <View style={[styles.statsRow, isRTL && styles.statsRowRTL]}>
-        <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+      <View style={styles.statsRow}>
+        <View style={styles.statItem}>
           <Text style={styles.statLabel}>لم يرد: </Text>
           <Text style={styles.statValue}>{noResponse}</Text>
           <View style={[styles.statDot, { backgroundColor: "#A0A0A0" }]} />
         </View>
 
-        <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+        <View style={styles.statItem}>
           <Text style={styles.statLabel}>معتذر: </Text>
           <Text style={styles.statValue}>{declined}</Text>
           <View style={[styles.statDot, { backgroundColor: "#C0392B" }]} />
         </View>
 
-        <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+        <View style={styles.statItem}>
           <Text style={styles.statLabel}>موافق: </Text>
           <Text style={styles.statValue}>{confirmed}</Text>
           <View style={[styles.statDot, { backgroundColor: "#2A8C5B" }]} />
@@ -142,88 +137,64 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
-  },
-  containerRTL: {},
-  contentRow: {
+    elevation: 2
+  },contentRow: {
     flexDirection: "row",
     gap: 16,
-    marginBottom: 12,
-  },
-  contentRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  textContent: {
+    marginBottom: 12
+  },  textContent: {
     flex: 1,
-    gap: 8,
-  },
-  textContentRTL: {
-    alignItems: "flex-end",
-  },
-  titleRow: {
+    gap: 8
+  },  titleRow: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    gap: 12,
-  },
-  titleRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  statusBadge: {
+    gap: 12
+  },  statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 2,
-    borderRadius: 9999,
+    borderRadius: 9999
   },
   statusText: {
     fontSize: 12,
     fontFamily: "Cairo_500Medium",
-    lineHeight: 16,
+    lineHeight: 16
   },
   title: {
     fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    lineHeight: 24,
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  details: {
+    lineHeight: 24
+  },details: {
     gap: 8,
-    alignItems: "flex-end",
-  },
-  detailsRTL: {},
-  detailItem: {
+    alignItems: "flex-end"
+  },  detailItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-  },
-  detailItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  detailText: {
+    gap: 8
+  },  detailText: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    lineHeight: 16,
+    lineHeight: 16
   },
   imageContainer: {
     width: 80,
     height: 80,
     borderRadius: 8,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   image: {
     width: "100%",
     height: "100%",
-    resizeMode: "cover",
+    resizeMode: "cover"
   },
   placeholderImage: {
     width: "100%",
     height: "100%",
     backgroundColor: "#F2F2F2",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   statsRow: {
     flexDirection: "row",
@@ -232,35 +203,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: "#F7F7F7",
     borderRadius: 8,
-    marginBottom: 12,
-  },
-  statsRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  statItem: {
+    marginBottom: 12
+  },  statItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-  },
-  statItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  statLabel: {
+    gap: 4
+  },  statLabel: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
+    lineHeight: 16
   },
   statValue: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
+    lineHeight: 16
   },
   statDot: {
     width: 12,
     height: 12,
-    borderRadius: 9999,
+    borderRadius: 9999
   },
   actionButton: {
     flexDirection: "row",
@@ -270,14 +233,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#C28E5C",
     paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 4,
+    borderRadius: 4
   },
   actionButtonText: {
     fontSize: 12,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
-    lineHeight: 16,
-  },
+    lineHeight: 16
+  }
 });
 
 export default EventListItem;

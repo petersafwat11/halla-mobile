@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { completeProfileSchema } from "../../utils/schemas/authSchemas";
 import { TextInput, EmailInput, PasswordInput, Button } from "../commen";
@@ -9,23 +9,18 @@ import FormHeader from "./FormHeader";
 
 const CompleteProfileForm = ({ onSubmit, loading = false }) => {
   const { t } = useTranslation("auth");
-  const { isRTL } = useLanguage();
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm({
+  const methods = useForm({
     resolver: zodResolver(completeProfileSchema),
     mode: "onChange",
     defaultValues: {
       fullName: "",
       email: "",
       password: "",
-      confirmPassword: "",
-    },
+      confirmPassword: ""
+    }
   });
+
+  const { handleSubmit, setError } = methods;
 
   const onFormSubmit = async (data) => {
     if (onSubmit) {
@@ -34,7 +29,7 @@ const CompleteProfileForm = ({ onSubmit, loading = false }) => {
         Object.keys(result.fieldErrors).forEach((field) => {
           setError(field, {
             type: "server",
-            message: result.fieldErrors[field],
+            message: result.fieldErrors[field]
           });
         });
       }
@@ -42,109 +37,66 @@ const CompleteProfileForm = ({ onSubmit, loading = false }) => {
   };
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
-      <FormHeader
-        title={t("signup.completeProfileTitle")}
-        subtitle={t("signup.completeProfileSubtitle")}
-      />
-
-      <View style={[styles.form, isRTL && styles.formRTL]}>
-        <Controller
-          control={control}
-          name="fullName"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              label={t("signup.fullName")}
-              placeholder={t("signup.fullNamePlaceholder")}
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              disabled={loading}
-              error={errors.fullName && t(errors.fullName.message)}
-            />
-          )}
+    <FormProvider {...methods}>
+      <View style={styles.container}>
+        <FormHeader
+          title={t("signup.completeProfileTitle")}
+          subtitle={t("signup.completeProfileSubtitle")}
         />
 
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <EmailInput
-              label={t("signup.email")}
-              placeholder={t("signup.emailPlaceholder")}
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              disabled={loading}
-              error={errors.email && t(errors.email.message)}
-            />
-          )}
-        />
+        <View style={styles.form}>
+          <TextInput
+            name="fullName"
+            label={t("signup.fullName")}
+            placeholder={t("signup.fullNamePlaceholder")}
+            disabled={loading}
+          />
 
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <PasswordInput
-              label={t("signup.password")}
-              placeholder={t("signup.passwordPlaceholder")}
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              disabled={loading}
-              error={errors.password && t(errors.password.message)}
-            />
-          )}
-        />
+          <EmailInput
+            name="email"
+            label={t("signup.email")}
+            placeholder={t("signup.emailPlaceholder")}
+            disabled={loading}
+          />
 
-        <Controller
-          control={control}
-          name="confirmPassword"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <PasswordInput
-              label={t("signup.confirmPassword")}
-              placeholder={t("signup.confirmPasswordPlaceholder")}
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              disabled={loading}
-              error={
-                errors.confirmPassword && t(errors.confirmPassword.message)
-              }
+          <PasswordInput
+            name="password"
+            label={t("signup.password")}
+            placeholder={t("signup.passwordPlaceholder")}
+            disabled={loading}
+          />
+
+          <PasswordInput
+            name="confirmPassword"
+            label={t("signup.confirmPassword")}
+            placeholder={t("signup.confirmPasswordPlaceholder")}
+            disabled={loading}
+          />
+
+          <View style={styles.buttonContainer}>
+            <Button
+              text={t("signup.completeButton")}
+              onPress={handleSubmit(onFormSubmit)}
+              loading={loading}
             />
-          )}
-        />
-        <View style={styles.buttonContainer}>
-        <Button
-          text={t("signup.completeButton")}
-          onPress={handleSubmit(onFormSubmit)}
-          loading={loading}
-        />
+          </View>
         </View>
       </View>
-    </View>
+    </FormProvider>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    alignItems: "flex-start",
-  },
-  containerRTL: {
-    alignItems: "flex-start",
-  },
-  form: {
+    alignItems: "flex-start"
+  },form: {
     width: "100%",
-    alignItems: "flex-start",
-  },
-  formRTL: {
-    alignItems: "flex-start",
-  },
-  buttonContainer: {
+    alignItems: "flex-start"
+  },  buttonContainer: {
     width: "100%",
-    marginTop: 16,
-  },
+    marginTop: 16
+  }
 });
 
 export default CompleteProfileForm;

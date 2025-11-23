@@ -7,10 +7,9 @@ import {
   Dimensions,
   ScrollView,
   Animated,
-  Platform,
+  Platform
 } from "react-native";
 import { useFormContext } from "react-hook-form";
-import { useLanguage } from "../../localization";
 import Svg, { Path } from "react-native-svg";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -147,7 +146,6 @@ const LocationIcon = () => (
 );
 
 const EventSummary = () => {
-  const { isRTL } = useLanguage();
   const { watch } = useFormContext();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -155,7 +153,7 @@ const EventSummary = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   }, []);
 
@@ -187,7 +185,7 @@ const EventSummary = () => {
       graduation: "تخرج",
       meeting: "اجتماع",
       conference: "مؤتمر",
-      other: "مناسبة",
+      other: "مناسبة"
     };
     return types[eventType] || "حفل زفاف";
   };
@@ -209,11 +207,11 @@ const EventSummary = () => {
       )}
 
       {/* Event Header */}
-      <View style={[styles.eventHeader, isRTL && styles.eventHeaderRTL]}>
-        <Text style={[styles.eventTypeLabel, isRTL && styles.eventTypeLabelRTL]}>
+      <View style={styles.eventHeader}>
+        <Text style={styles.eventTypeLabel}>
           {getEventTypeLabel()}
         </Text>
-        <Text style={[styles.eventName, isRTL && styles.eventNameRTL]}>
+        <Text style={styles.eventName}>
           {eventName}
         </Text>
       </View>
@@ -221,14 +219,14 @@ const EventSummary = () => {
       {/* Event Metrics */}
       <View style={styles.metricsCard}>
         {/* Row 1: Guests and Moderators */}
-        <View style={[styles.metricsRow, isRTL && styles.metricsRowRTL]}>
+        <View style={styles.metricsRow}>
           {/* Guests */}
-          <View style={[styles.metric, isRTL && styles.metricRTL]}>
+          <View style={styles.metric}>
             <View style={styles.iconContainer}>
               <PeopleIcon />
             </View>
-            <View style={[styles.metricContent, isRTL && styles.metricContentRTL]}>
-              <Text style={[styles.metricLabel, isRTL && styles.metricLabelRTL]}>
+            <View style={styles.metricContent}>
+              <Text style={styles.metricLabel}>
                 ضيف مدعو
               </Text>
               <Text style={styles.metricValue}>{guestCount}</Text>
@@ -236,12 +234,12 @@ const EventSummary = () => {
           </View>
 
           {/* Moderators */}
-          <View style={[styles.metric, isRTL && styles.metricRTL]}>
+          <View style={styles.metric}>
             <View style={styles.iconContainer}>
               <UserSearchIcon />
             </View>
-            <View style={[styles.metricContent, isRTL && styles.metricContentRTL]}>
-              <Text style={[styles.metricLabel, isRTL && styles.metricLabelRTL]}>
+            <View style={styles.metricContent}>
+              <Text style={styles.metricLabel}>
                 مشرف
               </Text>
               <Text style={styles.metricValue}>{moderatorCount}</Text>
@@ -250,14 +248,14 @@ const EventSummary = () => {
         </View>
 
         {/* Row 2: Date and Location */}
-        <View style={[styles.metricsRow, styles.metricsRowBottom, isRTL && styles.metricsRowRTL]}>
+        <View style={[styles.metricsRow, styles.metricsRowBottom]}>
           {/* Location */}
-          <View style={[styles.metric, isRTL && styles.metricRTL]}>
+          <View style={styles.metric}>
             <View style={styles.iconContainer}>
               <LocationIcon />
             </View>
-            <View style={[styles.metricContent, isRTL && styles.metricContentRTL]}>
-              <Text style={[styles.metricLabel, isRTL && styles.metricLabelRTL]}>
+            <View style={styles.metricContent}>
+              <Text style={styles.metricLabel}>
                 العنوان
               </Text>
               <Text style={styles.metricValue} numberOfLines={1}>
@@ -267,12 +265,12 @@ const EventSummary = () => {
           </View>
 
           {/* Date/Time */}
-          <View style={[styles.metric, isRTL && styles.metricRTL]}>
+          <View style={styles.metric}>
             <View style={styles.iconContainer}>
               <CalendarIcon />
             </View>
-            <View style={[styles.metricContent, isRTL && styles.metricContentRTL]}>
-              <Text style={[styles.metricLabel, isRTL && styles.metricLabelRTL]}>
+            <View style={styles.metricContent}>
+              <Text style={styles.metricLabel}>
                 التوقيت
               </Text>
               <Text style={styles.metricValue} numberOfLines={1}>
@@ -286,10 +284,10 @@ const EventSummary = () => {
       {/* Event Details */}
       {description && (
         <View style={styles.detailsCard}>
-          <Text style={[styles.detailsTitle, isRTL && styles.detailsTitleRTL]}>
+          <Text style={styles.detailsTitle}>
             تفاصيل المناسبة
           </Text>
-          <Text style={[styles.detailsText, isRTL && styles.detailsTextRTL]}>
+          <Text style={styles.detailsText}>
             {description}
           </Text>
         </View>
@@ -301,11 +299,11 @@ const EventSummary = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   invitationCardContainer: {
     marginBottom: 16,
-    alignItems: "center",
+    alignItems: "center"
   },
   invitationCard: {
     width: "100%",
@@ -316,61 +314,43 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 2
   },
   invitationImage: {
     width: "100%",
     height: Platform.select({
       ios: 134,
       android: 134,
-      default: Math.min(SCREEN_WIDTH * 0.35, 150),
+      default: Math.min(SCREEN_WIDTH * 0.35, 150)
     }),
-    borderRadius: 6.417,
+    borderRadius: 6.417
   },
   eventHeader: {
     marginBottom: 16,
-    alignItems: "flex-start",
-  },
-  eventHeaderRTL: {
-    alignItems: "flex-end",
-  },
-  eventTypeLabel: {
+    alignItems: "flex-start"
+  },  eventTypeLabel: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
     color: "#2C2C2C",
-    marginBottom: 4,
-    textAlign: "left",
-  },
-  eventTypeLabelRTL: {
-    textAlign: "right",
-  },
-  eventName: {
+    marginBottom: 4
+    },  eventName: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
-    color: "#2C2C2C",
-    textAlign: "left",
-  },
-  eventNameRTL: {
-    textAlign: "right",
-  },
-  metricsCard: {
+    color: "#2C2C2C"
+    },  metricsCard: {
     backgroundColor: "#fff",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#F5ECE4",
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 16
   },
   metricsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  metricsRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  metricsRowBottom: {
-    marginBottom: 0,
+    marginBottom: 16
+  },  metricsRowBottom: {
+    marginBottom: 0
   },
   metric: {
     flexDirection: "row",
@@ -380,71 +360,48 @@ const styles = StyleSheet.create({
     minWidth: Platform.select({
       ios: 140,
       android: 140,
-      default: 160,
-    }),
-  },
-  metricRTL: {
-    flexDirection: "row-reverse",
-  },
-  iconContainer: {
+      default: 160
+    })
+  },  iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#C28E5C",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   metricContent: {
     flex: 1,
-    alignItems: "flex-start",
-  },
-  metricContentRTL: {
-    alignItems: "flex-end",
-  },
-  metricLabel: {
+    alignItems: "flex-start"
+  },  metricLabel: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    marginBottom: 2,
-    textAlign: "left",
-  },
-  metricLabelRTL: {
-    textAlign: "right",
-  },
-  metricValue: {
+    marginBottom: 2
+    },  metricValue: {
     fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    textAlign: "center",
+    textAlign: "center"
   },
   detailsCard: {
     backgroundColor: "#fff",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#F5ECE4",
-    padding: 16,
+    padding: 16
   },
   detailsTitle: {
     fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    marginBottom: 8,
-    textAlign: "left",
-  },
-  detailsTitleRTL: {
-    textAlign: "right",
-  },
-  detailsText: {
+    marginBottom: 8
+    },  detailsText: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
-    textAlign: "left",
-  },
-  detailsTextRTL: {
-    textAlign: "right",
-  },
-});
+    lineHeight: 16
+    },});
 
 export default EventSummary;

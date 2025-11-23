@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useLanguage } from "../../localization";
 import { Svg, Circle, G, Path, Defs, ClipPath, Rect } from "react-native-svg";
 
 const StepProgressIndicator = ({ currentStep, totalSteps }) => {
@@ -23,7 +22,12 @@ const StepProgressIndicator = ({ currentStep, totalSteps }) => {
         </G>
         <Defs>
           <ClipPath id="clip0">
-            <Rect width="44" height="44" fill="white" transform="matrix(-1 0 0 -1 44 44)" />
+            <Rect
+              width="44"
+              height="44"
+              fill="white"
+              transform="matrix(-1 0 0 -1 44 44)"
+            />
           </ClipPath>
         </Defs>
       </Svg>
@@ -35,20 +39,19 @@ const StepProgressIndicator = ({ currentStep, totalSteps }) => {
 };
 
 const StepHeader = ({ currentStep, totalSteps, title, description }) => {
-  const { isRTL } = useLanguage();
-
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
-      <View style={[styles.content, isRTL && styles.contentRTL]}>
-        <View style={[styles.textContainer, isRTL && styles.textContainerRTL]}>
-          <Text style={[styles.title, isRTL && styles.titleRTL]}>
-            {title}
-          </Text>
-          <Text style={[styles.description, isRTL && styles.descriptionRTL]}>
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <StepProgressIndicator
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>
             {description}
           </Text>
         </View>
-        <StepProgressIndicator currentStep={currentStep} totalSteps={totalSteps} />
       </View>
     </View>
   );
@@ -57,50 +60,34 @@ const StepHeader = ({ currentStep, totalSteps, title, description }) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    paddingVertical: 24,
-  },
-  containerRTL: {},
-  content: {
+    paddingVertical: 24
+  },content: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
-  },
-  contentRTL: {
-    flexDirection: "row-reverse",
-  },
-  textContainer: {
+    gap: 16
+  },textContainer: {
     flex: 1,
     flexDirection: "column",
-    alignItems: "flex-end",
-  },
-  textContainerRTL: {},
-  title: {
+    alignItems: "flex-end"
+  },  title: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.024,
-    textAlign: "center",
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  description: {
+    textAlign: "center"
+  },description: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
     lineHeight: 16,
-    textAlign: "center",
-  },
-  descriptionRTL: {
-    textAlign: "right",
-  },
-  indicatorContainer: {
+    textAlign: "center"
+  },indicatorContainer: {
     width: 45,
     height: 44,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
+    position: "relative"
   },
   indicatorText: {
     position: "absolute",
@@ -108,8 +95,8 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo_700Bold",
     color: "#C28E5C",
     lineHeight: 20,
-    letterSpacing: 0.014,
-  },
+    letterSpacing: 0.014
+  }
 });
 
 export default StepHeader;

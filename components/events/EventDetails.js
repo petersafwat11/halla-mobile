@@ -5,14 +5,10 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
-
 const EventDetails = ({ event, onStatsPress, onBack }) => {
-  const { isRTL } = useLanguage();
-
   // Format backend data
   const title = event.eventDetails?.title || event.title || "مناسبة بدون عنوان";
   const eventType = event.eventDetails?.type || event.type || "أخرى";
@@ -30,7 +26,7 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
         weekday: "long",
         day: "numeric",
         month: "numeric",
-        year: "numeric",
+        year: "numeric"
       });
       return `${dateStr}${eventTime ? " - " + eventTime : ""}`;
     }
@@ -86,8 +82,8 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
         </View>
 
         {/* Event Title */}
-        <View style={[styles.titleSection, isRTL && styles.titleSectionRTL]}>
-          <Text style={[styles.eventType, isRTL && styles.eventTypeRTL]}>
+        <View style={styles.titleSection}>
+          <Text style={styles.eventType}>
             {eventType === "wedding"
               ? "حفل زفاف"
               : eventType === "birthday"
@@ -96,46 +92,46 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
               ? "تخرج"
               : "مناسبة"}
           </Text>
-          <Text style={[styles.eventTitle, isRTL && styles.eventTitleRTL]}>
+          <Text style={styles.eventTitle}>
             {title}
           </Text>
         </View>
 
         {/* Info Cards */}
-        <View style={[styles.infoCard, isRTL && styles.infoCardRTL]}>
+        <View style={styles.infoCard}>
           {/* Row 1 */}
-          <View style={[styles.infoRow, isRTL && styles.infoRowRTL]}>
+          <View style={styles.infoRow}>
             {/* Guest Count */}
-            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+            <View style={styles.infoItemHalf}>
               <View style={styles.iconContainer}>
                 <Ionicons name="people-outline" size={16} color="#C28E5C" />
               </View>
 
               <View
-                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+                style={styles.infoContent}
               >
-                <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
+                <Text style={styles.infoLabel}>
                   ضيف مدعو
                 </Text>
-                <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
+                <Text style={styles.infoValue}>
                   {guestCount}
                 </Text>
               </View>
             </View>
 
             {/* Moderators */}
-            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+            <View style={styles.infoItemHalf}>
               <View style={styles.iconContainer}>
                 <Ionicons name="person-add-outline" size={16} color="#C28E5C" />
               </View>
 
               <View
-                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+                style={styles.infoContent}
               >
-                <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
+                <Text style={styles.infoLabel}>
                   مشرف
                 </Text>
-                <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
+                <Text style={styles.infoValue}>
                   {moderatorsCount}
                 </Text>
               </View>
@@ -143,38 +139,38 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
           </View>
 
           {/* Row 2 */}
-          <View style={[styles.infoRow, isRTL && styles.infoRowRTL]}>
+          <View style={styles.infoRow}>
             {/* Date Time */}
-            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+            <View style={styles.infoItemHalf}>
               <View style={styles.iconContainer}>
                 <Ionicons name="calendar-outline" size={16} color="#C28E5C" />
               </View>
 
               <View
-                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+                style={styles.infoContent}
               >
-                <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
+                <Text style={styles.infoLabel}>
                   التوقيت
                 </Text>
-                <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
+                <Text style={styles.infoValue}>
                   {formatDateTime()}
                 </Text>
               </View>
             </View>
 
             {/* Location */}
-            <View style={[styles.infoItemHalf, isRTL && styles.infoItemRTL]}>
+            <View style={styles.infoItemHalf}>
               <View style={styles.iconContainer}>
                 <Ionicons name="location-outline" size={16} color="#C28E5C" />
               </View>
 
               <View
-                style={[styles.infoContent, isRTL && styles.infoContentRTL]}
+                style={styles.infoContent}
               >
-                <Text style={[styles.infoLabel, isRTL && styles.infoLabelRTL]}>
+                <Text style={styles.infoLabel}>
                   العنوان
                 </Text>
-                <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
+                <Text style={styles.infoValue}>
                   {location}
                 </Text>
               </View>
@@ -184,38 +180,36 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
 
         {/* Description */}
         <View
-          style={[styles.descriptionCard, isRTL && styles.descriptionCardRTL]}
+          style={styles.descriptionCard}
         >
           <Text
             style={[
-              styles.descriptionTitle,
-              isRTL && styles.descriptionTitleRTL,
-            ]}
+              styles.descriptionTitle]}
           >
             تفاصيل المناسبة
           </Text>
           <Text
-            style={[styles.descriptionText, isRTL && styles.descriptionTextRTL]}
+            style={styles.descriptionText}
           >
             {description || "لا يوجد وصف للمناسبة"}
           </Text>
         </View>
 
         {/* Stats */}
-        <View style={[styles.statsCard, isRTL && styles.statsCardRTL]}>
-          <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+        <View style={styles.statsCard}>
+          <View style={styles.statItem}>
             <Text style={styles.statLabel}>لم يرد: </Text>
             <Text style={styles.statValue}>{noResponse}</Text>
             <View style={[styles.statDot, { backgroundColor: "#A0A0A0" }]} />
           </View>
 
-          <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+          <View style={styles.statItem}>
             <Text style={styles.statLabel}>معتذر: </Text>
             <Text style={styles.statValue}>{declined}</Text>
             <View style={[styles.statDot, { backgroundColor: "#C0392B" }]} />
           </View>
 
-          <View style={[styles.statItem, isRTL && styles.statItemRTL]}>
+          <View style={styles.statItem}>
             <Text style={styles.statLabel}>موافق: </Text>
             <Text style={styles.statValue}>{confirmed}</Text>
             <View style={[styles.statDot, { backgroundColor: "#2A8C5B" }]} />
@@ -238,7 +232,7 @@ const EventDetails = ({ event, onStatsPress, onBack }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9F4EF",
+    backgroundColor: "#F9F4EF"
   },
   header: {
     backgroundColor: "#C28E5C",
@@ -247,42 +241,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-  },
-  headerRTL: {
-    flexDirection: "row-reverse",
-  },
-  backButton: {
+    alignItems: "center"
+  },backButton: {
     width: 32,
     height: 32,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   headerTitle: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#FFF",
     textAlign: "center",
-    flex: 1,
-  },
-  headerTitleRTL: {
-    textAlign: "center",
-  },
-  closeButton: {
+    flex: 1
+  },  closeButton: {
     width: 32,
     height: 32,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   content: {
-    flex: 1,
+    flex: 1
   },
   contentContainer: {
     padding: 16,
-    gap: 16,
+    gap: 16
   },
   imageWrapper: {
-    position: "relative",
+    position: "relative"
   },
   imageContainer: {
     borderRadius: 12,
@@ -292,30 +278,30 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 2
   },
   image: {
     width: "100%",
     height: 200,
-    resizeMode: "cover",
+    resizeMode: "cover"
   },
   placeholderImage: {
     width: "100%",
     height: 200,
     backgroundColor: "#0D4D4D",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   placeholderText: {
     fontSize: 24,
     fontFamily: "Cairo_700Bold",
-    color: "#C28E5C",
+    color: "#C28E5C"
   },
   placeholderSubtext: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#C28E5C",
-    marginTop: 4,
+    marginTop: 4
   },
   imageOverlay: {
     position: "absolute",
@@ -324,105 +310,69 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     backdropFilter: "blur(5px)",
     padding: 8,
-    borderRadius: 4,
+    borderRadius: 4
   },
   titleSection: {
     alignItems: "flex-end",
-    gap: 8,
-  },
-  titleSectionRTL: {},
-  eventType: {
+    gap: 8
+  },  eventType: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
     color: "#2C2C2C",
-    lineHeight: 20,
-  },
-  eventTypeRTL: {
-    textAlign: "right",
-  },
-  eventTitle: {
+    lineHeight: 20
+  },  eventTitle: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    lineHeight: 24,
-  },
-  eventTitleRTL: {
-    textAlign: "right",
-  },
-  infoCard: {
+    lineHeight: 24
+  },  infoCard: {
     backgroundColor: "#FFF",
     borderRadius: 12,
     padding: 16,
     gap: 16,
     borderWidth: 1,
-    borderColor: "#F5ECE4",
-  },
-  infoCardRTL: {},
-  infoRow: {
+    borderColor: "#F5ECE4"
+  },  infoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 16,
-  },
-  infoRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  infoItem: {
+    gap: 16
+  },  infoItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
-  },
-  infoItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  infoItemHalf: {
+    gap: 7
+  },  infoItemHalf: {
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
     flex: 1,
     minWidth: "48%",
-    maxWidth: "48%",
+    maxWidth: "48%"
   },
   infoItemFull: {
     flexDirection: "row",
     alignItems: "center",
     gap: 7,
-    flex: 1,
-  },
-  infoItemFullRTL: {
-    flexDirection: "row-reverse",
-  },
-  infoContent: {
-    alignItems: "center",
-  },
-  infoContentRTL: {
-    alignItems: "flex-end",
-  },
-  infoLabel: {
+    flex: 1
+  },  infoContent: {
+    alignItems: "center"
+  },  infoLabel: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    lineHeight: 16,
-  },
-  infoLabelRTL: {
-    textAlign: "right",
-  },
-  infoValue: {
+    lineHeight: 16
+  },  infoValue: {
     fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    lineHeight: 20,
-  },
-  infoValueRTL: {
-    textAlign: "center",
-  },
-  iconContainer: {
+    lineHeight: 20
+  },  iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#C28E5C",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   descriptionCard: {
     backgroundColor: "#FFF",
@@ -430,75 +380,57 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 16,
     borderWidth: 1,
-    borderColor: "#F5ECE4",
-  },
-  descriptionCardRTL: {},
-  descriptionTitle: {
+    borderColor: "#F5ECE4"
+  },  descriptionTitle: {
     fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    lineHeight: 20,
-  },
-  descriptionTitleRTL: {
-    textAlign: "right",
-  },
-  descriptionText: {
+    lineHeight: 20
+  },  descriptionText: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
-  },
-  descriptionTextRTL: {
-    textAlign: "right",
-  },
-  statsCard: {
+    lineHeight: 16
+  },  statsCard: {
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 12,
     backgroundColor: "#F7F7F7",
-    borderRadius: 8,
-  },
-  statsCardRTL: {
-    flexDirection: "row-reverse",
-  },
-  statItem: {
+    borderRadius: 8
+  },  statItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
-  },
-  statItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  statLabel: {
+    gap: 4
+  },  statLabel: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
+    lineHeight: 16
   },
   statValue: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 16,
+    lineHeight: 16
   },
   statDot: {
     width: 12,
     height: 12,
-    borderRadius: 9999,
+    borderRadius: 9999
   },
   statsButton: {
     backgroundColor: "#C28E5C",
     paddingVertical: 16,
     paddingHorizontal: 16,
     borderRadius: 4,
-    alignItems: "center",
+    alignItems: "center"
   },
   statsButtonText: {
     fontSize: 12,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
-    lineHeight: 16,
-  },
+    lineHeight: 16
+  }
 });
 
 export default EventDetails;

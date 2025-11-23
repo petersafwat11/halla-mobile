@@ -6,22 +6,21 @@ import {
   TouchableOpacity,
   TextInput as RNTextInput,
   Modal,
-  ScrollView,
+  ScrollView
 } from "react-native";
+import { useFormContext, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
 
 const ColorPicker = ({
+  name,
   label,
-  value = "#c28e5c",
-  onChangeColor,
-  error,
+  placeholder,
   disabled = false,
   showPresets = true,
+  rules
 }) => {
-  const { isRTL } = useLanguage();
+  const { control } = useFormContext();
   const [showModal, setShowModal] = useState(false);
-  const [customColor, setCustomColor] = useState(value);
 
   const presetColors = [
     { color: "#c28e5c", name: "ذهبي" },
@@ -38,188 +37,201 @@ const ColorPicker = ({
     { color: "#95a5a6", name: "رمادي فاتح" },
   ];
 
-  const handleColorSelect = (color) => {
-    setCustomColor(color);
-    onChangeColor?.(color);
-  };
-
-  const handleCustomColorChange = (text) => {
-    const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
-    setCustomColor(text);
-    if (hexPattern.test(text)) onChangeColor?.(text);
-  };
-
-  const isColorSelected = (color) =>
-    value?.toLowerCase() === color.toLowerCase();
-
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
-      {label && (
-        <Text style={[styles.label, isRTL && styles.labelRTL]}>{label}</Text>
-      )}
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
+        const [customColor, setCustomColor] = useState(value || "#c28e5c");
 
-      <TouchableOpacity
-        style={[
-          styles.colorDisplay,
-          error && styles.colorDisplayError,
-          disabled && styles.colorDisplayDisabled,
-        ]}
-        onPress={() => !disabled && setShowModal(true)}
-        disabled={disabled}
-      >
-        <View style={[styles.colorPreview, { backgroundColor: value }]} />
-        <Text style={[styles.colorValue, isRTL && styles.colorValueRTL]}>
-          {value}
-        </Text>
-        <Ionicons
-          name="chevron-down"
-          size={20}
-          color="#656565"
-          style={[styles.icon, isRTL && styles.iconRTL]}
-        />
-      </TouchableOpacity>
+        const handleColorSelect = (color) => {
+          setCustomColor(color);
+          onChange(color);
+        };
 
-      {error && (
-        <Text style={[styles.errorText, isRTL && styles.errorTextRTL]}>
-          {error}
-        </Text>
-      )}
+        const handleCustomColorChange = (text) => {
+          const hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+          setCustomColor(text);
+          if (hexPattern.test(text)) onChange(text);
+        };
 
-      {/* Modal */}
-      <Modal
-        visible={showModal}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setShowModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, isRTL && styles.modalContentRTL]}>
-            <View style={[styles.modalHeader, isRTL && styles.modalHeaderRTL]}>
-              <Text style={[styles.modalTitle, isRTL && styles.modalTitleRTL]}>
-                اختر اللون
-              </Text>
+        const isColorSelected = (color) =>
+          value?.toLowerCase() === color.toLowerCase();
 
-              <TouchableOpacity
-                onPress={() => setShowModal(false)}
-                style={styles.closeButton}
-              >
-                <Ionicons name="close" size={24} color="#2C2C2C" />
-              </TouchableOpacity>
-            </View>
+        return (
+          <View style={styles.container}>
+            {label && <Text style={styles.label}>{label}</Text>}
 
-            <ScrollView
-              style={styles.modalBody}
-              contentContainerStyle={styles.modalBodyContent}
-              showsVerticalScrollIndicator={false}
+            <TouchableOpacity
+              style={[
+                styles.colorDisplay,
+                error && styles.colorDisplayError,
+                disabled && styles.colorDisplayDisabled,
+              ]}
+              onPress={() => !disabled && setShowModal(true)}
+              disabled={disabled}
             >
-              {showPresets && (
-                <View style={styles.presetsSection}>
-                  <Text
-                    style={[
-                      styles.sectionTitle,
-                      isRTL && styles.sectionTitleRTL,
-                    ]}
-                  >
-                    الألوان الشائعة
-                  </Text>
+              <View
+                style={[
+                  styles.colorPreview,
+                  { backgroundColor: value || "#c28e5c" },
+                ]}
+              />
+              <Text style={styles.colorValue}>
+                {value || placeholder || "#c28e5c"}
+              </Text>
+              <Ionicons
+                name="chevron-down"
+                size={20}
+                color="#656565"
+                style={styles.icon}
+              />
+            </TouchableOpacity>
 
-                  <View style={styles.colorGrid}>
-                    {presetColors.map((item) => (
-                      <TouchableOpacity
-                        key={item.color}
+            {error && <Text style={styles.errorText}>{error.message}</Text>}
+
+            {/* Modal */}
+            <Modal
+              visible={showModal}
+              transparent
+              animationType="fade"
+              onRequestClose={() => setShowModal(false)}
+            >
+              <View style={styles.modalOverlay}>
+                <View
+                  style={[styles.modalContent]}
+                >
+                  <View
+                    style={[styles.modalHeader]}
+                  >
+                    <Text
+                      style={[styles.modalTitle]}
+                    >
+                      اختر اللون
+                    </Text>
+
+                    <TouchableOpacity
+                      onPress={() => setShowModal(false)}
+                      style={styles.closeButton}
+                    >
+                      <Ionicons name="close" size={24} color="#2C2C2C" />
+                    </TouchableOpacity>
+                  </View>
+
+                  <ScrollView
+                    style={styles.modalBody}
+                    contentContainerStyle={styles.modalBodyContent}
+                    showsVerticalScrollIndicator={false}
+                  >
+                    {showPresets && (
+                      <View style={styles.presetsSection}>
+                        <Text
+                          style={[
+                            styles.sectionTitle,
+                          ]}
+                        >
+                          الألوان الشائعة
+                        </Text>
+
+                        <View style={styles.colorGrid}>
+                          {presetColors.map((item) => (
+                            <TouchableOpacity
+                              key={item.color}
+                              style={[
+                                styles.colorOption,
+                                isColorSelected(item.color) &&
+                                  styles.colorOptionSelected,
+                              ]}
+                              onPress={() => handleColorSelect(item.color)}
+                            >
+                              <View
+                                style={[
+                                  styles.colorCircle,
+                                  { backgroundColor: item.color },
+                                ]}
+                              >
+                                {isColorSelected(item.color) && (
+                                  <Ionicons
+                                    name="checkmark"
+                                    size={20}
+                                    color="#fff"
+                                  />
+                                )}
+                              </View>
+                              <Text
+                                style={[
+                                  styles.colorName,
+                                ]}
+                              >
+                                {item.name}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      </View>
+                    )}
+
+                    <View style={styles.customSection}>
+                      <Text
                         style={[
-                          styles.colorOption,
-                          isColorSelected(item.color) &&
-                            styles.colorOptionSelected,
+                          styles.sectionTitle
                         ]}
-                        onPress={() => handleColorSelect(item.color)}
+                      >
+                        لون مخصص
+                      </Text>
+
+                      <View
+                        style={[
+                          styles.customColorContainer
+                        ]}
                       >
                         <View
                           style={[
-                            styles.colorCircle,
-                            { backgroundColor: item.color },
+                            styles.customColorPreview,
+                            { backgroundColor: customColor },
                           ]}
-                        >
-                          {isColorSelected(item.color) && (
-                            <Ionicons name="checkmark" size={20} color="#fff" />
-                          )}
-                        </View>
-                        <Text
+                        />
+
+                        <RNTextInput
                           style={[
-                            styles.colorName,
-                            isRTL && styles.colorNameRTL,
+                            styles.customColorInput
                           ]}
-                        >
-                          {item.name}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-              )}
+                          value={customColor}
+                          onChangeText={handleCustomColorChange}
+                          placeholder="#c28e5c"
+                          placeholderTextColor="#999"
+                          autoCapitalize="none"
+                          maxLength={7}
+                        />
+                      </View>
+                    </View>
 
-              <View style={styles.customSection}>
-                <Text
-                  style={[styles.sectionTitle, isRTL && styles.sectionTitleRTL]}
-                >
-                  لون مخصص
-                </Text>
-
-                <View
-                  style={[
-                    styles.customColorContainer,
-                    isRTL && styles.customColorContainerRTL,
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.customColorPreview,
-                      { backgroundColor: customColor },
-                    ]}
-                  />
-
-                  <RNTextInput
-                    style={[
-                      styles.customColorInput,
-                      isRTL && styles.customColorInputRTL,
-                    ]}
-                    value={customColor}
-                    onChangeText={handleCustomColorChange}
-                    placeholder="#c28e5c"
-                    placeholderTextColor="#999"
-                    autoCapitalize="none"
-                    maxLength={7}
-                  />
+                    <TouchableOpacity
+                      style={styles.applyButton}
+                      onPress={() => setShowModal(false)}
+                    >
+                      <Text style={styles.applyButtonText}>تطبيق</Text>
+                    </TouchableOpacity>
+                  </ScrollView>
                 </View>
               </View>
-
-              <TouchableOpacity
-                style={styles.applyButton}
-                onPress={() => setShowModal(false)}
-              >
-                <Text style={styles.applyButtonText}>تطبيق</Text>
-              </TouchableOpacity>
-            </ScrollView>
+            </Modal>
           </View>
-        </View>
-      </Modal>
-    </View>
+        );
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 16, width: "100%" },
-  containerRTL: {},
-  label: {
+  container: { marginBottom: 16, width: "100%" },  label: {
     fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
     color: "#2c2c2c",
     marginBottom: 8,
-    textAlign: "left",
-  },
-  labelRTL: { textAlign: "right" },
-
-  colorDisplay: {
+    textAlign: "left"
+  },  colorDisplay: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
@@ -228,7 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     minHeight: 50,
     paddingHorizontal: 16,
-    gap: 12,
+    gap: 12
   },
   colorDisplayError: { borderColor: "#e74c3c" },
   colorDisplayDisabled: { backgroundColor: "#f5f5f5", opacity: 0.6 },
@@ -238,35 +250,26 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: "#e0e0e0",
+    borderColor: "#e0e0e0"
   },
 
   colorValue: {
     flex: 1,
     fontSize: 15,
     fontFamily: "Cairo_400Regular",
-    color: "#2c2c2c",
-  },
-  colorValueRTL: { textAlign: "right" },
-
-  icon: { marginLeft: "auto" },
-  iconRTL: { marginLeft: 0, marginRight: "auto" },
-
-  errorText: {
+    color: "#2c2c2c"
+  },  icon: { marginLeft: "auto" },  errorText: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#e74c3c",
     marginTop: 4,
-    textAlign: "left",
-  },
-  errorTextRTL: { textAlign: "right" },
-
-  modalOverlay: {
+    textAlign: "left"
+  },  modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 20
   },
 
   modalContent: {
@@ -279,7 +282,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
-    elevation: 8,
+    elevation: 8
   },
 
   modalHeader: {
@@ -288,23 +291,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
-  },
-  modalHeaderRTL: { flexDirection: "row-reverse" },
-
-  modalTitle: {
+    borderBottomColor: "#F0F0F0"
+  },  modalTitle: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    flex: 1,
-  },
-  modalTitleRTL: { textAlign: "right" },
-
-  closeButton: {
+    flex: 1
+  },  closeButton: {
     width: 32,
     height: 32,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   modalBody: { flex: 1 },
@@ -316,23 +313,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
     color: "#2c2c2c",
-    marginBottom: 12,
-  },
-  sectionTitleRTL: { textAlign: "right" },
-
-  colorGrid: {
+    marginBottom: 12
+  },  colorGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12,
+    gap: 12
   },
 
   colorOption: {
     alignItems: "center",
     gap: 6,
-    width: "22%",
+    width: "22%"
   },
   colorOptionSelected: {
-    transform: [{ scale: 1.05 }],
+    transform: [{ scale: 1.05 }]
   },
 
   colorCircle: {
@@ -347,14 +341,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 2
   },
 
   colorName: {
     fontSize: 11,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    textAlign: "center",
+    textAlign: "center"
   },
 
   customSection: { marginBottom: 20 },
@@ -368,16 +362,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#fff",
     paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  customColorContainerRTL: { flexDirection: "row-reverse" },
-
-  customColorPreview: {
+    paddingVertical: 8
+  },  customColorPreview: {
     width: 48,
     height: 48,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: "#e0e0e0",
+    borderColor: "#e0e0e0"
   },
 
   customColorInput: {
@@ -385,22 +376,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Cairo_400Regular",
     color: "#2c2c2c",
-    paddingVertical: 8,
-  },
-  customColorInputRTL: { textAlign: "right" },
-
-  applyButton: {
+    paddingVertical: 8
+  },  applyButton: {
     backgroundColor: "#C28E5C",
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   applyButtonText: {
     fontSize: 15,
     fontFamily: "Cairo_600SemiBold",
-    color: "#FFF",
-  },
+    color: "#FFF"
+  }
 });
 
 export default ColorPicker;

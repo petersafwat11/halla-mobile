@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
-  Animated,
+  Animated
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,12 +21,11 @@ import {
   getTicketsAPI,
   createTicketAPI,
   updateTicketAPI,
-  deleteTicketAPI,
+  deleteTicketAPI
 } from "../services/ticketsService";
 import { TopBar } from "../components/plans";
 
 export default function TicketsScreen() {
-  const { isRTL } = useLanguage();
   const { t } = useTranslation("tickets");
   const toast = useToast();
   const { token } = useAuthStore();
@@ -50,7 +49,7 @@ export default function TicketsScreen() {
       delay: 300,
       tension: 50,
       friction: 7,
-      useNativeDriver: true,
+      useNativeDriver: true
     }).start();
   }, []);
 
@@ -122,7 +121,7 @@ export default function TicketsScreen() {
       [
         {
           text: t("form.cancel"),
-          style: "cancel",
+          style: "cancel"
         },
         {
           text: t("card.delete"),
@@ -136,9 +135,8 @@ export default function TicketsScreen() {
               console.error("Failed to delete ticket:", error);
               toast.error(error.message || t("messages.deleteError"));
             }
-          },
-        },
-      ],
+          }
+        }],
       { cancelable: true }
     );
   };
@@ -179,11 +177,11 @@ export default function TicketsScreen() {
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
       <Ionicons name="ticket-outline" size={80} color="#e0e0e0" />
-      <Text style={[styles.emptyTitle, isRTL && styles.emptyTitleRTL]}>
+      <Text style={styles.emptyTitle}>
         {t("emptyState")}
       </Text>
       <Text
-        style={[styles.emptyDescription, isRTL && styles.emptyDescriptionRTL]}
+        style={styles.emptyDescription}
       >
         {t("emptyStateDescription")}
       </Text>
@@ -222,8 +220,7 @@ export default function TicketsScreen() {
           keyExtractor={(item) => item._id}
           contentContainerStyle={[
             styles.listContent,
-            tickets.length === 0 && styles.listContentEmpty,
-          ]}
+            tickets.length === 0 && styles.listContentEmpty]}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={renderEmpty}
           refreshControl={
@@ -239,9 +236,7 @@ export default function TicketsScreen() {
         <Animated.View
           style={[
             styles.fabContainer,
-            isRTL && styles.fabContainerRTL,
-            { transform: [{ scale: fabScale }] },
-          ]}
+            { transform: [{ scale: fabScale }] }]}
         >
           <TouchableOpacity
             style={styles.fab}
@@ -271,79 +266,58 @@ export default function TicketsScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#C28E5C",
+    backgroundColor: "#C28E5C"
   },
   container: {
     flex: 1,
-    backgroundColor: "#f8f8f8",
+    backgroundColor: "#f8f8f8"
   },
   header: {
     paddingHorizontal: 20,
     paddingVertical: 16,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
-  },
-  headerRTL: {
-    // No specific RTL style needed
-  },
-  headerTitle: {
+    borderBottomColor: "#f0f0f0"
+  },headerTitle: {
     fontSize: 24,
     fontFamily: "Cairo_700Bold",
-    color: "#2c2c2c",
-  },
-  headerTitleRTL: {
-    textAlign: "right",
-  },
-  loadingContainer: {
+    color: "#2c2c2c"
+  },  loadingContainer: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   listContent: {
     padding: 16,
-    paddingBottom: 100,
+    paddingBottom: 100
   },
   listContentEmpty: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 40,
-    paddingVertical: 60,
+    paddingVertical: 60
   },
   emptyTitle: {
     fontSize: 20,
     fontFamily: "Cairo_700Bold",
     color: "#2c2c2c",
     marginTop: 16,
-    marginBottom: 8,
-  },
-  emptyTitleRTL: {
-    textAlign: "center",
-  },
-  emptyDescription: {
+    marginBottom: 8
+  },  emptyDescription: {
     fontSize: 15,
     fontFamily: "Cairo_400Regular",
     color: "#666",
     textAlign: "center",
-    lineHeight: 22,
-  },
-  emptyDescriptionRTL: {
-    textAlign: "center",
-  },
-  fabContainer: {
+    lineHeight: 22
+  },  fabContainer: {
     position: "absolute",
     bottom: 24,
-    right: 24,
-  },
-  fabContainerRTL: {
-    right: undefined,
-    left: 24,
-  },
-  fab: {
+    right: 24
+  },  fab: {
     width: 60,
     height: 60,
     borderRadius: 30,
@@ -354,6 +328,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 8,
-  },
+    elevation: 8
+  }
 });

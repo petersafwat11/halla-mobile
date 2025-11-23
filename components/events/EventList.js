@@ -1,11 +1,7 @@
 import React from "react";
 import { FlatList, StyleSheet, View, Text } from "react-native";
 import EventListItem from "./EventListItem";
-import { useLanguage } from "../../localization";
-
 const EventList = ({ events, onEventPress, ListItemComponent = EventListItem }) => {
-  const { isRTL } = useLanguage();
-
   const renderItem = ({ item, index }) => (
     <ListItemComponent
       event={item}
@@ -17,7 +13,7 @@ const EventList = ({ events, onEventPress, ListItemComponent = EventListItem }) 
   if (!events || events.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <Text style={[styles.emptyText, isRTL && styles.emptyTextRTL]}>
+        <Text style={styles.emptyText}>
           لا توجد مناسبات حالياً
         </Text>
       </View>
@@ -39,22 +35,18 @@ const EventList = ({ events, onEventPress, ListItemComponent = EventListItem }) 
 
 const styles = StyleSheet.create({
   listContent: {
-    padding: 24,
+    padding: 24
   },
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 24,
+    padding: 24
   },
   emptyText: {
     fontSize: 16,
     fontFamily: "Cairo_500Medium",
-    color: "#656565",
-  },
-  emptyTextRTL: {
-    textAlign: "center",
-  },
-});
+    color: "#656565"
+  },});
 
 export default EventList;

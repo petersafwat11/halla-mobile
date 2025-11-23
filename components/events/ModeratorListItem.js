@@ -1,42 +1,37 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
-
 const ModeratorListItem = ({ moderator, onEdit, onDelete }) => {
-  const { isRTL } = useLanguage();
-
   const handleDelete = () => {
     Alert.alert("تأكيد الحذف", "هل أنت متأكد من حذف هذا المشرف؟", [
       { text: "إلغاء", style: "cancel" },
       {
         text: "حذف",
         style: "destructive",
-        onPress: () => onDelete && onDelete(moderator),
-      },
-    ]);
+        onPress: () => onDelete && onDelete(moderator)
+      }]);
   };
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
+    <View style={styles.container}>
       {/* Crown Icon */}
       <View style={styles.crownContainer}>
         <Ionicons name="ribbon-outline" size={24} color="#C28E5C" />
       </View>
       {/* Left Content */}
-      <View style={[styles.leftContent, isRTL && styles.leftContentRTL]}>
-        <View style={[styles.nameSection, isRTL && styles.nameSectionRTL]}>
-          <Text style={[styles.name, isRTL && styles.nameRTL]}>
+      <View style={styles.leftContent}>
+        <View style={styles.nameSection}>
+          <Text style={styles.name}>
             {moderator.name || "أحمد كمال ابراهيم"}
           </Text>
-          <Text style={[styles.phone, isRTL && styles.phoneRTL]}>
+          <Text style={styles.phone}>
             {moderator.phone || "96605196749"}
           </Text>
         </View>
       </View>
 
       {/* Actions */}
-      <View style={[styles.actions, isRTL && styles.actionsRTL]}>
+      <View style={styles.actions}>
         {onEdit && (
           <TouchableOpacity
             style={styles.actionButton}
@@ -74,70 +69,46 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
     justifyContent: "flex-start",
-    gap: 8,
-  },
-  containerRTL: {
-    flexDirection: "row-reverse",
-  },
-  leftContent: {
+    gap: 8
+  },leftContent: {
     flexDirection: "row",
     // justifyContent: "flex-end",
     alignItems: "center",
     gap: 8,
-    // flex: 1,
-  },
-  leftContentRTL: {
-    flexDirection: "row-reverse",
-  },
-  nameSection: {
+    // flex: 1
+  },  nameSection: {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "flex-end",
-    gap: 4,
-  },
-  nameSectionRTL: {},
-  name: {
+    gap: 4
+  },  name: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
     color: "#2C2C2C",
-    lineHeight: 20,
-  },
-  nameRTL: {
-    textAlign: "right",
-  },
-  phone: {
+    lineHeight: 20
+  },  phone: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    lineHeight: 16,
-  },
-  phoneRTL: {
-    textAlign: "right",
-  },
-  crownContainer: {
+    lineHeight: 16
+  },  crownContainer: {
     width: 24,
     height: 24,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   actions: {
     flexDirection: "row",
     gap: 8,
-    marginLeft: "auto",
-  },
-  actionsRTL: {
-    flexDirection: "row-reverse",
-    marginLeft: 0,
-    marginRight: "auto",
-  },
-  actionButton: {
+    marginLeft: "auto"
+  },  actionButton: {
     width: 32,
     height: 32,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
-    backgroundColor: "#F5F5F5",
-  },
+    backgroundColor: "#F5F5F5"
+  }
 });
 
 export default ModeratorListItem;

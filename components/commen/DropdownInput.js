@@ -8,162 +8,157 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
+import { useFormContext, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
 
 const DropdownInput = ({
+  name,
   label,
   placeholder,
-  value,
-  onSelect,
   options = [],
-  error,
   disabled = false,
   modalTitle = "اختر",
   renderItem,
+  rules,
   ...props
 }) => {
-  const { isRTL } = useLanguage();
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  const handleSelect = (option) => {
-    setSelectedOption(option);
-    onSelect(option);
-    setIsOpen(false);
-  };
-
-  const displayValue = selectedOption?.label || value || "";
+  const { control } = useFormContext();
 
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
-      {label && (
-        <Text style={[styles.label, isRTL && styles.labelRTL]}>{label}</Text>
-      )}
-      <TouchableOpacity
-        style={[
-          styles.inputContainer,
-          error && styles.inputContainerError,
-          disabled && styles.inputContainerDisabled,
-          isRTL && styles.inputContainerRTL,
-        ]}
-        onPress={() => !disabled && setIsOpen(true)}
-        disabled={disabled}
-        activeOpacity={0.7}
-      >
-        <Ionicons
-          name="chevron-down"
-          size={24}
-          color="#C28E5C"
-          style={[styles.icon, isRTL && styles.iconRTL]}
-        />
-        <Text
-          style={[
-            styles.inputText,
-            !displayValue && styles.placeholderText,
-            isRTL && styles.inputTextRTL,
-          ]}
-        >
-          {displayValue || placeholder}
-        </Text>
-      </TouchableOpacity>
-      {error && (
-        <Text style={[styles.errorText, isRTL && styles.errorTextRTL]}>
-          {error}
-        </Text>
-      )}
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
+        const [isOpen, setIsOpen] = useState(false);
+        const selectedOption =
+          options.find((opt) => opt.value === value) || null;
 
-      <Modal
-        visible={isOpen}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setIsOpen(false)}
-      >
-        <Pressable style={styles.overlay} onPress={() => setIsOpen(false)}>
-          <Pressable
-            style={styles.modalContainer}
-            onPress={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <View style={[styles.modalHeader, isRTL && styles.modalHeaderRTL]}>
-              <TouchableOpacity onPress={() => setIsOpen(false)} hitSlop={8}>
-                <Ionicons name="close" size={24} color="#000" />
-              </TouchableOpacity>
-              <View style={styles.modalTitleContainer}>
-                <Text style={[styles.modalTitle, isRTL && styles.modalTitleRTL]}>
-                  {modalTitle}
-                </Text>
-              </View>
-            </View>
+        const handleSelect = (option) => {
+          onChange(option.value);
+          setIsOpen(false);
+        };
 
-            {/* Options List */}
-            <FlatList
-              data={options}
-              keyExtractor={(item, index) => item.id || item.value || index.toString()}
-              renderItem={({ item }) =>
-                renderItem ? (
-                  renderItem(item, () => handleSelect(item))
-                ) : (
-                  <TouchableOpacity
-                    style={[
-                      styles.optionItem,
-                      selectedOption?.value === item.value && styles.optionItemSelected,
-                      isRTL && styles.optionItemRTL,
-                    ]}
-                    onPress={() => handleSelect(item)}
-                    activeOpacity={0.7}
-                  >
-                    <View style={styles.optionContent}>
+        const displayValue = options.find((opt) => opt.value === value)?.label;
+
+        return (
+          <View style={styles.container}>
+            {label && <Text style={styles.label}>{label}</Text>}
+            <TouchableOpacity
+              style={[
+                styles.inputContainer,
+                error && styles.inputContainerError,
+                disabled && styles.inputContainerDisabled,
+              ]}
+              onPress={() => !disabled && setIsOpen(true)}
+              disabled={disabled}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="chevron-down" size={20} color="#656565" />
+              <Text
+                style={[
+                  styles.inputText,
+                  !displayValue && styles.placeholderText,
+                ]}
+              >
+                {displayValue || placeholder}
+              </Text>
+            </TouchableOpacity>
+            {error && <Text style={styles.errorText}>{error.message}</Text>}
+
+            <Modal
+              visible={isOpen}
+              transparent
+              animationType="slide"
+              onRequestClose={() => setIsOpen(false)}
+            >
+              <Pressable
+                style={styles.overlay}
+                onPress={() => setIsOpen(false)}
+              >
+                <Pressable
+                  style={styles.modalContainer}
+                  onPress={(e) => e.stopPropagation()}
+                >
+                  {/* Modal Header */}
+                  <View style={styles.modalHeader}>
+                    <TouchableOpacity
+                      onPress={() => setIsOpen(false)}
+                      hitSlop={8}
+                    >
+                      <Ionicons name="close" size={24} color="#000" />
+                    </TouchableOpacity>
+                    <View style={styles.modalTitleContainer}>
+                      <Text style={styles.modalTitle}>{modalTitle}</Text>
+                    </View>
+                  </View>
+
+                  {/* Options List */}
+                  <FlatList
+                    data={options}
+                    keyExtractor={(item, index) =>
+                      item.id || item.value || index.toString()
+                    }
+                    renderItem={({ item }) =>
+                      renderItem ? (
+                        renderItem(item, () => handleSelect(item))
+                      ) : (
+                        <TouchableOpacity
+                          style={[
+                            styles.optionItem,
+                            selectedOption?.value === item.value &&
+                              styles.optionItemSelected,
+                          ]}
+                          onPress={() => handleSelect(item)}
+                          activeOpacity={0.7}
+                        >
+                          <View style={styles.optionContent}>
+                            <Text style={styles.optionText}>{item.label}</Text>
+                            {item.icon && (
+                              <View style={styles.optionIcon}>{item.icon}</View>
+                            )}
+                          </View>
+                        </TouchableOpacity>
+                      )
+                    }
+                    contentContainerStyle={styles.optionsList}
+                  />
+
+                  {/* Action Buttons */}
+                  <View style={styles.modalActions}>
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={() => setIsOpen(false)}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.cancelButtonText}>إلغاء</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.confirmButton,
+                        !selectedOption && styles.confirmButtonDisabled,
+                      ]}
+                      onPress={() => setIsOpen(false)}
+                      disabled={!selectedOption}
+                      activeOpacity={0.7}
+                    >
                       <Text
                         style={[
-                          styles.optionText,
-                          isRTL && styles.optionTextRTL,
+                          styles.confirmButtonText,
+                          !selectedOption && styles.confirmButtonTextDisabled,
                         ]}
                       >
-                        {item.label}
+                        تأكيد
                       </Text>
-                      {item.icon && (
-                        <View style={styles.optionIcon}>{item.icon}</View>
-                      )}
-                    </View>
-                  </TouchableOpacity>
-                )
-              }
-              contentContainerStyle={styles.optionsList}
-            />
-
-            {/* Action Buttons */}
-            <View style={styles.modalActions}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => setIsOpen(false)}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.cancelButtonText}>إلغاء</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.confirmButton,
-                  !selectedOption && styles.confirmButtonDisabled,
-                ]}
-                onPress={() => setIsOpen(false)}
-                disabled={!selectedOption}
-                activeOpacity={0.7}
-              >
-                <Text
-                  style={[
-                    styles.confirmButtonText,
-                    !selectedOption && styles.confirmButtonTextDisabled,
-                  ]}
-                >
-                  تأكيد
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </Pressable>
-        </Pressable>
-      </Modal>
-    </View>
+                    </TouchableOpacity>
+                  </View>
+                </Pressable>
+              </Pressable>
+            </Modal>
+          </View>
+        );
+      }}
+    />
   );
 };
 
@@ -172,21 +167,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     width: "100%",
   },
-  containerRTL: {},
   label: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
     color: "#2C2C2C",
     marginBottom: 8,
     paddingHorizontal: 8,
-    textAlign: "left",
-  },
-  labelRTL: {
-    textAlign: "right",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 12,
     borderWidth: 1.5,
     borderTopWidth: 1,
     borderRightWidth: 1.5,
@@ -199,22 +190,12 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     minHeight: 50,
   },
-  inputContainerRTL: {
-    flexDirection: "row-reverse",
-  },
   inputContainerError: {
     borderColor: "#e74c3c",
   },
   inputContainerDisabled: {
     backgroundColor: "#f5f5f5",
     opacity: 0.6,
-  },
-  icon: {
-    marginLeft: 0,
-  },
-  iconRTL: {
-    marginLeft: 0,
-    marginRight: 0,
   },
   inputText: {
     flex: 1,
@@ -223,10 +204,6 @@ const styles = StyleSheet.create({
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.08,
-    textAlign: "right",
-  },
-  inputTextRTL: {
-    textAlign: "right",
   },
   placeholderText: {
     color: "#767676",
@@ -237,10 +214,6 @@ const styles = StyleSheet.create({
     color: "#e74c3c",
     marginTop: 4,
     paddingHorizontal: 8,
-    textAlign: "left",
-  },
-  errorTextRTL: {
-    textAlign: "right",
   },
   overlay: {
     flex: 1,
@@ -262,9 +235,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#F2F2F2",
   },
-  modalHeaderRTL: {
-    flexDirection: "row-reverse",
-  },
   modalTitleContainer: {
     flex: 1,
     alignItems: "flex-end",
@@ -274,10 +244,6 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 32,
-    textAlign: "right",
-  },
-  modalTitleRTL: {
-    textAlign: "right",
   },
   optionsList: {
     paddingHorizontal: 24,
@@ -292,7 +258,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5ECE4",
     borderRadius: 12,
   },
-  optionItemRTL: {},
   optionContent: {
     flexDirection: "row",
     justifyContent: "flex-end",
@@ -306,10 +271,6 @@ const styles = StyleSheet.create({
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.024,
-    textAlign: "right",
-  },
-  optionTextRTL: {
-    textAlign: "right",
   },
   optionIcon: {
     width: 40,

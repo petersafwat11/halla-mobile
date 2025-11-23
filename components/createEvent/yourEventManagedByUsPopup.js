@@ -6,13 +6,9 @@ import {
   Modal,
   TouchableOpacity,
   Image,
-  Pressable,
+  Pressable
 } from "react-native";
-import { useLanguage } from "../../localization";
-
 const YourEventManagedByUsPopup = ({ visible, onClose, onContactUs }) => {
-  const { isRTL } = useLanguage();
-
   return (
     <Modal
       visible={visible}
@@ -26,18 +22,18 @@ const YourEventManagedByUsPopup = ({ visible, onClose, onContactUs }) => {
             {/* Image */}
             <Image
               source={{
-                uri: "https://api.builder.io/api/v1/image/assets/TEMP/81b61464bd4ea192b71ab86caee3678fbacffef8?width=320",
+                uri: "https://api.builder.io/api/v1/image/assets/TEMP/81b61464bd4ea192b71ab86caee3678fbacffef8?width=320"
               }}
               style={styles.image}
               resizeMode="contain"
             />
 
             {/* Title and Description */}
-            <View style={[styles.textContainer, isRTL && styles.textContainerRTL]}>
-              <Text style={[styles.title, isRTL && styles.titleRTL]}>
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>
                 دعوتك علينا
               </Text>
-              <Text style={[styles.description, isRTL && styles.descriptionRTL]}>
+              <Text style={styles.description}>
                 ممكن تبعتلنا كل التفاصيل، واحنا هنخليلك كل الخطوات سهلة وبسيطة!
               </Text>
             </View>
@@ -73,14 +69,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: 24
   },
   modalContainer: {
     width: "100%",
     maxWidth: 342,
     backgroundColor: "#FFF",
     borderRadius: 12,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   content: {
     flexDirection: "column",
@@ -88,48 +84,38 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 16,
     paddingTop: 20,
-    paddingBottom: 24,
+    paddingBottom: 24
   },
   image: {
     width: 160,
-    height: 160,
+    height: 160
   },
   textContainer: {
     width: "100%",
     flexDirection: "column",
     alignItems: "center",
-    gap: 16,
-  },
-  textContainerRTL: {},
-  title: {
+    gap: 16
+  },  title: {
     fontSize: 24,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 32,
-    textAlign: "center",
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  description: {
+    textAlign: "center"
+  },description: {
     fontSize: 16,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
     lineHeight: 24,
     letterSpacing: 0.08,
-    textAlign: "center",
-  },
-  descriptionRTL: {
-    textAlign: "center",
-  },
-  buttonContainer: {
+    textAlign: "center"
+  },buttonContainer: {
     flexDirection: "column",
     alignItems: "flex-start",
     backgroundColor: "#FFF",
     paddingHorizontal: 24,
     paddingVertical: 4,
     paddingBottom: 20,
-    gap: 16,
+    gap: 16
   },
   primaryButton: {
     width: "100%",
@@ -138,14 +124,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#C28E5C",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   primaryButtonText: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
     lineHeight: 24,
-    letterSpacing: 0.08,
+    letterSpacing: 0.08
   },
   secondaryButton: {
     width: "100%",
@@ -154,15 +140,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: "#FFF",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   secondaryButtonText: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#6B4E33",
     lineHeight: 24,
-    letterSpacing: 0.08,
-  },
+    letterSpacing: 0.08
+  }
 });
 
 export default YourEventManagedByUsPopup;

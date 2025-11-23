@@ -9,16 +9,13 @@ import {
   Image,
   Animated,
   Dimensions,
-  Linking,
+  Linking
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLanguage } from "../../localization";
-
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const MoreInfoPopup = ({ visible, vendor, onClose }) => {
-  const { isRTL } = useLanguage();
   const slideAnim = React.useRef(new Animated.Value(SCREEN_HEIGHT)).current;
 
   React.useEffect(() => {
@@ -27,13 +24,13 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
         toValue: 0,
         tension: 50,
         friction: 8,
-        useNativeDriver: true,
+        useNativeDriver: true
       }).start();
     } else {
       Animated.timing(slideAnim, {
         toValue: SCREEN_HEIGHT,
         duration: 300,
-        useNativeDriver: true,
+        useNativeDriver: true
       }).start();
     }
   }, [visible]);
@@ -82,7 +79,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                 source={{
                   uri:
                     vendor.image ||
-                    "https://api.builder.io/api/v1/image/assets/TEMP/fcdfb1891ef72b7b32774a9d251821471803e423",
+                    "https://api.builder.io/api/v1/image/assets/TEMP/fcdfb1891ef72b7b32774a9d251821471803e423"
                 }}
                 style={styles.headerImage}
                 resizeMode="cover"
@@ -91,8 +88,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                 colors={[
                   "rgba(0, 0, 0, 0.60)",
                   "rgba(0, 0, 0, 0.40)",
-                  "rgba(0, 0, 0, 0.70)",
-                ]}
+                  "rgba(0, 0, 0, 0.70)"]}
                 style={styles.gradient}
               />
 
@@ -106,7 +102,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                 </TouchableOpacity>
 
                 <Text
-                  style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}
+                  style={styles.headerTitle}
                 >
                   {vendor.name}
                 </Text>
@@ -118,18 +114,18 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
               {/* Service Duration */}
               <View style={styles.infoCard}>
                 <View
-                  style={[styles.infoHeader, isRTL && styles.infoHeaderRTL]}
+                  style={styles.infoHeader}
                 >
                   <View style={styles.iconBadge}>
                     <Ionicons name="time-outline" size={14} color="#2563EB" />
                   </View>
                   <Text
-                    style={[styles.infoTitle, isRTL && styles.infoTitleRTL]}
+                    style={styles.infoTitle}
                   >
                     مدة تنفيذ الخدمة
                   </Text>
                 </View>
-                <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
+                <Text style={styles.infoValue}>
                   {vendor.duration || "8-12 ساعة"}
                 </Text>
               </View>
@@ -137,18 +133,18 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
               {/* Price Range */}
               <View style={styles.infoCard}>
                 <View
-                  style={[styles.infoHeader, isRTL && styles.infoHeaderRTL]}
+                  style={styles.infoHeader}
                 >
                   <View style={[styles.iconBadge, styles.iconBadgeYellow]}>
                     <Ionicons name="cash-outline" size={14} color="#D97706" />
                   </View>
                   <Text
-                    style={[styles.infoTitle, isRTL && styles.infoTitleRTL]}
+                    style={styles.infoTitle}
                   >
                     نطاق السعر
                   </Text>
                 </View>
-                <Text style={[styles.infoValue, isRTL && styles.infoValueRTL]}>
+                <Text style={styles.infoValue}>
                   {vendor.priceRange || "2,500 دولار - 8,000 دولار"}
                 </Text>
               </View>
@@ -157,9 +153,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
               <View style={styles.includedCard}>
                 <Text
                   style={[
-                    styles.includedTitle,
-                    isRTL && styles.includedTitleRTL,
-                  ]}
+                    styles.includedTitle]}
                 >
                   ما هو مدرج
                 </Text>
@@ -171,22 +165,17 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                       "حقوق الطباعة متضمنة",
                       "خيارات التصوير الفوتوغرافي بالطائرات بدون طيار",
                       "ألبوم صور رقمي",
-                      "تغطية ليوم كامل",
-                    ]
+                      "تغطية ليوم كامل"]
                   ).map((item, index) => (
                     <View
                       key={index}
                       style={[
-                        styles.includedItem,
-                        isRTL && styles.includedItemRTL,
-                      ]}
+                        styles.includedItem]}
                     >
                       <View style={styles.bullet} />
                       <Text
                         style={[
-                          styles.includedText,
-                          isRTL && styles.includedTextRTL,
-                        ]}
+                          styles.includedText]}
                       >
                         {item}
                       </Text>
@@ -199,25 +188,21 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
               <View style={styles.vendorCard}>
                 <View style={styles.vendorHeader}>
                   <View
-                    style={[styles.vendorInfo, isRTL && styles.vendorInfoRTL]}
+                    style={styles.vendorInfo}
                   >
                     <View style={styles.vendorDetails}>
                       <Text
                         style={[
-                          styles.vendorName,
-                          isRTL && styles.vendorNameRTL,
-                        ]}
+                          styles.vendorName]}
                       >
                         {vendor.companyName || "التهامى للتصوير والموسيقى"}
                       </Text>
 
                       <View
                         style={[
-                          styles.vendorStats,
-                          isRTL && styles.vendorStatsRTL,
-                        ]}
+                          styles.vendorStats]}
                       >
-                        <View style={[styles.stat, isRTL && styles.statRTL]}>
+                        <View style={styles.stat}>
                           <Text style={styles.statValue}>
                             ({vendor.reviewCount || "127"} شخص)
                           </Text>
@@ -227,7 +212,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                           <Ionicons name="star" size={12} color="#262626" />
                         </View>
 
-                        <View style={[styles.stat, isRTL && styles.statRTL]}>
+                        <View style={styles.stat}>
                           <Text style={styles.statValue}>
                             {vendor.experience || "10"} سنوات
                           </Text>
@@ -254,9 +239,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                 <View style={styles.contactSection}>
                   <Text
                     style={[
-                      styles.contactTitle,
-                      isRTL && styles.contactTitleRTL,
-                    ]}
+                      styles.contactTitle]}
                   >
                     معلومات الاتصال
                   </Text>
@@ -265,9 +248,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                     {vendor.location && (
                       <TouchableOpacity
                         style={[
-                          styles.contactItem,
-                          isRTL && styles.contactItemRTL,
-                        ]}
+                          styles.contactItem]}
                         activeOpacity={0.7}
                       >
                         <Ionicons
@@ -277,9 +258,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                         />
                         <Text
                           style={[
-                            styles.contactText,
-                            isRTL && styles.contactTextRTL,
-                          ]}
+                            styles.contactText]}
                         >
                           {vendor.location}
                         </Text>
@@ -289,9 +268,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                     {vendor.website && (
                       <TouchableOpacity
                         style={[
-                          styles.contactItem,
-                          isRTL && styles.contactItemRTL,
-                        ]}
+                          styles.contactItem]}
                         onPress={() => handleWebsite(vendor.website)}
                         activeOpacity={0.7}
                       >
@@ -302,9 +279,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                         />
                         <Text
                           style={[
-                            styles.contactText,
-                            isRTL && styles.contactTextRTL,
-                          ]}
+                            styles.contactText]}
                         >
                           {vendor.website}
                         </Text>
@@ -314,9 +289,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                     {vendor.email && (
                       <TouchableOpacity
                         style={[
-                          styles.contactItem,
-                          isRTL && styles.contactItemRTL,
-                        ]}
+                          styles.contactItem]}
                         onPress={() => handleEmail(vendor.email)}
                         activeOpacity={0.7}
                       >
@@ -327,9 +300,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                         />
                         <Text
                           style={[
-                            styles.contactText,
-                            isRTL && styles.contactTextRTL,
-                          ]}
+                            styles.contactText]}
                         >
                           {vendor.email}
                         </Text>
@@ -339,9 +310,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                     {vendor.phone && (
                       <TouchableOpacity
                         style={[
-                          styles.contactItem,
-                          isRTL && styles.contactItemRTL,
-                        ]}
+                          styles.contactItem]}
                         onPress={() => handleCall(vendor.phone)}
                         activeOpacity={0.7}
                       >
@@ -352,9 +321,7 @@ const MoreInfoPopup = ({ visible, vendor, onClose }) => {
                         />
                         <Text
                           style={[
-                            styles.contactText,
-                            isRTL && styles.contactTextRTL,
-                          ]}
+                            styles.contactText]}
                         >
                           {vendor.phone}
                         </Text>
@@ -375,67 +342,63 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
+    justifyContent: "flex-end"
   },
   backdrop: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 0
   },
   container: {
     backgroundColor: "#F8FAFC",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: SCREEN_HEIGHT * 0.9,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   scrollView: {
-    maxHeight: SCREEN_HEIGHT * 0.9,
+    maxHeight: SCREEN_HEIGHT * 0.9
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 40
   },
   header: {
     height: 82,
-    position: "relative",
+    position: "relative"
   },
   headerImage: {
     width: "100%",
     height: "100%",
-    position: "absolute",
+    position: "absolute"
   },
   gradient: {
     position: "absolute",
     width: "100%",
-    height: "100%",
+    height: "100%"
   },
   headerContent: {
     flexDirection: "row",
     alignItems: "center",
     padding: 24,
-    gap: 24,
+    gap: 24
   },
   closeButton: {
     width: 24,
     height: 24,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   headerTitle: {
     flex: 1,
     fontFamily: "Cairo_700Bold",
     fontSize: 24,
     color: "#FFF",
-    lineHeight: 32,
-  },
-  headerTitleRTL: {
-    textAlign: "right",
-  },
-  content: {
+    lineHeight: 32
+  },  content: {
     padding: 16,
-    gap: 12,
+    gap: 12
   },
   infoCard: {
     backgroundColor: "#FFF",
@@ -448,43 +411,31 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 1,
+    elevation: 1
   },
   infoHeader: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-  },
-  infoHeaderRTL: {
-    flexDirection: "row-reverse",
-  },
-  iconBadge: {
+    gap: 12
+  },  iconBadge: {
     backgroundColor: "#EFF6FF",
     borderRadius: 5,
-    padding: 5,
+    padding: 5
   },
   iconBadgeYellow: {
-    backgroundColor: "#FFFBEB",
+    backgroundColor: "#FFFBEB"
   },
   infoTitle: {
     fontFamily: "Cairo_700Bold",
     fontSize: 14,
     color: "#2C2C2C",
-    lineHeight: 20,
-  },
-  infoTitleRTL: {
-    textAlign: "right",
-  },
-  infoValue: {
+    lineHeight: 20
+  },  infoValue: {
     fontFamily: "Cairo_500Medium",
     fontSize: 14,
     color: "#1C1917",
-    lineHeight: 16,
-  },
-  infoValueRTL: {
-    textAlign: "right",
-  },
-  includedCard: {
+    lineHeight: 16
+  },  includedCard: {
     backgroundColor: "#FFF",
     borderRadius: 12,
     borderWidth: 1,
@@ -495,45 +446,33 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 1,
+    elevation: 1
   },
   includedTitle: {
     fontFamily: "Cairo_700Bold",
     fontSize: 14,
     color: "#2C2C2C",
-    lineHeight: 20,
-  },
-  includedTitleRTL: {
-    textAlign: "right",
-  },
-  includedList: {
-    gap: 12,
+    lineHeight: 20
+  },  includedList: {
+    gap: 12
   },
   includedItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-  },
-  includedItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  bullet: {
+    gap: 12
+  },  bullet: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: "#D97706",
+    backgroundColor: "#D97706"
   },
   includedText: {
     flex: 1,
     fontFamily: "Cairo_400Regular",
     fontSize: 14,
     color: "#44403C",
-    lineHeight: 16,
-  },
-  includedTextRTL: {
-    textAlign: "right",
-  },
-  vendorCard: {
+    lineHeight: 16
+  },  vendorCard: {
     backgroundColor: "#FFF",
     borderRadius: 12,
     borderWidth: 1,
@@ -544,96 +483,68 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 1,
+    elevation: 1
   },
   vendorHeader: {
-    gap: 12,
+    gap: 12
   },
   vendorInfo: {
     flexDirection: "row",
-    gap: 8,
-  },
-  vendorInfoRTL: {
-    flexDirection: "row-reverse",
-  },
-  vendorDetails: {
+    gap: 8
+  },  vendorDetails: {
     flex: 1,
-    gap: 8,
+    gap: 8
   },
   vendorName: {
     fontFamily: "Cairo_700Bold",
     fontSize: 14,
     color: "#262626",
-    lineHeight: 20,
-  },
-  vendorNameRTL: {
-    textAlign: "right",
-  },
-  vendorStats: {
+    lineHeight: 20
+  },  vendorStats: {
     flexDirection: "row",
-    gap: 8,
-  },
-  vendorStatsRTL: {
-    flexDirection: "row-reverse",
-  },
-  stat: {
+    gap: 8
+  },  stat: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-  },
-  statRTL: {
-    flexDirection: "row-reverse",
-  },
-  statLabel: {
+    gap: 8
+  },  statLabel: {
     fontFamily: "Cairo_400Regular",
     fontSize: 12,
     color: "#262626",
-    lineHeight: 16,
+    lineHeight: 16
   },
   statValue: {
     fontFamily: "Cairo_400Regular",
     fontSize: 12,
     color: "#737373",
-    lineHeight: 16,
+    lineHeight: 16
   },
   vendorLogo: {
     width: 24,
     height: 24,
-    borderRadius: 4,
+    borderRadius: 4
   },
   contactSection: {
-    gap: 8,
+    gap: 8
   },
   contactTitle: {
     fontFamily: "Cairo_500Medium",
     fontSize: 14,
     color: "#262626",
-    lineHeight: 20,
-  },
-  contactTitleRTL: {
-    textAlign: "right",
-  },
-  contactList: {
-    gap: 12,
+    lineHeight: 20
+  },  contactList: {
+    gap: 12
   },
   contactItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
-  },
-  contactItemRTL: {
-    flexDirection: "row-reverse",
-  },
-  contactText: {
+    gap: 12
+  },  contactText: {
     flex: 1,
     fontFamily: "Cairo_400Regular",
     fontSize: 14,
     color: "#656565",
-    lineHeight: 16,
-  },
-  contactTextRTL: {
-    textAlign: "right",
-  },
-});
+    lineHeight: 16
+  },});
 
 export default MoreInfoPopup;

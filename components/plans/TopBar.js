@@ -4,21 +4,21 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  StatusBar,
+  StatusBar
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
 import { useNavigation } from "@react-navigation/native";
+import { useLanguage } from "../../localization";
 
 const TopBar = ({
   title,
   showBack = false,
   onBack,
   rightContent = null,
-  leftContent = null,
+  leftContent = null
 }) => {
-  const { isRTL } = useLanguage();
   const navigation = useNavigation();
+  const { isRTL } = useLanguage();
 
   const handleBack = () => {
     if (onBack) {
@@ -59,12 +59,12 @@ const TopBar = ({
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#C28E5C" />
 
-      <View style={[styles.content, isRTL && styles.contentRTL]}>
+      <View style={styles.content}>
         <View
-          style={[styles.titleContainer, isRTL && styles.titleContainerRTL]}
+          style={styles.titleContainer}
         >
           {renderLeft()}
-          <Text style={[styles.title, isRTL && styles.titleRTL]}>{title}</Text>
+          <Text style={styles.title}>{title}</Text>
         </View>
 
         {rightContent ? (
@@ -80,7 +80,7 @@ const TopBar = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#C28E5C",
-    paddingTop: StatusBar.currentHeight || 0,
+    paddingTop: StatusBar.currentHeight || 0
   },
   content: {
     flexDirection: "row",
@@ -90,58 +90,45 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     height: 57,
     width: "100%",
-    // justifyContent: "center",
-  },
-  contentRTL: {
-    flexDirection: "row-reverse",
-  },
-  backButton: {
+    // justifyContent: "center"
+  },backButton: {
     width: 24,
     height: 24,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   placeholder: {
     width: 24,
-    height: 24,
+    height: 24
   },
   leftCustom: {
     minWidth: 24,
     alignItems: "flex-start",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   rightContent: {
     minWidth: 24,
-    alignItems: "flex-end",
+    alignItems: "flex-end"
   },
   titleContainer: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-  },
-  titleContainerRTL: {
-    flexDirection: "row-reverse",
-  },
-  title: {
+    gap: 10
+  },  title: {
     fontFamily: "Cairo_700Bold",
     fontSize: 16,
-    color: "#FFF",
-    textAlign: "left",
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  reminderButton: {
+    color: "#FFF"
+    },reminderButton: {
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 4,
+    borderRadius: 4
   },
   reminderText: {
     fontFamily: "Cairo_600SemiBold",
     fontSize: 12,
-    color: "#FFF",
-  },
+    color: "#FFF"
+  }
 });
 
 export default TopBar;

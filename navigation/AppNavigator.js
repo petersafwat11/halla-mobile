@@ -18,6 +18,7 @@ import NotificationSettingsScreen from "../screens/NotificationSettingsScreen";
 import TicketsScreen from "../screens/TicketsScreen";
 import Marketplace from "../screens/Marketplace";
 import EventsScreen from "../screens/EventsScreen";
+import CreateEventScreen from "../screens/CreateEventScreen";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -122,6 +123,7 @@ function MainStack() {
       }}
     >
       <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+      <Stack.Screen name="CreateEventScreen" component={CreateEventScreen} />
       <Stack.Screen name="AccountSettings" component={AccountSettingsScreen} />
       <Stack.Screen
         name="NotificationSettings"

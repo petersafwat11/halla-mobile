@@ -7,7 +7,6 @@ import {
   Alert,
 } from "react-native";
 import { useFormContext } from "react-hook-form";
-import { useLanguage } from "../../localization";
 import EventsService from "../../services/EventsService";
 import TextInput from "../commen/TextInput";
 import Button from "../commen/Button";
@@ -39,7 +38,6 @@ const ListIcon = () => (
 );
 
 const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
-  const { isRTL } = useLanguage();
   const { setValue, watch } = useFormContext();
   const formData = watch();
 
@@ -110,8 +108,7 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
             );
             setValue("guestList", updatedList, { shouldValidate: true });
           },
-        },
-      ]);
+        }]);
     },
     [formData.guestList, setValue]
   );
@@ -173,8 +170,7 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
             );
             setValue("moderatorsList", updatedList, { shouldValidate: true });
           },
-        },
-      ]);
+        }]);
     },
     [formData.moderatorsList, setValue]
   );
@@ -194,8 +190,7 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
           <Text
             style={[
               styles.tabText,
-              activeTab === "guests" && styles.tabTextActive,
-            ]}
+              activeTab === "guests" && styles.tabTextActive]}
           >
             الضيوف
           </Text>
@@ -214,8 +209,7 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
           <Text
             style={[
               styles.tabText,
-              activeTab === "moderators" && styles.tabTextActive,
-            ]}
+              activeTab === "moderators" && styles.tabTextActive]}
           >
             المشرفين
           </Text>

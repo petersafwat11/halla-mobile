@@ -6,9 +6,8 @@ import {
   Modal,
   TouchableOpacity,
   Pressable,
-  ScrollView,
+  ScrollView
 } from "react-native";
-import { useLanguage } from "../../localization";
 import Svg, { Path } from "react-native-svg";
 
 const CheckIcon = () => (
@@ -28,10 +27,8 @@ const EventTypeModal = ({
   onClose,
   onSelect,
   selectedType,
-  eventTypes,
+  eventTypes
 }) => {
-  const { isRTL } = useLanguage();
-
   return (
     <Modal
       visible={visible}
@@ -46,10 +43,10 @@ const EventTypeModal = ({
         >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
+            <Text style={styles.headerTitle}>
               نوع المناسبة
             </Text>
-            <Text style={[styles.headerSubtitle, isRTL && styles.headerSubtitleRTL]}>
+            <Text style={styles.headerSubtitle}>
               اختر نوع المناسبة المناسب لك
             </Text>
           </View>
@@ -64,8 +61,7 @@ const EventTypeModal = ({
                 key={type.value}
                 style={[
                   styles.typeItem,
-                  selectedType === type.value && styles.typeItemSelected,
-                ]}
+                  selectedType === type.value && styles.typeItemSelected]}
                 onPress={() => onSelect(type.value)}
                 activeOpacity={0.7}
               >
@@ -74,8 +70,7 @@ const EventTypeModal = ({
                   <Text
                     style={[
                       styles.typeLabel,
-                      selectedType === type.value && styles.typeLabelSelected,
-                    ]}
+                      selectedType === type.value && styles.typeLabelSelected]}
                   >
                     {type.label}
                   </Text>
@@ -108,7 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "flex-end",
-    alignItems: "center",
+    alignItems: "center"
   },
   modalContainer: {
     width: "100%",
@@ -117,34 +112,27 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     paddingTop: 24,
     paddingBottom: 32,
-    maxHeight: "80%",
+    maxHeight: "80%"
   },
   header: {
     paddingHorizontal: 24,
-    marginBottom: 20,
+    marginBottom: 20
   },
   headerTitle: {
     fontSize: 20,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     marginBottom: 4,
-    textAlign: "right",
-  },
-  headerTitleRTL: {
-    textAlign: "right",
-  },
-  headerSubtitle: {
+    textAlign: "right"
+  },  headerSubtitle: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    textAlign: "right",
+    textAlign: "right"
   },
-  headerSubtitleRTL: {
-    textAlign: "right",
-  },
-  listContainer: {
+  headerSublistContainer: {
     paddingHorizontal: 24,
-    maxHeight: 400,
+    maxHeight: 400
   },
   typeItem: {
     flexDirection: "row",
@@ -156,33 +144,33 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F4EF",
     marginBottom: 12,
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: "transparent"
   },
   typeItemSelected: {
     backgroundColor: "#FFF7ED",
-    borderColor: "#C28E5C",
+    borderColor: "#C28E5C"
   },
   typeItemContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 12
   },
   typeEmoji: {
-    fontSize: 24,
+    fontSize: 24
   },
   typeLabel: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
-    color: "#2C2C2C",
+    color: "#2C2C2C"
   },
   typeLabelSelected: {
-    color: "#C28E5C",
+    color: "#C28E5C"
   },
   checkIconContainer: {
     width: 24,
     height: 24,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   closeButton: {
     marginTop: 16,
@@ -191,13 +179,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 12,
     backgroundColor: "#F5F5F5",
-    alignItems: "center",
+    alignItems: "center"
   },
   closeButtonText: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
-    color: "#656565",
-  },
+    color: "#656565"
+  }
 });
 
 export default EventTypeModal;

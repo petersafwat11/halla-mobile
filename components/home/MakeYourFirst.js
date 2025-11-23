@@ -1,6 +1,5 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useLanguage } from "../../localization";
 import { Svg, Path, G, Defs, ClipPath, Rect } from "react-native-svg";
 
 const GiftIcon = () => (
@@ -61,16 +60,14 @@ const GiftIcon = () => (
 );
 
 const MakeYourFirst = ({ onCreatePress }) => {
-  const { isRTL } = useLanguage();
-
   return (
     <View style={styles.container}>
-      <View style={[styles.content, isRTL && styles.contentRTL]}>
-        <View style={[styles.textContainer, isRTL && styles.textContainerRTL]}>
-          <Text style={[styles.title, isRTL && styles.titleRTL]}>
+      <View style={styles.content}>
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>
             ابدأ بإنشاء أول مناسبة لك مجانا
           </Text>
-          <Text style={[styles.subtitle, isRTL && styles.subtitleRTL]}>
+          <Text style={styles.subtitle}>
             لديك تجربة مجانية لدعوة 5 أفراد
           </Text>
         </View>
@@ -118,48 +115,35 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 3
   },
   content: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
     gap: 16,
-    alignSelf: "stretch",
-  },
-  contentRTL: {
-    flexDirection: "row-reverse",
-  },
-  textContainer: {
+    alignSelf: "stretch"
+  },textContainer: {
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-end",
-    gap: 4,
-  },
-  textContainerRTL: {},
-  title: {
+    gap: 4
+  },  title: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.08,
-    textAlign: "right",
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  subtitle: {
+    textAlign: "right"
+  },subtitle: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
     lineHeight: 20,
     letterSpacing: 0.014,
-    textAlign: "right",
+    textAlign: "right"
   },
-  subtitleRTL: {
-    textAlign: "right",
-  },
-  createButton: {
+  subcreateButton: {
     flexDirection: "row",
     height: 40,
     paddingVertical: 8,
@@ -169,7 +153,7 @@ const styles = StyleSheet.create({
     gap: 4,
     alignSelf: "stretch",
     borderRadius: 8,
-    backgroundColor: "#C28E5C",
+    backgroundColor: "#C28E5C"
   },
   createButtonText: {
     fontSize: 14,
@@ -177,8 +161,8 @@ const styles = StyleSheet.create({
     color: "#FFF",
     lineHeight: 16,
     letterSpacing: 0.056,
-    textAlign: "center",
-  },
+    textAlign: "center"
+  }
 });
 
 export default MakeYourFirst;

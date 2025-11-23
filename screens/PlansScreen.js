@@ -24,8 +24,7 @@ const PlansScreen = ({ navigation }) => {
         toValue: 1,
         duration: 150,
         useNativeDriver: true,
-      }),
-    ]).start();
+      })]).start();
 
     setTimeout(callback, 150);
   };

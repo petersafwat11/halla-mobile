@@ -7,104 +7,104 @@ import {
   Animated,
   Platform,
 } from "react-native";
+import { useFormContext, Controller } from "react-hook-form";
 
-const OTPInput = ({ value = "", onChange, error, length = 6 }) => {
-  const [otp, setOtp] = useState(value);
+const OTPInput = ({ name, length = 6, rules }) => {
+  const { control } = useFormContext();
   const inputRefs = useRef([]);
   const shakeAnimation = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    setOtp(value);
-  }, [value]);
-
-  useEffect(() => {
-    if (error) {
-      Animated.sequence([
-        Animated.timing(shakeAnimation, {
-          toValue: 10,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: -10,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: 10,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(shakeAnimation, {
-          toValue: 0,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [error]);
-
-  const handleChange = (text, index) => {
-    const newOtp = otp.split("");
-    newOtp[index] = text;
-    const newOtpString = newOtp.join("");
-    setOtp(newOtpString);
-
-    if (onChange) {
-      onChange(newOtpString);
-    }
-
-    // Move to next input
-    if (text && index < length - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyPress = (e, index) => {
-    if (e.nativeEvent.key === "Backspace") {
-      if (!otp[index] && index > 0) {
-        inputRefs.current[index - 1]?.focus();
-      }
-      const newOtp = otp.split("");
-      newOtp[index] = "";
-      const newOtpString = newOtp.join("");
-      setOtp(newOtpString);
-
-      if (onChange) {
-        onChange(newOtpString);
-      }
-    }
-  };
-
   return (
-    <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.inputContainer,
-          { transform: [{ translateX: shakeAnimation }] },
-        ]}
-      >
-        {Array.from({ length }).map((_, index) => (
-          <TextInput
-            key={index}
-            ref={(ref) => (inputRefs.current[index] = ref)}
-            style={[
-              styles.input,
-              error && styles.inputError,
-              otp[index] && styles.inputFilled,
-            ]}
-            value={otp[index] || ""}
-            onChangeText={(text) => handleChange(text, index)}
-            onKeyPress={(e) => handleKeyPress(e, index)}
-            keyboardType="number-pad"
-            maxLength={1}
-            textAlign="center"
-            selectTextOnFocus
-          />
-        ))}
-      </Animated.View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
-    </View>
+    <Controller
+      control={control}
+      name={name}
+      rules={rules}
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
+        const otp = value || "";
+
+        useEffect(() => {
+          if (error) {
+            Animated.sequence([
+              Animated.timing(shakeAnimation, {
+                toValue: 10,
+                duration: 100,
+                useNativeDriver: true,
+              }),
+              Animated.timing(shakeAnimation, {
+                toValue: -10,
+                duration: 100,
+                useNativeDriver: true,
+              }),
+              Animated.timing(shakeAnimation, {
+                toValue: 10,
+                duration: 100,
+                useNativeDriver: true,
+              }),
+              Animated.timing(shakeAnimation, {
+                toValue: 0,
+                duration: 100,
+                useNativeDriver: true,
+              }),
+            ]).start();
+          }
+        }, [error]);
+
+        const handleChange = (text, index) => {
+          const newOtp = otp.split("");
+          newOtp[index] = text;
+          const newOtpString = newOtp.join("");
+          onChange(newOtpString);
+
+          // Move to next input
+          if (text && index < length - 1) {
+            inputRefs.current[index + 1]?.focus();
+          }
+        };
+
+        const handleKeyPress = (e, index) => {
+          if (e.nativeEvent.key === "Backspace") {
+            if (!otp[index] && index > 0) {
+              inputRefs.current[index - 1]?.focus();
+            }
+            const newOtp = otp.split("");
+            newOtp[index] = "";
+            const newOtpString = newOtp.join("");
+            onChange(newOtpString);
+          }
+        };
+
+        return (
+          <View style={styles.container}>
+            <Animated.View
+              style={[
+                styles.inputContainer,
+                { transform: [{ translateX: shakeAnimation }] },
+              ]}
+            >
+              {Array.from({ length }).map((_, index) => (
+                <TextInput
+                  key={index}
+                  ref={(ref) => (inputRefs.current[index] = ref)}
+                  style={[
+                    styles.input,
+                    error && styles.inputError,
+                    otp[index] && styles.inputFilled,
+                  ]}
+                  value={otp[index] || ""}
+                  onChangeText={(text) => handleChange(text, index)}
+                  onKeyPress={(e) => handleKeyPress(e, index)}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  textAlign="center"
+                  selectTextOnFocus
+                />
+              ))}
+            </Animated.View>
+            {error && <Text style={styles.errorText}>{error.message}</Text>}
+          </View>
+        );
+      }}
+    />
   );
 };
 

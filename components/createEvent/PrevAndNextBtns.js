@@ -1,7 +1,5 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
-import { useLanguage } from "../../localization";
-
 const PrevAndNextBtns = ({
   onNext,
   onPrevious,
@@ -11,17 +9,14 @@ const PrevAndNextBtns = ({
   previousButtonText = "السابق",
   isLoading = false,
 }) => {
-  const { isRTL } = useLanguage();
-
   return (
-    <View style={[styles.container, isRTL && styles.containerRTL]}>
+    <View style={styles.container}>
       <View style={styles.buttonContainer}>
         {/* Next Button */}
         <TouchableOpacity
           style={[
             styles.nextButton,
-            isNextDisabled && styles.nextButtonDisabled,
-          ]}
+            isNextDisabled && styles.nextButtonDisabled]}
           onPress={onNext}
           disabled={isNextDisabled || isLoading}
           activeOpacity={0.7}
@@ -32,8 +27,7 @@ const PrevAndNextBtns = ({
             <Text
               style={[
                 styles.nextButtonText,
-                isNextDisabled && styles.nextButtonTextDisabled,
-              ]}
+                isNextDisabled && styles.nextButtonTextDisabled]}
             >
               {nextButtonText}
             </Text>
@@ -61,9 +55,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 20,
     backgroundColor: "#FFF",
-  },
-  containerRTL: {},
-  buttonContainer: {
+  },buttonContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 16,

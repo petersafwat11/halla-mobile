@@ -4,14 +4,11 @@ import {
   StyleSheet,
   FlatList,
   Text,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
-import { useLanguage } from "../../localization";
 import VendorCard from "./VendorCard";
 
 const VendorCards = ({ vendors, onVendorCallPress, loading, refreshing, onRefresh }) => {
-  const { isRTL } = useLanguage();
-
   const renderItem = ({ item, index }) => (
     <VendorCard
       vendor={item}
@@ -31,7 +28,7 @@ const VendorCards = ({ vendors, onVendorCallPress, loading, refreshing, onRefres
 
     return (
       <View style={styles.emptyContainer}>
-        <Text style={[styles.emptyText, isRTL && styles.emptyTextRTL]}>
+        <Text style={styles.emptyText}>
           لا توجد نتائج
         </Text>
       </View>
@@ -55,22 +52,18 @@ const VendorCards = ({ vendors, onVendorCallPress, loading, refreshing, onRefres
 const styles = StyleSheet.create({
   listContent: {
     padding: 24,
-    paddingTop: 10,
+    paddingTop: 10
   },
   emptyContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 60
   },
   emptyText: {
     fontFamily: "Cairo_400Regular",
     fontSize: 16,
-    color: "#656565",
-  },
-  emptyTextRTL: {
-    textAlign: "right",
-  },
-});
+    color: "#656565"
+  },});
 
 export default VendorCards;

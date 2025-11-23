@@ -5,9 +5,8 @@ import {
   StyleSheet,
   Modal,
   TouchableOpacity,
-  Pressable,
+  Pressable
 } from "react-native";
-import { useLanguage } from "../../localization";
 import TextInput from "../commen/TextInput";
 import Button from "../commen/Button";
 import Svg, { Path } from "react-native-svg";
@@ -29,9 +28,8 @@ const EditGuestOrModeratorsModal = ({
   onClose,
   item,
   type = "guest",
-  onSave,
+  onSave
 }) => {
-  const { isRTL } = useLanguage();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState({});
@@ -71,7 +69,7 @@ const EditGuestOrModeratorsModal = ({
         >
           {/* Header */}
           <View style={styles.header}>
-            <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
+            <Text style={styles.headerTitle}>
               {type === "guest" ? "تعديل بيانات الضيف" : "تعديل بيانات المشرف"}
             </Text>
             <TouchableOpacity
@@ -136,14 +134,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: 24
   },
   modalContainer: {
     width: "100%",
     maxWidth: 400,
     backgroundColor: "#FFF",
     borderRadius: 16,
-    overflow: "hidden",
+    overflow: "hidden"
   },
   header: {
     flexDirection: "row",
@@ -153,41 +151,37 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    borderBottomColor: "#F0F0F0"
   },
   headerTitle: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     flex: 1,
-    textAlign: "right",
-  },
-  headerTitleRTL: {
-    textAlign: "right",
-  },
-  closeButton: {
-    padding: 4,
+    textAlign: "right"
+  },  closeButton: {
+    padding: 4
   },
   form: {
-    padding: 24,
+    padding: 24
   },
   actions: {
     paddingHorizontal: 24,
     paddingBottom: 24,
-    gap: 12,
+    gap: 12
   },
   cancelButton: {
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 12,
     backgroundColor: "#F5F5F5",
-    alignItems: "center",
+    alignItems: "center"
   },
   cancelButtonText: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
-    color: "#656565",
-  },
+    color: "#656565"
+  }
 });
 
 export default EditGuestOrModeratorsModal;

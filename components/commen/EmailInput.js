@@ -3,27 +3,25 @@ import { Ionicons } from "@expo/vector-icons";
 import TextInput from "./TextInput";
 
 const EmailInput = ({
+  name,
   label,
   placeholder,
-  value,
-  onChangeText,
-  onBlur,
-  error,
   disabled,
+  rules,
+  ...props
 }) => {
   return (
     <TextInput
+      name={name}
       label={label}
       placeholder={placeholder}
-      value={value}
-      onChangeText={onChangeText}
-      onBlur={onBlur}
-      error={error}
       disabled={disabled}
+      rules={rules}
       keyboardType="email-address"
       autoCapitalize="none"
       style={{ textAlign: "left", writingDirection: "ltr" }}
       icon={<Ionicons name="mail-outline" size={20} color="#999" />}
+      {...props}
     />
   );
 };

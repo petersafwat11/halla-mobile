@@ -6,10 +6,9 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-  Pressable,
+  Pressable
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
 import { Svg, Circle, G, Path, Defs, ClipPath, Rect } from "react-native-svg";
 
 const StepIndicator = ({ progress }) => {
@@ -43,34 +42,31 @@ const StepIndicator = ({ progress }) => {
 };
 
 const DropdownModal = ({ visible, onClose, onStepSelect }) => {
-  const { isRTL } = useLanguage();
-
   const steps = [
     {
       id: 1,
       title: "تفاصيل المناسبة",
       description: "أضف تفاصيل المناسبة كما تحب.",
-      progress: 25,
+      progress: 25
     },
     {
       id: 2,
       title: "قائمة المدعوين",
       description: "ادخل كل المدعوين المختارين لحضور المناسبة",
-      progress: 50,
+      progress: 50
     },
     {
       id: 3,
       title: "تخصيص الدعوة",
       description: "قم بتخصيص القالب ودعوتك بشكل سهل",
-      progress: 75,
+      progress: 75
     },
     {
       id: 4,
       title: "مراجعة واطلاق المناسبة",
       description: "راجع كل التفاصيل بتركيز",
-      progress: 100,
-    },
-  ];
+      progress: 100
+    }];
 
   return (
     <Modal
@@ -82,12 +78,12 @@ const DropdownModal = ({ visible, onClose, onStepSelect }) => {
       <Pressable style={styles.overlay} onPress={onClose}>
         <Pressable style={styles.modalContainer} onPress={(e) => e.stopPropagation()}>
           {/* Header */}
-          <View style={[styles.header, isRTL && styles.headerRTL]}>
+          <View style={styles.header}>
             <TouchableOpacity onPress={onClose} hitSlop={8}>
               <Ionicons name="close" size={24} color="#000" />
             </TouchableOpacity>
             <View style={styles.titleContainer}>
-              <Text style={[styles.modalTitle, isRTL && styles.modalTitleRTL]}>
+              <Text style={styles.modalTitle}>
                 اختر الخطوة
               </Text>
             </View>
@@ -103,27 +99,23 @@ const DropdownModal = ({ visible, onClose, onStepSelect }) => {
                 key={step.id}
                 style={[
                   styles.stepItem,
-                  index === 0 && styles.stepItemFirst,
-                  isRTL && styles.stepItemRTL,
-                ]}
+                  index === 0 && styles.stepItemFirst]}
                 onPress={() => {
                   onStepSelect(step.id);
                   onClose();
                 }}
                 activeOpacity={0.7}
               >
-                <View style={[styles.stepContent, isRTL && styles.stepContentRTL]}>
-                  <View style={[styles.stepText, isRTL && styles.stepTextRTL]}>
+                <View style={styles.stepContent}>
+                  <View style={styles.stepText}>
                     <Text
-                      style={[styles.stepTitle, isRTL && styles.stepTitleRTL]}
+                      style={styles.stepTitle}
                     >
                       {step.title}
                     </Text>
                     <Text
                       style={[
-                        styles.stepDescription,
-                        isRTL && styles.stepDescriptionRTL,
-                      ]}
+                        styles.stepDescription]}
                     >
                       {step.description}
                     </Text>
@@ -161,96 +153,72 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
-    justifyContent: "flex-end",
+    justifyContent: "flex-end"
   },
   modalContainer: {
     backgroundColor: "#FFF",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 24,
-    maxHeight: "90%",
+    maxHeight: "90%"
   },
   header: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 24,
     paddingHorizontal: 24,
-    paddingVertical: 16,
-  },
-  headerRTL: {
-    flexDirection: "row-reverse",
-  },
-  titleContainer: {
+    paddingVertical: 16
+  },titleContainer: {
     flex: 1,
     alignItems: "flex-end",
-    gap: 4,
+    gap: 4
   },
   modalTitle: {
     fontSize: 24,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 32,
-    textAlign: "right",
-  },
-  modalTitleRTL: {
-    textAlign: "right",
-  },
-  listContainer: {
-    paddingHorizontal: 24,
+    textAlign: "right"
+  },listContainer: {
+    paddingHorizontal: 24
   },
   stepItem: {
     paddingVertical: 16,
     paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F2F2F2",
+    borderBottomColor: "#F2F2F2"
   },
   stepItemFirst: {
     backgroundColor: "#F9F4EF",
     borderRadius: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#F2F2F2",
-  },
-  stepItemRTL: {},
-  stepContent: {
+    borderBottomColor: "#F2F2F2"
+  },  stepContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
-  },
-  stepContentRTL: {
-    flexDirection: "row-reverse",
-  },
-  stepText: {
+    gap: 16
+  },  stepText: {
     flex: 1,
-    alignItems: "flex-end",
-  },
-  stepTextRTL: {},
-  stepTitle: {
+    alignItems: "flex-end"
+  },  stepTitle: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
     textAlign: "center",
-    letterSpacing: 0.024,
-  },
-  stepTitleRTL: {
-    textAlign: "right",
-  },
-  stepDescription: {
+    letterSpacing: 0.024
+  },  stepDescription: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
     lineHeight: 16,
-    textAlign: "center",
-  },
-  stepDescriptionRTL: {
-    textAlign: "right",
-  },
-  indicatorContainer: {
+    textAlign: "center"
+  },  indicatorContainer: {
     width: 45,
     height: 44,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
+    position: "relative"
   },
   indicatorText: {
     position: "absolute",
@@ -258,14 +226,14 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo_700Bold",
     color: "#C28E5C",
     lineHeight: 20,
-    letterSpacing: 0.014,
+    letterSpacing: 0.014
   },
   buttonContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 16,
     paddingHorizontal: 24,
-    paddingTop: 24,
+    paddingTop: 24
   },
   cancelButton: {
     paddingVertical: 12,
@@ -275,14 +243,14 @@ const styles = StyleSheet.create({
     borderColor: "#D6B392",
     backgroundColor: "#FFF",
     minWidth: 100,
-    alignItems: "center",
+    alignItems: "center"
   },
   cancelButtonText: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#6B4E33",
     lineHeight: 24,
-    letterSpacing: 0.08,
+    letterSpacing: 0.08
   },
   confirmButton: {
     flex: 1,
@@ -290,15 +258,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 12,
     backgroundColor: "#C28E5C",
-    alignItems: "center",
+    alignItems: "center"
   },
   confirmButtonText: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
     lineHeight: 24,
-    letterSpacing: 0.08,
-  },
+    letterSpacing: 0.08
+  }
 });
 
 export default DropdownModal;

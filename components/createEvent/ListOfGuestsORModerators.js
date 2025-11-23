@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
-  FlatList,
+  FlatList
 } from "react-native";
-import { useLanguage } from "../../localization";
 import EditGuestOrModeratorsModal from "./EditGuestOrModeratorsModal";
 import Svg, { Path } from "react-native-svg";
 
@@ -68,9 +67,8 @@ const ListOfGuestsORModerators = ({
   list = [],
   type = "guest",
   onEdit,
-  onRemove,
+  onRemove
 }) => {
-  const { isRTL } = useLanguage();
   const [editingItem, setEditingItem] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
 
@@ -95,10 +93,10 @@ const ListOfGuestsORModerators = ({
           <PersonIcon />
         </View>
         <View style={styles.listItemInfo}>
-          <Text style={[styles.listItemName, isRTL && styles.listItemNameRTL]}>
+          <Text style={styles.listItemName}>
             {item.name}
           </Text>
-          <Text style={[styles.listItemPhone, isRTL && styles.listItemPhoneRTL]}>
+          <Text style={styles.listItemPhone}>
             {item.phone || item.mobile}
           </Text>
         </View>
@@ -139,7 +137,7 @@ const ListOfGuestsORModerators = ({
             {/* Header */}
             <View style={styles.header}>
               <View style={styles.headerTop}>
-                <Text style={[styles.headerTitle, isRTL && styles.headerTitleRTL]}>
+                <Text style={styles.headerTitle}>
                   {title}
                 </Text>
                 <TouchableOpacity
@@ -150,7 +148,7 @@ const ListOfGuestsORModerators = ({
                   <CloseIcon />
                 </TouchableOpacity>
               </View>
-              <Text style={[styles.headerSubtitle, isRTL && styles.headerSubtitleRTL]}>
+              <Text style={styles.headerSubtitle}>
                 إجمالي: {list.length} {type === "guest" ? "ضيف" : "مشرف"}
               </Text>
             </View>
@@ -196,50 +194,43 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
+    justifyContent: "flex-end"
   },
   modalContainer: {
     width: "100%",
     backgroundColor: "#FFF",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: "90%",
+    maxHeight: "90%"
   },
   header: {
     paddingHorizontal: 24,
     paddingTop: 24,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
+    borderBottomColor: "#F0F0F0"
   },
   headerTop: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 8
   },
   headerTitle: {
     fontSize: 20,
     fontFamily: "Cairo_700Bold",
-    color: "#2C2C2C",
-  },
-  headerTitleRTL: {
-    textAlign: "right",
-  },
-  closeButton: {
-    padding: 4,
+    color: "#2C2C2C"
+  },  closeButton: {
+    padding: 4
   },
   headerSubtitle: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    textAlign: "right",
+    textAlign: "right"
   },
-  headerSubtitleRTL: {
-    textAlign: "right",
-  },
-  listContent: {
-    padding: 24,
+  headerSublistContent: {
+    padding: 24
   },
   listItem: {
     flexDirection: "row",
@@ -249,13 +240,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: "#F9F4EF",
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 12
   },
   listItemLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    flex: 1,
+    flex: 1
   },
   avatarContainer: {
     width: 48,
@@ -263,48 +254,40 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     backgroundColor: "#FFF",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   listItemInfo: {
-    flex: 1,
+    flex: 1
   },
   listItemName: {
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#2C2C2C",
     marginBottom: 4,
-    textAlign: "right",
-  },
-  listItemNameRTL: {
-    textAlign: "right",
-  },
-  listItemPhone: {
+    textAlign: "right"
+  },  listItemPhone: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    textAlign: "right",
-  },
-  listItemPhoneRTL: {
-    textAlign: "right",
-  },
-  listItemActions: {
+    textAlign: "right"
+  },  listItemActions: {
     flexDirection: "row",
-    gap: 12,
+    gap: 12
   },
   actionButton: {
-    padding: 8,
+    padding: 8
   },
   emptyState: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 60,
+    paddingVertical: 60
   },
   emptyStateText: {
     fontSize: 16,
     fontFamily: "Cairo_400Regular",
-    color: "#999",
-  },
+    color: "#999"
+  }
 });
 
 export default ListOfGuestsORModerators;

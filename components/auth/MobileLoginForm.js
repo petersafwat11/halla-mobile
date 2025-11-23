@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { mobileLoginSchema } from "../../utils/schemas/authSchemas";
 import { MobileInput, Button } from "../commen";
@@ -10,18 +10,15 @@ import FormHeader from "./FormHeader";
 const MobileLoginForm = ({ onSubmit, loading = false }) => {
   const { t } = useTranslation("auth");
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    setError,
-  } = useForm({
+  const methods = useForm({
     resolver: zodResolver(mobileLoginSchema),
     mode: "onBlur",
     defaultValues: {
       mobile: "",
     },
   });
+
+  const { handleSubmit, setError } = methods;
 
   const onFormSubmit = async (data) => {
     if (onSubmit) {
@@ -38,33 +35,26 @@ const MobileLoginForm = ({ onSubmit, loading = false }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <FormHeader title={t("login.title")} subtitle={t("login.subtitle")} />
+    <FormProvider {...methods}>
+      <View style={styles.container}>
+        <FormHeader title={t("login.title")} subtitle={t("login.subtitle")} />
 
-      <View style={styles.form}>
-        <Controller
-          control={control}
-          name="mobile"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <MobileInput
-              label={t("login.mobile")}
-              placeholder={t("login.mobilePlaceholder")}
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              disabled={loading}
-              error={errors.mobile && t(errors.mobile.message)}
-            />
-          )}
-        />
+        <View style={styles.form}>
+          <MobileInput
+            name="mobile"
+            label={t("login.mobile")}
+            placeholder={t("login.mobilePlaceholder")}
+            disabled={loading}
+          />
 
-        <Button
-          text={t("login.sendOTPButton")}
-          onPress={handleSubmit(onFormSubmit)}
-          loading={loading}
-        />
+          <Button
+            text={t("login.sendOTPButton")}
+            onPress={handleSubmit(onFormSubmit)}
+            loading={loading}
+          />
+        </View>
       </View>
-    </View>
+    </FormProvider>
   );
 };
 

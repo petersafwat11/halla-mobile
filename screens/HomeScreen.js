@@ -5,25 +5,23 @@ import {
   ScrollView,
   TouchableOpacity,
   Text,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../localization";
 import { Svg, Path, Ellipse } from "react-native-svg";
 import {
   LastEvent,
   StatsCards,
   EventTemplates,
   MakeYourFirst,
-  DropdownModal,
+  DropdownModal
 } from "../components/home";
 import { TopBar } from "../components/plans";
 import { getUserEventsWithStats } from "../services/eventsService2";
 import { useAuthStore } from "../stores/authStore";
 
 const HomeScreen = ({ navigation }) => {
-  const { isRTL } = useLanguage();
   const { token } = useAuthStore();
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -34,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
     endedEvents: { number: 0, guestRespondRate: 0 },
     liveEvents: { number: 0, guestRespondRate: 0 },
     allEvents: { number: 0, guestRespondRate: 0 },
-    lastEvent: null,
+    lastEvent: null
   });
 
   // Fetch data from backend on mount
@@ -67,7 +65,7 @@ const HomeScreen = ({ navigation }) => {
   const handleCreateEvent = () => {
     // Navigate to CreateEventScreen
     if (navigation) {
-      navigation.navigate("CreateEvent");
+      navigation.navigate("CreateEventScreen");
     }
   };
 
@@ -87,7 +85,7 @@ const HomeScreen = ({ navigation }) => {
 
   const greetingContent = (
     <View
-      style={[styles.greetingContainer, isRTL && styles.greetingContainerRTL]}
+      style={styles.greetingContainer}
     >
       <Text style={styles.greetingText}>مرحبا</Text>
       <Text style={styles.organizationName}>مؤسسة الحمد</Text>
@@ -182,18 +180,18 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#C28E5C",
+    backgroundColor: "#C28E5C"
   },
   container: {
     flex: 1,
-    backgroundColor: "#F9F4EF",
+    backgroundColor: "#F9F4EF"
   },
   header: {
     backgroundColor: "#C28E5C",
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
     position: "relative",
-    overflow: "hidden",
+    overflow: "hidden"
   },
   textureLeft: {
     position: "absolute",
@@ -201,7 +199,7 @@ const styles = StyleSheet.create({
     top: -86,
     width: 460,
     height: 436,
-    opacity: 0.8,
+    opacity: 0.8
   },
   textureRight: {
     position: "absolute",
@@ -209,7 +207,7 @@ const styles = StyleSheet.create({
     top: -86,
     width: 460,
     height: 436,
-    opacity: 0.8,
+    opacity: 0.8
   },
   textureLine1: {
     width: 470,
@@ -219,7 +217,7 @@ const styles = StyleSheet.create({
     background:
       "radial-gradient(8420.27% 85.09% at 8.82% 45.53%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.00) 100%)",
     position: "absolute",
-    top: 34,
+    top: 34
   },
   textureLine2: {
     width: 495,
@@ -230,44 +228,38 @@ const styles = StyleSheet.create({
       "radial-gradient(8420.27% 85.09% at 8.82% 45.53%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.00) 100%)",
     position: "absolute",
     left: 116,
-    top: 0,
+    top: 0
   },
   greetingWrapper: {
     paddingHorizontal: 24,
-    paddingTop: 8,
+    paddingTop: 8
   },
   topBarActions: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16,
+    gap: 16
   },
   iconButton: {
     width: 32,
     height: 32,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   logoContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    padding: 4,
-  },
-  logoContainerRTL: {
-    flexDirection: "row-reverse",
-  },
-  greetingContainer: {
+    padding: 4
+  },  greetingContainer: {
     flexDirection: "column",
     alignItems: "flex-end",
-    gap: 4,
-  },
-  greetingContainerRTL: {},
-  greetingText: {
+    gap: 4
+  },  greetingText: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#FFF",
     lineHeight: 16,
-    textAlign: "right",
+    textAlign: "right"
   },
   organizationName: {
     fontSize: 16,
@@ -275,33 +267,33 @@ const styles = StyleSheet.create({
     color: "#FFF",
     lineHeight: 24,
     letterSpacing: 0.08,
-    textAlign: "right",
+    textAlign: "right"
   },
   headerContent: {
     paddingHorizontal: 24,
     paddingTop: 0,
-    paddingBottom: 24,
+    paddingBottom: 24
   },
   scrollView: {
-    flex: 1,
+    flex: 1
   },
   scrollContent: {
-    paddingTop: 16,
+    paddingTop: 16
   },
   statsSection: {
-    marginBottom: 16,
+    marginBottom: 16
   },
   templatesSection: {
     paddingHorizontal: 24,
-    marginBottom: 16,
+    marginBottom: 16
   },
   bottomSpacing: {
-    height: 100,
+    height: 100
   },
   loadingContainer: {
     paddingVertical: 40,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   errorContainer: {
     paddingVertical: 40,
@@ -310,25 +302,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F9F4EF",
     borderRadius: 12,
-    gap: 12,
+    gap: 12
   },
   errorText: {
     fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
     color: "#C28E5C",
-    textAlign: "center",
+    textAlign: "center"
   },
   retryButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
     backgroundColor: "#C28E5C",
-    borderRadius: 8,
+    borderRadius: 8
   },
   retryText: {
     fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
-    color: "#FFF",
-  },
+    color: "#FFF"
+  }
 });
 
 export default HomeScreen;

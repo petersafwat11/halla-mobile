@@ -4,17 +4,14 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
+  TextInput
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useLanguage } from "../../localization";
-
 const TabsSearchAndFilters = ({
   onTabChange,
   onSearchChange,
-  onFilterPress,
+  onFilterPress
 }) => {
-  const { isRTL } = useLanguage();
   const [activeTab, setActiveTab] = useState("guests");
 
   const handleTabPress = (tab) => {
@@ -25,23 +22,19 @@ const TabsSearchAndFilters = ({
   return (
     <View style={styles.container}>
       {/* Tabs */}
-      <View style={[styles.tabsContainer, isRTL && styles.tabsContainerRTL]}>
+      <View style={styles.tabsContainer}>
         <View style={styles.tabWrapper}>
           <TouchableOpacity
             style={[
               styles.tab,
-              activeTab === "guests" && styles.tabActive,
-              isRTL && styles.tabRTL,
-            ]}
+              activeTab === "guests" && styles.tabActive]}
             onPress={() => handleTabPress("guests")}
             activeOpacity={0.7}
           >
             <Text
               style={[
                 styles.tabText,
-                activeTab === "guests" && styles.tabTextActive,
-                isRTL && styles.tabTextRTL,
-              ]}
+                activeTab === "guests" && styles.tabTextActive]}
             >
               المدعوين
             </Text>
@@ -56,18 +49,14 @@ const TabsSearchAndFilters = ({
         <TouchableOpacity
           style={[
             styles.tab,
-            activeTab === "moderators" && styles.tabActive,
-            isRTL && styles.tabRTL,
-          ]}
+            activeTab === "moderators" && styles.tabActive]}
           onPress={() => handleTabPress("moderators")}
           activeOpacity={0.7}
         >
           <Text
             style={[
               styles.tabText,
-              activeTab === "moderators" && styles.tabTextActive,
-              isRTL && styles.tabTextRTL,
-            ]}
+              activeTab === "moderators" && styles.tabTextActive]}
           >
             المشرفين
           </Text>
@@ -83,26 +72,26 @@ const TabsSearchAndFilters = ({
 
       {/* Search and Filter */}
       <View
-        style={[styles.searchContainer, isRTL && styles.searchContainerRTL]}
+        style={styles.searchContainer}
       >
         {/* Search Input */}
-        <View style={[styles.searchInput, isRTL && styles.searchInputRTL]}>
+        <View style={styles.searchInput}>
           <Ionicons name="search-outline" size={16} color="#767676" />
           <TextInput
             placeholder="اسم المدعو"
             placeholderTextColor="#656565"
-            style={[styles.input, isRTL && styles.inputRTL]}
+            style={styles.input}
             onChangeText={onSearchChange}
           />
         </View>
 
         {/* Filter Button */}
         <TouchableOpacity
-          style={[styles.filterButton, isRTL && styles.filterButtonRTL]}
+          style={styles.filterButton}
           onPress={onFilterPress}
           activeOpacity={0.7}
         >
-          <Text style={[styles.filterText, isRTL && styles.filterTextRTL]}>
+          <Text style={styles.filterText}>
             التصفية
           </Text>
           <Ionicons name="options-outline" size={16} color="#767676" />
@@ -116,18 +105,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFF",
     borderTopLeftRadius: 12,
-    borderTopRightRadius: 12,
+    borderTopRightRadius: 12
   },
   tabsContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    padding: 12,
-  },
-  tabsContainerRTL: {
-    flexDirection: "row-reverse",
-  },
-  tabWrapper: {
-    position: "relative",
+    padding: 12
+  },  tabWrapper: {
+    position: "relative"
   },
   tab: {
     flexDirection: "row",
@@ -137,25 +122,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 16,
     paddingHorizontal: 12,
-    borderRadius: 4,
-  },
-  tabRTL: {
-    flexDirection: "row-reverse",
-  },
-  tabActive: {
-    backgroundColor: "transparent",
+    borderRadius: 4
+  },  tabActive: {
+    backgroundColor: "transparent"
   },
   tabText: {
     fontSize: 14,
     fontFamily: "Cairo_700Bold",
     color: "#656565",
-    lineHeight: 20,
-  },
-  tabTextRTL: {
-    textAlign: "right",
-  },
-  tabTextActive: {
-    color: "#2C2C2C",
+    lineHeight: 20
+  },  tabTextActive: {
+    color: "#2C2C2C"
   },
   activeIndicator: {
     position: "absolute",
@@ -164,46 +141,34 @@ const styles = StyleSheet.create({
     right: 0,
     height: 3,
     backgroundColor: "#C28E5C",
-    borderRadius: 9999,
+    borderRadius: 9999
   },
   divider: {
     height: 3,
     backgroundColor: "#F2F2F2",
     borderRadius: 9999,
-    marginHorizontal: 12,
+    marginHorizontal: 12
   },
   searchContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 12,
-    gap: 16,
-  },
-  searchContainerRTL: {
-    flexDirection: "row-reverse",
-  },
-  filterButton: {
+    gap: 16
+  },  filterButton: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
     paddingVertical: 12,
     paddingHorizontal: 16,
     backgroundColor: "#F7F7F7",
-    borderRadius: 8,
-  },
-  filterButtonRTL: {
-    flexDirection: "row-reverse",
-  },
-  filterText: {
+    borderRadius: 8
+  },  filterText: {
     fontSize: 12,
     fontFamily: "Cairo_600SemiBold",
     color: "#656565",
-    lineHeight: 16,
-  },
-  filterTextRTL: {
-    textAlign: "right",
-  },
-  searchInput: {
+    lineHeight: 16
+  },  searchInput: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
@@ -212,21 +177,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: "#F2F2F2",
     borderRadius: 8,
-    height: 36,
-  },
-  searchInputRTL: {
-    flexDirection: "row-reverse",
-  },
-  input: {
+    height: 36
+  },  input: {
     flex: 1,
     fontSize: 12,
     fontFamily: "Cairo_600SemiBold",
     color: "#656565",
-    lineHeight: 16,
-  },
-  inputRTL: {
-    textAlign: "right",
-  },
-});
+    lineHeight: 16
+  },});
 
 export default TabsSearchAndFilters;

@@ -5,14 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Animated,
+  Animated
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLanguage } from "../../localization";
-
 const VendorCard = ({ vendor, onCallPress, index }) => {
-  const { isRTL } = useLanguage();
   const scaleAnim = React.useRef(new Animated.Value(0)).current;
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -23,15 +20,14 @@ const VendorCard = ({ vendor, onCallPress, index }) => {
         delay: index * 100,
         tension: 50,
         friction: 7,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(fadeAnim, {
         toValue: 1,
         delay: index * 100,
         duration: 400,
-        useNativeDriver: true,
-      }),
-    ]).start();
+        useNativeDriver: true
+      })]).start();
   }, []);
 
   const handleCallPress = () => {
@@ -40,14 +36,13 @@ const VendorCard = ({ vendor, onCallPress, index }) => {
       Animated.timing(pressScale, {
         toValue: 0.95,
         duration: 100,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.timing(pressScale, {
         toValue: 1,
         duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
+        useNativeDriver: true
+      })]).start();
     onCallPress && onCallPress(vendor);
   };
 
@@ -57,9 +52,8 @@ const VendorCard = ({ vendor, onCallPress, index }) => {
         styles.container,
         {
           opacity: fadeAnim,
-          transform: [{ scale: scaleAnim }],
-        },
-      ]}
+          transform: [{ scale: scaleAnim }]
+        }]}
     >
       {/* Image with Rating Overlay */}
       <View style={styles.imageContainer}>
@@ -67,7 +61,7 @@ const VendorCard = ({ vendor, onCallPress, index }) => {
           source={{
             uri:
               vendor.image ||
-              "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e",
+              "https://api.builder.io/api/v1/image/assets/TEMP/543836aed36dc03d2fc3fd75e3abf6d31dca012e"
           }}
           style={styles.image}
           resizeMode="cover"
@@ -87,19 +81,19 @@ const VendorCard = ({ vendor, onCallPress, index }) => {
       <View style={styles.content}>
         {/* Title and Location */}
         <View style={styles.infoSection}>
-          <Text style={[styles.title, isRTL && styles.titleRTL]}>
+          <Text style={styles.title}>
             {vendor.name}
           </Text>
 
-          <View style={[styles.locationRow, isRTL && styles.locationRowRTL]}>
+          <View style={styles.locationRow}>
             <Ionicons name="location-outline" size={12} color="#2C2C2C" />
-            <Text style={[styles.location, isRTL && styles.locationRTL]}>
+            <Text style={styles.location}>
               {vendor.location}
             </Text>
           </View>
 
           {/* Tags */}
-          <View style={[styles.tagsContainer, isRTL && styles.tagsContainerRTL]}>
+          <View style={styles.tagsContainer}>
             {vendor.tags?.slice(0, 3).map((tag, idx) => (
               <View key={idx} style={styles.tag}>
                 <Text style={styles.tagText}>{tag}</Text>
@@ -109,7 +103,7 @@ const VendorCard = ({ vendor, onCallPress, index }) => {
         </View>
 
         {/* Footer: Price and Call Button */}
-        <View style={[styles.footer, isRTL && styles.footerRTL]}>
+        <View style={styles.footer}>
           <TouchableOpacity
             style={styles.callButton}
             onPress={handleCallPress}
@@ -119,7 +113,7 @@ const VendorCard = ({ vendor, onCallPress, index }) => {
             <Text style={styles.callButtonText}>اتصل الان</Text>
           </TouchableOpacity>
 
-          <Text style={[styles.price, isRTL && styles.priceRTL]}>
+          <Text style={styles.price}>
             {vendor.price} ريال
           </Text>
         </View>
@@ -138,16 +132,16 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 2
   },
   imageContainer: {
     position: "relative",
     height: 220,
-    width: "100%",
+    width: "100%"
   },
   image: {
     width: "100%",
-    height: "100%",
+    height: "100%"
   },
   ratingBadge: {
     position: "absolute",
@@ -156,76 +150,60 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     backdropFilter: "blur(17px)",
     borderRadius: 6,
-    padding: 6,
+    padding: 6
   },
   ratingContent: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 3,
+    gap: 3
   },
   ratingValue: {
     fontFamily: "Cairo_600SemiBold",
     fontSize: 11,
-    color: "#FFF",
+    color: "#FFF"
   },
   ratingCount: {
     fontFamily: "Cairo_400Regular",
     fontSize: 11,
-    color: "#FFF",
+    color: "#FFF"
   },
   content: {
-    padding: 12,
+    padding: 12
   },
   infoSection: {
     gap: 3,
-    marginBottom: 16,
+    marginBottom: 16
   },
   title: {
     fontFamily: "Cairo_700Bold",
     fontSize: 14,
     color: "#2C2C2C",
-    lineHeight: 22,
-  },
-  titleRTL: {
-    textAlign: "right",
-  },
-  locationRow: {
+    lineHeight: 22
+  },locationRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-  },
-  locationRowRTL: {
-    flexDirection: "row-reverse",
-  },
-  location: {
+    gap: 6
+  },  location: {
     fontFamily: "Cairo_400Regular",
     fontSize: 12,
     color: "#2C2C2C",
-    lineHeight: 16,
-  },
-  locationRTL: {
-    textAlign: "right",
-  },
-  tagsContainer: {
+    lineHeight: 16
+  },  tagsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 6,
-    paddingTop: 3,
-  },
-  tagsContainerRTL: {
-    flexDirection: "row-reverse",
-  },
-  tag: {
+    paddingTop: 3
+  },  tag: {
     backgroundColor: "#F2F1ED",
     borderRadius: 7837,
     paddingHorizontal: 6,
-    paddingVertical: 3,
+    paddingVertical: 3
   },
   tagText: {
     fontFamily: "Cairo_400Regular",
     fontSize: 12,
     color: "#2C2C2C",
-    lineHeight: 16,
+    lineHeight: 16
   },
   footer: {
     flexDirection: "row",
@@ -233,12 +211,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     borderTopWidth: 0.8,
     borderTopColor: "#F2F2F2",
-    paddingTop: 6,
-  },
-  footerRTL: {
-    flexDirection: "row-reverse",
-  },
-  callButton: {
+    paddingTop: 6
+  },  callButton: {
     backgroundColor: "#C28E5C",
     borderRadius: 4,
     paddingHorizontal: 16,
@@ -246,23 +220,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    height: 32,
+    height: 32
   },
   callButtonText: {
     fontFamily: "Cairo_600SemiBold",
     fontSize: 9,
     color: "#FFF",
-    lineHeight: 12,
+    lineHeight: 12
   },
   price: {
     fontFamily: "Cairo_700Bold",
     fontSize: 14,
     color: "#C28E5C",
-    lineHeight: 20,
-  },
-  priceRTL: {
-    textAlign: "right",
-  },
-});
+    lineHeight: 20
+  },});
 
 export default VendorCard;

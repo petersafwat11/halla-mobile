@@ -6,8 +6,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import { useFormContext, Controller } from "react-hook-form";
-import { useLanguage } from "../../localization";
+import { useFormContext } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import TextInput from "../commen/TextInput";
 import EventTypeModal from "./eventTypeModal";
@@ -74,11 +73,9 @@ const EVENT_TYPES = [
   { value: "graduation", label: "تخرج", emoji: "🎓" },
   { value: "meeting", label: "اجتماع", emoji: "👥" },
   { value: "conference", label: "مؤتمر", emoji: "🎤" },
-  { value: "other", label: "أخرى", emoji: "📅" },
-];
+  { value: "other", label: "أخرى", emoji: "📅" }];
 
 const StepOne = () => {
-  const { isRTL } = useLanguage();
   const { control, setValue, watch } = useFormContext();
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -117,7 +114,9 @@ const StepOne = () => {
       const minutes = selectedTime.getMinutes();
       const ampm = hours >= 12 ? "PM" : "AM";
       const hours12 = hours % 12 || 12;
-      const timeString = `${hours12}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+      const timeString = `${hours12}:${minutes
+        .toString()
+        .padStart(2, "0")} ${ampm}`;
       setValue("eventTime", timeString, { shouldValidate: true });
     }
   };
@@ -125,45 +124,39 @@ const StepOne = () => {
   return (
     <View style={styles.container}>
       {/* Event Name */}
-      <Controller
-        control={control}
+      <TextInput
         name="eventName"
+        label="اسم المناسبة"
+        placeholder="أدخل اسم المناسبة"
         rules={{ required: "اسم المناسبة مطلوب" }}
-        render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-          <TextInput
-            label="اسم المناسبة"
-            placeholder="أدخل اسم المناسبة"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            error={error?.message}
-          />
-        )}
       />
 
       {/* Event Type */}
       <View style={styles.inputGroup}>
-        <Text style={[styles.label, isRTL && styles.labelRTL]}>نوع المناسبة</Text>
+        <Text style={styles.label}>
+          نوع المناسبة
+        </Text>
         <TouchableOpacity
           style={styles.selectButton}
           onPress={() => setShowEventTypeModal(true)}
           activeOpacity={0.7}
         >
+          <ChevronDownIcon />
           <Text
             style={[
               styles.selectButtonText,
-              !eventType && styles.selectButtonPlaceholder,
-            ]}
+              !eventType && styles.selectButtonPlaceholder]}
           >
             {getEventTypeLabel()}
           </Text>
-          <ChevronDownIcon />
         </TouchableOpacity>
       </View>
 
       {/* Event Date */}
       <View style={styles.inputGroup}>
-        <Text style={[styles.label, isRTL && styles.labelRTL]}>تاريخ المناسبة</Text>
+        <Text style={styles.label}>
+          تاريخ المناسبة
+        </Text>
         <TouchableOpacity
           style={styles.selectButton}
           onPress={() => setShowDatePicker(true)}
@@ -174,8 +167,7 @@ const StepOne = () => {
             style={[
               styles.selectButtonText,
               !eventDate && styles.selectButtonPlaceholder,
-              { flex: 1 },
-            ]}
+              { flex: 1 }]}
           >
             {eventDate ? formatDate(eventDate) : "اختر تاريخ المناسبة"}
           </Text>
@@ -194,7 +186,9 @@ const StepOne = () => {
 
       {/* Event Time */}
       <View style={styles.inputGroup}>
-        <Text style={[styles.label, isRTL && styles.labelRTL]}>وقت المناسبة</Text>
+        <Text style={styles.label}>
+          وقت المناسبة
+        </Text>
         <TouchableOpacity
           style={styles.selectButton}
           onPress={() => setShowTimePicker(true)}
@@ -205,8 +199,7 @@ const StepOne = () => {
             style={[
               styles.selectButtonText,
               !eventTime && styles.selectButtonPlaceholder,
-              { flex: 1 },
-            ]}
+              { flex: 1 }]}
           >
             {eventTime || "اختر وقت المناسبة"}
           </Text>
@@ -223,40 +216,13 @@ const StepOne = () => {
       )}
 
       {/* Location */}
-      <Controller
-        control={control}
+      <TextInput
         name="address.address"
+        label="موقع المناسبة"
+        placeholder="أدخل موقع المناسبة"
         rules={{ required: "موقع المناسبة مطلوب" }}
-        render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-          <TextInput
-            label="موقع المناسبة"
-            placeholder="أدخل موقع المناسبة"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            error={error?.message}
-            icon={<LocationIcon />}
-          />
-        )}
+        icon={<LocationIcon />}
       />
-
-      {/* Description (Optional) */}
-      <Controller
-        control={control}
-        name="description"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            label="وصف المناسبة (اختياري)"
-            placeholder="أدخل وصف المناسبة"
-            value={value}
-            onChangeText={onChange}
-            onBlur={onBlur}
-            multiline
-            numberOfLines={4}
-          />
-        )}
-      />
-
       {/* Event Type Modal */}
       <EventTypeModal
         visible={showEventTypeModal}
@@ -278,16 +244,14 @@ const styles = StyleSheet.create({
   },
   inputGroup: {
     marginBottom: 16,
+    flexDirection: "column",
+    justifyContent: "flex-start",
   },
   label: {
     fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
     color: "#2c2c2c",
     marginBottom: 8,
-    textAlign: "left",
-  },
-  labelRTL: {
-    textAlign: "right",
   },
   selectButton: {
     flexDirection: "row",
@@ -304,9 +268,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Cairo_400Regular",
     color: "#2c2c2c",
-  },
-  selectButtonPlaceholder: {
-    color: "#999",
   },
 });
 
