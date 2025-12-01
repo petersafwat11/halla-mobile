@@ -51,7 +51,7 @@ if (!i18n.isInitialized) {
   i18n.use(initReactI18next).init({
     compatibilityJSON: "v3", // For React Native compatibility
     resources,
-    lng: i18nConfig.getDeviceLocale(),
+    lng: i18nConfig.defaultLocale, // Use default locale, not device locale
     fallbackLng: i18nConfig.fallbackLocale,
 
     interpolation: {

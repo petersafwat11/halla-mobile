@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTranslation } from "../localization";
@@ -9,9 +9,21 @@ import { updateAccountAPI } from "../services/settingsService";
 import { TopBar } from "../components/plans";
 
 export default function AccountSettingsScreen({ navigation }) {
-  const { t } = useTranslation("settings");
+  const { t, currentLanguage, isRTL } = useTranslation("settings");
   const toast = useToast();
   const { token } = useAuthStore();
+
+  useEffect(() => {
+    console.log(
+      "[AccountSettingsScreen] Mounted | Language:",
+      currentLanguage,
+      "| RTL:",
+      isRTL
+    );
+    return () => {
+      console.log("[AccountSettingsScreen] Unmounted");
+    };
+  }, []);
 
   const handleAccountUpdate = async (data) => {
     const response = await updateAccountAPI(data, token);

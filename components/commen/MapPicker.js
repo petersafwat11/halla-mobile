@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -6,18 +6,23 @@ import {
   StyleSheet,
   Modal,
   Pressable,
-  TextInput as RNTextInput
+  TextInput as RNTextInput,
+  ActivityIndicator,
+  FlatList,
+  Alert,
+  Keyboard,
 } from "react-native";
 import { useFormContext, Controller } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
+import MapView, { Marker, PROVIDER_DEFAULT } from "react-native-maps";
+import * as Location from "expo-location";
 
 const MapPicker = ({
   name,
   label,
-  placeholder,
+  placeholder = "اختر موقع المناسبة",
   disabled = false,
   rules,
-  ...props
 }) => {
   const { control } = useFormContext();
 
@@ -29,18 +34,227 @@ const MapPicker = ({
       render={({ field: { onChange, value }, fieldState: { error } }) => {
         const [isOpen, setIsOpen] = useState(false);
         const [searchQuery, setSearchQuery] = useState("");
-        const [selectedLocation, setSelectedLocation] = useState(value || null);
+        const [searchResults, setSearchResults] = useState([]);
+        const [isSearching, setIsSearching] = useState(false);
+        const [selectedLocation, setSelectedLocation] = useState(
+          value || {
+            address: "",
+            latitude: 24.7136, // Riyadh default
+            longitude: 46.6753,
+            city: "",
+            country: "",
+          }
+        );
+        const [region, setRegion] = useState({
+          latitude: value?.latitude || 24.7136,
+          longitude: value?.longitude || 46.6753,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        });
+        const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+        const mapRef = useRef(null);
+        const searchTimeoutRef = useRef(null);
 
-        const handleSelectLocation = () => {
+        // Search for locations using Nominatim (OpenStreetMap - free, no API key)
+        const searchLocation = async (query) => {
+          if (!query || query.trim().length < 3) {
+            setSearchResults([]);
+            return;
+          }
+
+          setIsSearching(true);
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+                query
+              )}&limit=5&addressdetails=1`,
+              {
+                headers: {
+                  "User-Agent": "HallaMobileApp/1.0",
+                  Accept: "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            setSearchResults(data);
+          } catch (error) {
+            console.error("Search error:", error);
+            setSearchResults([]);
+          } finally {
+            setIsSearching(false);
+          }
+        };
+
+        // Debounced search
+        const handleSearchChange = (text) => {
+          setSearchQuery(text);
+          if (searchTimeoutRef.current) {
+            clearTimeout(searchTimeoutRef.current);
+          }
+          searchTimeoutRef.current = setTimeout(() => {
+            searchLocation(text);
+          }, 500);
+        };
+
+        // Get current location
+        const getCurrentLocation = async () => {
+          setIsLoadingLocation(true);
+          try {
+            const { status } =
+              await Location.requestForegroundPermissionsAsync();
+            if (status !== "granted") {
+              Alert.alert(
+                "الأذونات",
+                "يرجى السماح بالوصول إلى الموقع لاستخدام هذه الميزة"
+              );
+              return;
+            }
+
+            const location = await Location.getCurrentPositionAsync({});
+            const { latitude, longitude } = location.coords;
+
+            // Reverse geocode to get address
+            const addresses = await Location.reverseGeocodeAsync({
+              latitude,
+              longitude,
+            });
+
+            if (addresses && addresses.length > 0) {
+              const addr = addresses[0];
+              const newLocation = {
+                address: `${addr.street || ""} ${addr.city || ""} ${
+                  addr.country || ""
+                }`.trim(),
+                latitude,
+                longitude,
+                city: addr.city || "",
+                country: addr.country || "",
+              };
+              setSelectedLocation(newLocation);
+              setRegion({
+                latitude,
+                longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+              });
+              mapRef.current?.animateToRegion({
+                latitude,
+                longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+              });
+            }
+          } catch (error) {
+            console.error("Location error:", error);
+            Alert.alert("خطأ", "فشل في الحصول على الموقع الحالي");
+          } finally {
+            setIsLoadingLocation(false);
+          }
+        };
+
+        // Handle search result selection
+        const handleSelectSearchResult = (result) => {
+          const newLocation = {
+            address: result.display_name,
+            latitude: parseFloat(result.lat),
+            longitude: parseFloat(result.lon),
+            city: result.address?.city || result.address?.town || "",
+            country: result.address?.country || "",
+          };
+          setSelectedLocation(newLocation);
+          setRegion({
+            latitude: newLocation.latitude,
+            longitude: newLocation.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          });
+          mapRef.current?.animateToRegion({
+            latitude: newLocation.latitude,
+            longitude: newLocation.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          });
+          setSearchQuery("");
+          setSearchResults([]);
+          Keyboard.dismiss();
+        };
+
+        // Handle map press
+        const handleMapPress = async (event) => {
+          const { latitude, longitude } = event.nativeEvent.coordinate;
+
+          try {
+            // Reverse geocode
+            const addresses = await Location.reverseGeocodeAsync({
+              latitude,
+              longitude,
+            });
+
+            if (addresses && addresses.length > 0) {
+              const addr = addresses[0];
+              const newLocation = {
+                address: `${addr.street || ""} ${addr.city || ""} ${
+                  addr.country || ""
+                }`.trim(),
+                latitude,
+                longitude,
+                city: addr.city || "",
+                country: addr.country || "",
+              };
+              setSelectedLocation(newLocation);
+            } else {
+              setSelectedLocation({
+                address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+                latitude,
+                longitude,
+                city: "",
+                country: "",
+              });
+            }
+          } catch (error) {
+            console.error("Reverse geocode error:", error);
+            setSelectedLocation({
+              address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+              latitude,
+              longitude,
+              city: "",
+              country: "",
+            });
+          }
+        };
+
+        const handleConfirm = () => {
           onChange(selectedLocation);
           setIsOpen(false);
         };
 
-        const displayValue = selectedLocation?.address || value?.address || "";
+        const handleCancel = () => {
+          setSelectedLocation(
+            value || {
+              address: "",
+              latitude: 24.7136,
+              longitude: 46.6753,
+              city: "",
+              country: "",
+            }
+          );
+          setSearchQuery("");
+          setSearchResults([]);
+          setIsOpen(false);
+        };
+
+        const displayValue = value?.address || "";
 
         return (
           <View style={styles.container}>
             {label && <Text style={styles.label}>{label}</Text>}
+
+            {/* Input Button */}
             <TouchableOpacity
               style={[
                 styles.inputContainer,
@@ -51,112 +265,198 @@ const MapPicker = ({
               disabled={disabled}
               activeOpacity={0.7}
             >
-              <Ionicons
-                name="location-outline"
-                size={24}
-                color="#C28E5C"
-                style={styles.icon}
-              />
-              <Text
-                style={[
-                  styles.inputText,
-                  !displayValue && styles.placeholderText,
-                ]}
-              >
-                {displayValue || placeholder}
-              </Text>
+              <View style={styles.inputContent}>
+                <Ionicons name="location-outline" size={24} color="#C28E5C" />
+                <Text
+                  style={[
+                    styles.inputText,
+                    !displayValue && styles.placeholderText,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {displayValue || placeholder}
+                </Text>
+              </View>
+              <Ionicons name="chevron-down" size={20} color="#999" />
             </TouchableOpacity>
+
             {error && <Text style={styles.errorText}>{error.message}</Text>}
 
+            {/* Map Modal */}
             <Modal
               visible={isOpen}
               transparent
               animationType="slide"
-              onRequestClose={() => setIsOpen(false)}
+              onRequestClose={handleCancel}
             >
-              <Pressable
-                style={styles.overlay}
-                onPress={() => setIsOpen(false)}
-              >
-                <Pressable
-                  style={styles.modalContainer}
-                  onPress={(e) => e.stopPropagation()}
-                >
-                  {/* Modal Header */}
-                  <View
-                    style={[styles.modalHeader]}
-                  >
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContainer}>
+                  {/* Header */}
+                  <View style={styles.modalHeader}>
                     <TouchableOpacity
-                      onPress={() => setIsOpen(false)}
-                      hitSlop={8}
+                      onPress={handleCancel}
+                      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                      style={styles.closeButton}
                     >
-                      <Ionicons name="close" size={24} color="#000" />
+                      <Ionicons name="close" size={28} color="#2C2C2C" />
                     </TouchableOpacity>
-                    <View style={styles.modalTitleContainer}>
-                      <Text
-                        style={[
-                          styles.modalTitle,
-                        ]}
-                      >
-                        اختر الموقع
-                      </Text>
-                    </View>
+                    <Text style={styles.modalTitle}>اختر موقع المناسبة</Text>
                   </View>
 
-                  {/* Search Input */}
+                  {/* Search Bar */}
                   <View style={styles.searchContainer}>
                     <View style={styles.searchInputContainer}>
-                      <Ionicons
-                        name="search-outline"
-                        size={20}
-                        color="#767676"
-                        style={styles.searchIcon}
-                      />
+                      {isSearching ? (
+                        <ActivityIndicator size="small" color="#C28E5C" />
+                      ) : (
+                        <Ionicons
+                          name="search-outline"
+                          size={20}
+                          color="#767676"
+                        />
+                      )}
                       <RNTextInput
-                        style={[
-                          styles.searchInput,
-                        ]}
-                        placeholder="ابحث عن الموقع"
-                        placeholderTextColor="#767676"
+                        style={styles.searchInput}
+                        placeholder="ابحث عن موقع (مدينة، شارع، معلم...)"
+                        placeholderTextColor="#999"
                         value={searchQuery}
-                        onChangeText={setSearchQuery}
+                        onChangeText={handleSearchChange}
+                        returnKeyType="search"
                       />
+                      {searchQuery.length > 0 && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            setSearchQuery("");
+                            setSearchResults([]);
+                          }}
+                        >
+                          <Ionicons
+                            name="close-circle"
+                            size={20}
+                            color="#999"
+                          />
+                        </TouchableOpacity>
+                      )}
                     </View>
                   </View>
 
-                  {/* Map Placeholder */}
-                  <View style={styles.mapContainer}>
-                    <View style={styles.mapPlaceholder}>
-                      <Ionicons name="map-outline" size={60} color="#C28E5C" />
-                      <Text style={styles.mapPlaceholderText}>
-                        Map view will be displayed here
-                      </Text>
-                      <Text style={styles.mapPlaceholderSubtext}>
-                        Integration with React Native Maps or similar library
-                        required
-                      </Text>
+                  {/* Search Results */}
+                  {searchResults.length > 0 && (
+                    <View style={styles.searchResultsContainer}>
+                      <FlatList
+                        data={searchResults}
+                        keyExtractor={(item) => item.place_id.toString()}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity
+                            style={styles.searchResultItem}
+                            onPress={() => handleSelectSearchResult(item)}
+                            activeOpacity={0.7}
+                          >
+                            <Ionicons
+                              name="location"
+                              size={20}
+                              color="#C28E5C"
+                            />
+                            <Text
+                              style={styles.searchResultText}
+                              numberOfLines={2}
+                            >
+                              {item.display_name}
+                            </Text>
+                            <Ionicons
+                              name="chevron-back"
+                              size={18}
+                              color="#999"
+                            />
+                          </TouchableOpacity>
+                        )}
+                        ItemSeparatorComponent={() => (
+                          <View style={styles.separator} />
+                        )}
+                      />
                     </View>
+                  )}
+
+                  {/* Map */}
+                  <View style={styles.mapContainer}>
+                    <MapView
+                      ref={mapRef}
+                      style={styles.map}
+                      provider={PROVIDER_DEFAULT}
+                      initialRegion={region}
+                      onPress={handleMapPress}
+                      showsUserLocation
+                      showsMyLocationButton={false}
+                      showsCompass={false}
+                    >
+                      <Marker
+                        coordinate={{
+                          latitude: selectedLocation.latitude,
+                          longitude: selectedLocation.longitude,
+                        }}
+                        title="الموقع المختار"
+                        description={selectedLocation.address}
+                        pinColor="#C28E5C"
+                      />
+                    </MapView>
+
+                    {/* Current Location Button */}
+                    <TouchableOpacity
+                      style={styles.currentLocationButton}
+                      onPress={getCurrentLocation}
+                      disabled={isLoadingLocation}
+                      activeOpacity={0.8}
+                    >
+                      {isLoadingLocation ? (
+                        <ActivityIndicator size="small" color="#FFF" />
+                      ) : (
+                        <Ionicons name="locate" size={24} color="#FFF" />
+                      )}
+                    </TouchableOpacity>
+
+                    {/* Selected Address Card */}
+                    {selectedLocation.address && (
+                      <View style={styles.selectedAddressCard}>
+                        <View style={styles.addressIconContainer}>
+                          <Ionicons name="location" size={20} color="#C28E5C" />
+                        </View>
+                        <View style={styles.addressTextContainer}>
+                          <Text style={styles.addressLabel}>
+                            الموقع المختار
+                          </Text>
+                          <Text style={styles.addressText} numberOfLines={2}>
+                            {selectedLocation.address}
+                          </Text>
+                        </View>
+                      </View>
+                    )}
                   </View>
 
                   {/* Action Buttons */}
-                  <View style={styles.modalActions}>
+                  <View style={styles.actionButtons}>
                     <TouchableOpacity
                       style={styles.cancelButton}
-                      onPress={() => setIsOpen(false)}
-                      activeOpacity={0.7}
+                      onPress={handleCancel}
+                      activeOpacity={0.8}
                     >
                       <Text style={styles.cancelButtonText}>إلغاء</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={styles.confirmButton}
-                      onPress={handleSelectLocation}
-                      activeOpacity={0.7}
+                      style={[
+                        styles.confirmButton,
+                        !selectedLocation.address &&
+                          styles.confirmButtonDisabled,
+                      ]}
+                      onPress={handleConfirm}
+                      disabled={!selectedLocation.address}
+                      activeOpacity={0.8}
                     >
+                      <Ionicons name="checkmark" size={20} color="#FFF" />
                       <Text style={styles.confirmButtonText}>تأكيد الموقع</Text>
                     </TouchableOpacity>
                   </View>
-                </Pressable>
-              </Pressable>
+                </View>
+              </View>
             </Modal>
           </View>
         );
@@ -168,173 +468,242 @@ const MapPicker = ({
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16,
-    width: "100%"
-  },  label: {
+    width: "100%",
+  },
+  label: {
     fontSize: 14,
-    fontFamily: "Cairo_500Medium",
+    fontFamily: "Cairo_600SemiBold",
     color: "#2C2C2C",
     marginBottom: 8,
-    paddingHorizontal: 8,
-    textAlign: "left"
-  },  inputContainer: {
+  },
+  inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1.5,
-    borderTopWidth: 1,
-    borderRightWidth: 1.5,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1.5,
-    borderColor: "#DFDFDF",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
     borderRadius: 12,
     backgroundColor: "#FFF",
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    minHeight: 50
-  },  inputContainerError: {
-    borderColor: "#e74c3c"
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    minHeight: 56,
+  },
+  inputContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    flex: 1,
+  },
+  inputContainerError: {
+    borderColor: "#E74C3C",
+    borderWidth: 1.5,
   },
   inputContainerDisabled: {
-    backgroundColor: "#f5f5f5",
-    opacity: 0.6
+    backgroundColor: "#F5F5F5",
+    opacity: 0.6,
   },
-  icon: {
-    marginRight: 0
-  },  inputText: {
+  inputText: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    lineHeight: 24,
-    letterSpacing: 0.08,
-    textAlign: "right"
-  },  placeholderText: {
-    color: "#767676"
+  },
+  placeholderText: {
+    color: "#999",
   },
   errorText: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
-    color: "#e74c3c",
-    marginTop: 4,
-    paddingHorizontal: 8,
-    textAlign: "left"
-  },  overlay: {
+    color: "#E74C3C",
+    marginTop: 6,
+  },
+  modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    justifyContent: "flex-end"
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
   },
   modalContainer: {
     backgroundColor: "#FFF",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: "90%"
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    height: "85%",
+    overflow: "hidden",
   },
   modalHeader: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 24,
-    paddingHorizontal: 24,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F2F2F2"
-  },  modalTitleContainer: {
-    flex: 1,
-    alignItems: "flex-end"
+    borderBottomColor: "#F0F0F0",
+    backgroundColor: "#FFF",
+  },
+  closeButton: {
+    padding: 4,
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    lineHeight: 32,
-    textAlign: "right"
-  },  searchContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 16
+    flex: 1,
+    textAlign: "center",
+    marginRight: 36,
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    backgroundColor: "#FFF",
   },
   searchInputContainer: {
-    flexDirection: "row-reverse",
+    flexDirection: "row",
     alignItems: "center",
+    gap: 10,
+    backgroundColor: "#F9F9F9",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#DFDFDF",
-    borderRadius: 12,
-    backgroundColor: "#FFF",
-    paddingHorizontal: 12
-  },
-  searchIcon: {
-    marginLeft: 8
+    borderColor: "#E0E0E0",
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
-    paddingVertical: 12
-  },  mapContainer: {
-    flex: 1,
-    paddingHorizontal: 24
+    textAlign: "right",
   },
-  mapPlaceholder: {
+  searchResultsContainer: {
+    maxHeight: 250,
+    backgroundColor: "#FFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  searchResultItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+  },
+  searchResultText: {
     flex: 1,
+    fontSize: 14,
+    fontFamily: "Cairo_400Regular",
+    color: "#2C2C2C",
+    textAlign: "right",
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#F0F0F0",
+    marginHorizontal: 20,
+  },
+  mapContainer: {
+    flex: 1,
+    position: "relative",
+  },
+  map: {
+    flex: 1,
+  },
+  currentLocationButton: {
+    position: "absolute",
+    bottom: 24,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "#C28E5C",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F9F4EF",
-    borderRadius: 12,
-    padding: 24
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  mapPlaceholderText: {
-    fontSize: 16,
-    fontFamily: "Cairo_600SemiBold",
-    color: "#2C2C2C",
-    marginTop: 12,
-    textAlign: "center"
-  },
-  mapPlaceholderSubtext: {
-    fontSize: 12,
-    fontFamily: "Cairo_400Regular",
-    color: "#767676",
-    marginTop: 4,
-    textAlign: "center"
-  },
-  modalActions: {
+  selectedAddressCard: {
+    position: "absolute",
+    top: 16,
+    left: 16,
+    right: 16,
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 16,
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 16,
-    paddingHorizontal: 24,
-    paddingVertical: 24,
+    gap: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  addressIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F9F4EF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addressTextContainer: {
+    flex: 1,
+  },
+  addressLabel: {
+    fontSize: 12,
+    fontFamily: "Cairo_600SemiBold",
+    color: "#999",
+    marginBottom: 4,
+  },
+  addressText: {
+    fontSize: 14,
+    fontFamily: "Cairo_400Regular",
+    color: "#2C2C2C",
+    lineHeight: 20,
+  },
+  actionButtons: {
+    flexDirection: "row",
+    gap: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingBottom: 16,
+    backgroundColor: "#FFF",
     borderTopWidth: 1,
-    borderTopColor: "#F2F2F2"
+    borderTopColor: "#F0F0F0",
   },
   cancelButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#D6B392",
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: "#E0E0E0",
     backgroundColor: "#FFF",
-    minWidth: 100,
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "center",
   },
   cancelButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
-    color: "#6B4E33",
-    lineHeight: 24,
-    letterSpacing: 0.08
+    color: "#666",
   },
   confirmButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
+    flex: 2,
+    flexDirection: "row",
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: 10,
     backgroundColor: "#C28E5C",
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  confirmButtonDisabled: {
+    backgroundColor: "#CCC",
   },
   confirmButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: "Cairo_600SemiBold",
     color: "#FFF",
-    lineHeight: 24,
-    letterSpacing: 0.08
-  }
+  },
 });
 
 export default MapPicker;

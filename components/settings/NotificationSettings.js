@@ -5,13 +5,13 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Animated
+  Animated,
 } from "react-native";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { notificationSettingsSchema } from "../../utils/schemas/settingsSchema";
 import { ToggleInput } from "../commen";
-import { useLanguage, useTranslation } from "../../localization";
+import { useTranslation } from "../../localization";
 import { useToast } from "../../contexts/ToastContext";
 
 const NotificationSettings = ({ initialData, onUpdate }) => {
@@ -25,7 +25,7 @@ const NotificationSettings = ({ initialData, onUpdate }) => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
   }, []);
 
@@ -34,28 +34,35 @@ const NotificationSettings = ({ initialData, onUpdate }) => {
       eventUpdates: true,
       eventDates: true,
       packageRenewal: true,
-      systemInteractions: true
+      systemInteractions: true,
     },
     emailNotifications: {
       eventUpdates: false,
       eventDates: false,
       packageRenewal: false,
       beforeSendingInvitations: false,
-      afterSendingInvitations: false
-    }
+      afterSendingInvitations: false,
+    },
   };
 
   const methods = useForm({
     resolver: zodResolver(notificationSettingsSchema),
     mode: "onChange",
-    defaultValues: initialData || defaultValues
+    defaultValues: defaultValues,
   });
 
   const {
     handleSubmit,
     formState: { isDirty },
-    reset
+    reset,
   } = methods;
+
+  // Reset form when initialData changes
+  React.useEffect(() => {
+    if (initialData) {
+      reset(initialData);
+    }
+  }, [initialData, reset]);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -83,15 +90,10 @@ const NotificationSettings = ({ initialData, onUpdate }) => {
         >
           {/* App Notifications Section */}
           <View style={styles.section}>
-            <Text
-              style={styles.sectionTitle}
-            >
+            <Text style={styles.sectionTitle}>
               {t("notifications.appNotifications")}
             </Text>
-            <Text
-              style={[
-                styles.sectionDescription]}
-            >
+            <Text style={[styles.sectionDescription]}>
               {t("notifications.appNotificationsDescription")}
             </Text>
 
@@ -124,15 +126,10 @@ const NotificationSettings = ({ initialData, onUpdate }) => {
 
           {/* Email Notifications Section */}
           <View style={styles.section}>
-            <Text
-              style={styles.sectionTitle}
-            >
+            <Text style={styles.sectionTitle}>
               {t("notifications.emailNotifications")}
             </Text>
-            <Text
-              style={[
-                styles.sectionDescription]}
-            >
+            <Text style={[styles.sectionDescription]}>
               {t("notifications.emailNotificationsDescription")}
             </Text>
 
@@ -170,9 +167,7 @@ const NotificationSettings = ({ initialData, onUpdate }) => {
           </View>
 
           {/* Action Buttons */}
-          <View
-            style={styles.buttonContainer}
-          >
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={handleCancel}
@@ -187,7 +182,8 @@ const NotificationSettings = ({ initialData, onUpdate }) => {
             <TouchableOpacity
               style={[
                 styles.saveButton,
-                (!isDirty || loading) && styles.saveButtonDisabled]}
+                (!isDirty || loading) && styles.saveButtonDisabled,
+              ]}
               onPress={handleSubmit(onSubmit)}
               disabled={!isDirty || loading}
               activeOpacity={0.7}
@@ -208,35 +204,38 @@ const NotificationSettings = ({ initialData, onUpdate }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   section: {
-    marginBottom: 32
+    marginBottom: 32,
   },
   sectionTitle: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2c2c2c",
-    marginBottom: 8
-  },  sectionDescription: {
+    marginBottom: 8,
+  },
+  sectionDescription: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#666",
     marginBottom: 16,
-    lineHeight: 20
-  },  togglesGroup: {
-    width: "100%"
+    lineHeight: 20,
+  },
+  togglesGroup: {
+    width: "100%",
   },
   buttonContainer: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     justifyContent: "space-between",
     marginTop: 24,
-    gap: 12
-  },  cancelButton: {
+    gap: 12,
+  },
+  cancelButton: {
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -244,11 +243,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#c28e5c",
     alignItems: "center",
-    maxWidth: 140
-  },  cancelButtonText: {
+    maxWidth: 140,
+  },
+  cancelButtonText: {
     color: "#c28e5c",
     fontSize: 14,
-    fontFamily: "Cairo_600SemiBold"
+    fontFamily: "Cairo_600SemiBold",
   },
   saveButton: {
     flex: 1,
@@ -257,15 +257,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#c28e5c",
     alignItems: "center",
-    maxWidth: 140
-  },  saveButtonDisabled: {
-    backgroundColor: "#e0e0e0"
+    maxWidth: 140,
+  },
+  saveButtonDisabled: {
+    backgroundColor: "#e0e0e0",
   },
   saveButtonText: {
     color: "#fff",
     fontSize: 14,
-    fontFamily: "Cairo_600SemiBold"
-  }
+    fontFamily: "Cairo_600SemiBold",
+  },
 });
 
 export default NotificationSettings;

@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 const PrevAndNextBtns = ({
   onNext,
   onPrevious,
@@ -12,28 +18,6 @@ const PrevAndNextBtns = ({
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        {/* Next Button */}
-        <TouchableOpacity
-          style={[
-            styles.nextButton,
-            isNextDisabled && styles.nextButtonDisabled]}
-          onPress={onNext}
-          disabled={isNextDisabled || isLoading}
-          activeOpacity={0.7}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="#CEA57D" />
-          ) : (
-            <Text
-              style={[
-                styles.nextButtonText,
-                isNextDisabled && styles.nextButtonTextDisabled]}
-            >
-              {nextButtonText}
-            </Text>
-          )}
-        </TouchableOpacity>
-
         {/* Previous Button */}
         {showPrevious && (
           <TouchableOpacity
@@ -45,6 +29,29 @@ const PrevAndNextBtns = ({
             <Text style={styles.prevButtonText}>{previousButtonText}</Text>
           </TouchableOpacity>
         )}
+        {/* Next Button */}
+        <TouchableOpacity
+          style={[
+            styles.nextButton,
+            isNextDisabled && styles.nextButtonDisabled,
+          ]}
+          onPress={onNext}
+          disabled={isNextDisabled || isLoading}
+          activeOpacity={0.7}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#CEA57D" />
+          ) : (
+            <Text
+              style={[
+                styles.nextButtonText,
+                isNextDisabled && styles.nextButtonTextDisabled,
+              ]}
+            >
+              {nextButtonText}
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -55,7 +62,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 20,
     backgroundColor: "#FFF",
-  },buttonContainer: {
+  },
+  buttonContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 16,

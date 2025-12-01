@@ -64,18 +64,14 @@ const MakeYourFirst = ({ onCreatePress }) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.textContainer}>
-          <Text style={styles.title}>
-            ابدأ بإنشاء أول مناسبة لك مجانا
-          </Text>
-          <Text style={styles.subtitle}>
-            لديك تجربة مجانية لدعوة 5 أفراد
-          </Text>
+          <Text style={styles.title}>ابدأ بإنشاء أول مناسبة لك مجانا</Text>
+          <Text style={styles.subtitle}>لديك تجربة مجانية لدعوة 5 أفراد</Text>
         </View>
         <GiftIcon />
       </View>
 
       <TouchableOpacity
-        style={styles.createButton}
+        style={styles.subcreateButton}
         onPress={onCreatePress}
         activeOpacity={0.7}
       >
@@ -115,33 +111,36 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3
+    elevation: 3,
   },
   content: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
     gap: 16,
-    alignSelf: "stretch"
-  },textContainer: {
+    alignSelf: "stretch",
+  },
+  textContainer: {
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-end",
-    gap: 4
-  },  title: {
+    gap: 4,
+  },
+  title: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.08,
-    textAlign: "right"
-  },subtitle: {
+    textAlign: "right",
+  },
+  subtitle: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
     lineHeight: 20,
     letterSpacing: 0.014,
-    textAlign: "right"
+    textAlign: "right",
   },
   subcreateButton: {
     flexDirection: "row",
@@ -153,7 +152,7 @@ const styles = StyleSheet.create({
     gap: 4,
     alignSelf: "stretch",
     borderRadius: 8,
-    backgroundColor: "#C28E5C"
+    backgroundColor: "#C28E5C",
   },
   createButtonText: {
     fontSize: 14,
@@ -161,8 +160,9 @@ const styles = StyleSheet.create({
     color: "#FFF",
     lineHeight: 16,
     letterSpacing: 0.056,
-    textAlign: "center"
-  }
+    textAlign: "center",
+    backgroundColor: "#C28E5C",
+  },
 });
 
 export default MakeYourFirst;

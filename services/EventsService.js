@@ -265,7 +265,7 @@ export const processImportedCSV = (
 export const validateStepData = (stepNumber, formData) => {
   switch (stepNumber) {
     case 1:
-      // Event Details
+      // Event Details - flat structure
       const hasValidEventTime =
         formData.eventTime &&
         typeof formData.eventTime === "string" &&

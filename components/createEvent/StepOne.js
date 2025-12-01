@@ -9,6 +9,7 @@ import {
 import { useFormContext } from "react-hook-form";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import TextInput from "../commen/TextInput";
+import MapPicker from "../commen/MapPicker";
 import EventTypeModal from "./eventTypeModal";
 import Svg, { Path } from "react-native-svg";
 
@@ -73,7 +74,8 @@ const EVENT_TYPES = [
   { value: "graduation", label: "تخرج", emoji: "🎓" },
   { value: "meeting", label: "اجتماع", emoji: "👥" },
   { value: "conference", label: "مؤتمر", emoji: "🎤" },
-  { value: "other", label: "أخرى", emoji: "📅" }];
+  { value: "other", label: "أخرى", emoji: "📅" },
+];
 
 const StepOne = () => {
   const { control, setValue, watch } = useFormContext();
@@ -133,9 +135,7 @@ const StepOne = () => {
 
       {/* Event Type */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>
-          نوع المناسبة
-        </Text>
+        <Text style={styles.label}>نوع المناسبة</Text>
         <TouchableOpacity
           style={styles.selectButton}
           onPress={() => setShowEventTypeModal(true)}
@@ -145,7 +145,8 @@ const StepOne = () => {
           <Text
             style={[
               styles.selectButtonText,
-              !eventType && styles.selectButtonPlaceholder]}
+              !eventType && styles.selectButtonPlaceholder,
+            ]}
           >
             {getEventTypeLabel()}
           </Text>
@@ -154,9 +155,7 @@ const StepOne = () => {
 
       {/* Event Date */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>
-          تاريخ المناسبة
-        </Text>
+        <Text style={styles.label}>تاريخ المناسبة</Text>
         <TouchableOpacity
           style={styles.selectButton}
           onPress={() => setShowDatePicker(true)}
@@ -167,7 +166,8 @@ const StepOne = () => {
             style={[
               styles.selectButtonText,
               !eventDate && styles.selectButtonPlaceholder,
-              { flex: 1 }]}
+              { flex: 1 },
+            ]}
           >
             {eventDate ? formatDate(eventDate) : "اختر تاريخ المناسبة"}
           </Text>
@@ -186,9 +186,7 @@ const StepOne = () => {
 
       {/* Event Time */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>
-          وقت المناسبة
-        </Text>
+        <Text style={styles.label}>وقت المناسبة</Text>
         <TouchableOpacity
           style={styles.selectButton}
           onPress={() => setShowTimePicker(true)}
@@ -199,7 +197,8 @@ const StepOne = () => {
             style={[
               styles.selectButtonText,
               !eventTime && styles.selectButtonPlaceholder,
-              { flex: 1 }]}
+              { flex: 1 },
+            ]}
           >
             {eventTime || "اختر وقت المناسبة"}
           </Text>
@@ -216,12 +215,19 @@ const StepOne = () => {
       )}
 
       {/* Location */}
-      <TextInput
-        name="address.address"
+      <MapPicker
+        name="address"
         label="موقع المناسبة"
-        placeholder="أدخل موقع المناسبة"
-        rules={{ required: "موقع المناسبة مطلوب" }}
-        icon={<LocationIcon />}
+        placeholder="اختر موقع المناسبة"
+        rules={{
+          required: "موقع المناسبة مطلوب",
+          validate: (value) => {
+            if (!value || !value.address || value.address.trim() === "") {
+              return "يرجى اختيار موقع صحيح";
+            }
+            return true;
+          },
+        }}
       />
       {/* Event Type Modal */}
       <EventTypeModal
@@ -268,6 +274,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Cairo_400Regular",
     color: "#2c2c2c",
+  },
+  selectButtonPlaceholder: {
+    color: "#999",
   },
 });
 

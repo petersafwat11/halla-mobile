@@ -5,7 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Animated
+  Animated,
 } from "react-native";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,16 +15,20 @@ import {
   EmailInput,
   PasswordInput,
   Button,
-  OTPInput
+  OTPInput,
 } from "../commen";
-import { useLanguage, useTranslation } from "../../localization";
+import { useTranslation } from "../../localization";
 import { useAuthStore } from "../../stores/authStore";
 import { useToast } from "../../contexts/ToastContext";
+import {
+  sendEmailVerificationCodeAPI,
+  verifyEmailAPI,
+} from "../../services/settingsService";
 
 const AccountSettings = ({ onUpdate }) => {
   const { t } = useTranslation("settings");
   const toast = useToast();
-  const { user } = useAuthStore();
+  const { user, token } = useAuthStore();
 
   const [showVerificationInput, setShowVerificationInput] = useState(false);
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
@@ -37,7 +41,7 @@ const AccountSettings = ({ onUpdate }) => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 300,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start();
   }, []);
 
@@ -48,15 +52,15 @@ const AccountSettings = ({ onUpdate }) => {
       username: user?.username || "",
       email: user?.email || "",
       newPassword: "",
-      confirmPassword: ""
-    }
+      confirmPassword: "",
+    },
   });
 
   const {
     handleSubmit,
     formState: { isDirty },
     reset,
-    watch
+    watch,
   } = methods;
 
   const emailValue = watch("email");
@@ -64,8 +68,7 @@ const AccountSettings = ({ onUpdate }) => {
   const handleSendVerificationCode = async () => {
     setIsVerifyingEmail(true);
     try {
-      // TODO: Call API to send verification code
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await sendEmailVerificationCodeAPI(token);
       setShowVerificationInput(true);
       toast.success(t("account.verificationCodeSent"));
     } catch (error) {
@@ -83,8 +86,7 @@ const AccountSettings = ({ onUpdate }) => {
 
     setIsVerifyingEmail(true);
     try {
-      // TODO: Call API to verify code
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await verifyEmailAPI(verificationCode, token);
       toast.success(t("account.emailVerified"));
       setShowVerificationInput(false);
       setVerificationCode("");
@@ -100,7 +102,7 @@ const AccountSettings = ({ onUpdate }) => {
     try {
       const updateData = {
         username: data.username,
-        email: data.email
+        email: data.email,
       };
 
       if (data.newPassword) {
@@ -108,7 +110,15 @@ const AccountSettings = ({ onUpdate }) => {
         updateData.passwordConfirm = data.confirmPassword;
       }
 
-      await onUpdate(updateData);
+      const response = await onUpdate(updateData);
+
+      // Update user store with new data
+      if (response.user) {
+        const { persistAuth } = useAuthStore.getState();
+        await persistAuth(response.user, token);
+        useAuthStore.setState({ user: response.user });
+      }
+
       toast.success(t("account.updateSuccess"));
       reset(data);
     } catch (error) {
@@ -131,11 +141,7 @@ const AccountSettings = ({ onUpdate }) => {
         >
           {/* Personal Information Section */}
           <View style={styles.section}>
-            <Text
-              style={styles.sectionTitle}
-            >
-              {t("account.personalInfo")}
-            </Text>
+            <Text style={styles.sectionTitle}>{t("account.personalInfo")}</Text>
 
             <View style={styles.inputsGroup}>
               <TextInput
@@ -155,8 +161,7 @@ const AccountSettings = ({ onUpdate }) => {
 
                 {!showVerificationInput && (
                   <TouchableOpacity
-                    style={[
-                      styles.verifyButton]}
+                    style={[styles.verifyButton]}
                     onPress={handleSendVerificationCode}
                     disabled={isVerifyingEmail || !emailValue}
                     activeOpacity={0.7}
@@ -180,7 +185,8 @@ const AccountSettings = ({ onUpdate }) => {
                       style={[
                         styles.verifyCodeButton,
                         (isVerifyingEmail || verificationCode.length !== 6) &&
-                          styles.verifyCodeButtonDisabled]}
+                          styles.verifyCodeButtonDisabled,
+                      ]}
                       onPress={handleVerifyCode}
                       disabled={
                         isVerifyingEmail || verificationCode.length !== 6
@@ -201,15 +207,10 @@ const AccountSettings = ({ onUpdate }) => {
 
           {/* Change Password Section */}
           <View style={styles.section}>
-            <Text
-              style={styles.sectionTitle}
-            >
+            <Text style={styles.sectionTitle}>
               {t("account.changePassword")}
             </Text>
-            <Text
-              style={[
-                styles.sectionDescription]}
-            >
+            <Text style={[styles.sectionDescription]}>
               {t("account.changePasswordDescription")}
             </Text>
 
@@ -231,9 +232,7 @@ const AccountSettings = ({ onUpdate }) => {
           </View>
 
           {/* Action Buttons */}
-          <View
-            style={styles.buttonContainer}
-          >
+          <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={handleCancel}
@@ -246,7 +245,8 @@ const AccountSettings = ({ onUpdate }) => {
             <TouchableOpacity
               style={[
                 styles.saveButton,
-                (!isDirty || loading) && styles.saveButtonDisabled]}
+                (!isDirty || loading) && styles.saveButtonDisabled,
+              ]}
               onPress={handleSubmit(onSubmit)}
               disabled={!isDirty || loading}
               activeOpacity={0.7}
@@ -265,31 +265,33 @@ const AccountSettings = ({ onUpdate }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 40
+    paddingBottom: 40,
   },
   section: {
-    marginBottom: 32
+    marginBottom: 32,
   },
   sectionTitle: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2c2c2c",
-    marginBottom: 8
-  },  sectionDescription: {
+    marginBottom: 8,
+  },
+  sectionDescription: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#666",
     marginBottom: 16,
-    lineHeight: 20
-  },  inputsGroup: {
-    width: "100%"
+    lineHeight: 20,
+  },
+  inputsGroup: {
+    width: "100%",
   },
   emailWrapper: {
-    width: "100%"
+    width: "100%",
   },
   verifyButton: {
     backgroundColor: "#c28e5c",
@@ -297,15 +299,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 8
-  },  verifyButtonText: {
+    marginTop: 8,
+  },
+  verifyButtonText: {
     color: "#fff",
     fontSize: 14,
-    fontFamily: "Cairo_600SemiBold"
+    fontFamily: "Cairo_600SemiBold",
   },
   verificationGroup: {
     marginTop: 16,
-    width: "100%"
+    width: "100%",
   },
   verifyCodeButton: {
     backgroundColor: "#c28e5c",
@@ -313,22 +316,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 12
+    marginTop: 12,
   },
   verifyCodeButtonDisabled: {
-    backgroundColor: "#e0e0e0"
+    backgroundColor: "#e0e0e0",
   },
   verifyCodeButtonText: {
     color: "#fff",
     fontSize: 14,
-    fontFamily: "Cairo_600SemiBold"
+    fontFamily: "Cairo_600SemiBold",
   },
   buttonContainer: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     justifyContent: "space-between",
     marginTop: 24,
-    gap: 12
-  },  cancelButton: {
+    gap: 12,
+  },
+  cancelButton: {
     flex: 1,
     paddingVertical: 10,
     paddingHorizontal: 16,
@@ -336,11 +340,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#c28e5c",
     alignItems: "center",
-    maxWidth: 140
-  },  cancelButtonText: {
+    maxWidth: 140,
+  },
+  cancelButtonText: {
     color: "#c28e5c",
     fontSize: 14,
-    fontFamily: "Cairo_600SemiBold"
+    fontFamily: "Cairo_600SemiBold",
   },
   saveButton: {
     flex: 1,
@@ -349,15 +354,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#c28e5c",
     alignItems: "center",
-    maxWidth: 140
-  },  saveButtonDisabled: {
-    backgroundColor: "#e0e0e0"
+    maxWidth: 140,
+  },
+  saveButtonDisabled: {
+    backgroundColor: "#e0e0e0",
   },
   saveButtonText: {
     color: "#fff",
     fontSize: 14,
-    fontFamily: "Cairo_600SemiBold"
-  }
+    fontFamily: "Cairo_600SemiBold",
+  },
 });
 
 export default AccountSettings;

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,7 +24,7 @@ const PreviewInvitation = ({
   selectedTemplate = null,
   eventDate = null,
   eventTime = "",
-  location = ""
+  location = "",
 }) => {
   // Format date for display
   const formattedDate = useMemo(() => {
@@ -34,7 +34,7 @@ const PreviewInvitation = ({
       return date.toLocaleDateString("ar-SA", {
         year: "numeric",
         month: "long",
-        day: "numeric"
+        day: "numeric",
       });
     } catch (error) {
       return "";
@@ -63,9 +63,7 @@ const PreviewInvitation = ({
         <View style={styles.modalContainer}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>
-              معاينة الدعوة
-            </Text>
+            <Text style={styles.headerTitle}>معاينة الدعوة</Text>
             <TouchableOpacity
               onPress={onClose}
               style={styles.closeButton}
@@ -84,53 +82,43 @@ const PreviewInvitation = ({
             {/* Chat Bubble */}
             <View style={styles.chatBubble}>
               {/* Template Image */}
-              {templateImage ? (
-                <Image
-                  source={{ uri: templateImage }}
-                  style={styles.templateImage}
-                  resizeMode="cover"
-                />
-              ) : (
-                <View style={styles.placeholderImage}>
-                  <Ionicons name="image-outline" size={48} color="#C28E5C" />
-                  <Text style={styles.placeholderText}>صورة القالب</Text>
-                </View>
-              )}
+              <Image
+                source={
+                  templateImage && typeof templateImage === "string"
+                    ? { uri: templateImage }
+                    : require("../../assets/invetation.png")
+                }
+                style={styles.templateImage}
+                resizeMode="cover"
+                defaultSource={require("../../assets/invetation.png")}
+                onError={(error) => {
+                  console.log("Image load error:", error.nativeEvent.error);
+                }}
+              />
 
               {/* Event Details */}
               <View style={styles.eventDetails}>
                 {/* Title */}
                 {displayTitle && (
-                  <Text
-                    style={styles.eventTitle}
-                  >
-                    {displayTitle}
-                  </Text>
+                  <Text style={styles.eventTitle}>{displayTitle}</Text>
                 )}
 
                 {/* Invitation Message */}
                 {invitationMessage && (
-                  <Text
-                    style={[
-                      styles.invitationMessage]}
-                  >
+                  <Text style={[styles.invitationMessage]}>
                     {invitationMessage}
                   </Text>
                 )}
 
                 {/* Date */}
                 {formattedDate && (
-                  <View
-                    style={styles.detailRow}
-                  >
+                  <View style={styles.detailRow}>
                     <Ionicons
                       name="calendar-outline"
                       size={16}
                       color="#656565"
                     />
-                    <Text
-                      style={styles.detailText}
-                    >
+                    <Text style={styles.detailText}>
                       بتاريخ {formattedDate}
                     </Text>
                   </View>
@@ -138,33 +126,21 @@ const PreviewInvitation = ({
 
                 {/* Time */}
                 {eventTime && (
-                  <View
-                    style={styles.detailRow}
-                  >
+                  <View style={styles.detailRow}>
                     <Ionicons name="time-outline" size={16} color="#656565" />
-                    <Text
-                      style={styles.detailText}
-                    >
-                      الساعة {eventTime}
-                    </Text>
+                    <Text style={styles.detailText}>الساعة {eventTime}</Text>
                   </View>
                 )}
 
                 {/* Location */}
                 {location && (
-                  <View
-                    style={styles.detailRow}
-                  >
+                  <View style={styles.detailRow}>
                     <Ionicons
                       name="location-outline"
                       size={16}
                       color="#656565"
                     />
-                    <Text
-                      style={styles.detailText}
-                    >
-                      {location}
-                    </Text>
+                    <Text style={styles.detailText}>{location}</Text>
                   </View>
                 )}
               </View>
@@ -217,7 +193,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     justifyContent: "center",
     alignItems: "center",
-    padding: 16
+    padding: 16,
   },
   modalContainer: {
     backgroundColor: "#FFF",
@@ -229,7 +205,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 12,
-    elevation: 8
+    elevation: 8,
   },
   header: {
     flexDirection: "row",
@@ -237,21 +213,23 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0"
-  },headerTitle: {
+    borderBottomColor: "#F0F0F0",
+  },
+  headerTitle: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
-    flex: 1
-  },  closeButton: {
+    flex: 1,
+  },
+  closeButton: {
     width: 40,
     height: 40,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 20
+    borderRadius: 20,
   },
   previewContainer: {
-    flex: 1
+    flex: 1,
   },
   previewContent: {
     padding: 20,
@@ -265,12 +243,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 2
+    elevation: 2,
   },
   templateImage: {
     width: "100%",
     height: 250,
-    backgroundColor: "#F5F5F5"
+    backgroundColor: "#F5F5F5",
   },
   placeholderImage: {
     width: "100%",
@@ -278,46 +256,50 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9F4EF",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8
+    gap: 8,
   },
   placeholderText: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
-    color: "#C28E5C"
+    color: "#C28E5C",
   },
   eventDetails: {
     padding: 16,
-    gap: 12
+    gap: 12,
   },
   eventTitle: {
     fontSize: 18,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     textAlign: "center",
-    marginBottom: 4
-  },  invitationMessage: {
+    marginBottom: 4,
+  },
+  invitationMessage: {
     fontSize: 15,
     fontFamily: "Cairo_400Regular",
     color: "#2C2C2C",
     lineHeight: 24,
-    textAlign: "center"
-  },  detailRow: {
+    textAlign: "center",
+  },
+  detailRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    paddingHorizontal: 8
-  },  detailText: {
+    paddingHorizontal: 8,
+  },
+  detailText: {
     fontSize: 14,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
-    flex: 1
-  },  actionButtons: {
+    flex: 1,
+  },
+  actionButtons: {
     flexDirection: "row",
     flexWrap: "wrap",
     padding: 12,
     gap: 8,
     borderTopWidth: 1,
-    borderTopColor: "#F0F0F0"
+    borderTopColor: "#F0F0F0",
   },
   actionButton: {
     flex: 1,
@@ -327,26 +309,26 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: "#F5F5F5",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   confirmButton: {
-    backgroundColor: "#C28E5C"
+    backgroundColor: "#C28E5C",
   },
   actionButtonText: {
     fontSize: 13,
     fontFamily: "Cairo_500Medium",
-    color: "#2C2C2C"
+    color: "#2C2C2C",
   },
   confirmButtonText: {
-    color: "#FFF"
+    color: "#FFF",
   },
   timestamp: {
     fontSize: 11,
     fontFamily: "Cairo_400Regular",
     color: "#8E8E8E",
     paddingHorizontal: 16,
-    paddingBottom: 8
-  }
+    paddingBottom: 8,
+  },
 });
 
 export default PreviewInvitation;

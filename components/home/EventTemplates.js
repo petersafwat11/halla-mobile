@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Animated,
   Image,
-  Dimensions
+  Dimensions,
 } from "react-native";
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CARD_WIDTH = 123;
@@ -25,57 +25,59 @@ const EventTemplates = ({ onSelectTemplate, selectedTemplateId }) => {
     "مناقشة",
     "مناقشة",
     "مناقشة",
-    "مناقشة"];
+    "مناقشة",
+  ];
 
   const templates = [
     {
       id: 1,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/25805b85ee9b7ab1a9bb9121e0ef8891b372b99b",
-      category: "حفلات زفاف"
+      category: "حفلات زفاف",
     },
     {
       id: 2,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/25805b85ee9b7ab1a9bb9121e0ef8891b372b99b",
-      category: "حفلات زفاف"
+      category: "حفلات زفاف",
     },
     {
       id: 3,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/25805b85ee9b7ab1a9bb9121e0ef8891b372b99b",
-      category: "حفلات زفاف"
+      category: "حفلات زفاف",
     },
     {
       id: 4,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/ad33659c33381eac40061641b81f19d65a13ad9f",
-      category: "حفلات زفاف"
+      category: "حفلات زفاف",
     },
     {
       id: 5,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/ad33659c33381eac40061641b81f19d65a13ad9f",
-      category: "حفلات زفاف"
+      category: "حفلات زفاف",
     },
     {
       id: 6,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/21c12591e92a8912acee9ab4558a81235964edeb",
-      category: "حفلات زفاف"
+      category: "حفلات زفاف",
     },
     {
       id: 7,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/6ceaeb628580de5c15c1b07c033f47c8dea87ee5",
-      category: "حفلات زفاف"
+      category: "حفلات زفاف",
     },
     {
       id: 8,
       image:
         "https://api.builder.io/api/v1/image/assets/TEMP/7981a8d15b57a32a9ae9da2da29600eb74edd874",
-      category: "حفلات زفاف"
-    }];
+      category: "حفلات زفاف",
+    },
+  ];
 
   const handleCategoryPress = (category) => {
     setSelectedCategory(category);
@@ -90,9 +92,7 @@ const EventTemplates = ({ onSelectTemplate, selectedTemplateId }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>
-          قوالب المناسبات
-        </Text>
+        <Text style={styles.title}>قوالب المناسبات</Text>
       </View>
 
       {/* Categories */}
@@ -100,22 +100,23 @@ const EventTemplates = ({ onSelectTemplate, selectedTemplateId }) => {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.categoriesContainer}
-        contentContainerStyle={[
-          styles.categoriesContent]}
+        contentContainerStyle={[styles.categoriesContent]}
       >
         {categories.map((category, index) => (
           <TouchableOpacity
             key={index}
             style={[
               styles.categoryButton,
-              selectedCategory === category && styles.categoryButtonActive]}
+              selectedCategory === category && styles.categoryButtonActive,
+            ]}
             onPress={() => handleCategoryPress(category)}
             activeOpacity={0.7}
           >
             <Text
               style={[
                 styles.categoryText,
-                selectedCategory === category && styles.categoryTextActive]}
+                selectedCategory === category && styles.categoryTextActive,
+              ]}
             >
               {category}
             </Text>
@@ -130,8 +131,7 @@ const EventTemplates = ({ onSelectTemplate, selectedTemplateId }) => {
           showsHorizontalScrollIndicator={false}
           snapToInterval={CARD_WIDTH + CARD_SPACING}
           decelerationRate="fast"
-          contentContainerStyle={[
-            styles.templatesContent]}
+          contentContainerStyle={[styles.templatesContent]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { x: scrollX } } }],
             { useNativeDriver: false }
@@ -142,18 +142,19 @@ const EventTemplates = ({ onSelectTemplate, selectedTemplateId }) => {
             const inputRange = [
               (index - 1) * (CARD_WIDTH + CARD_SPACING),
               index * (CARD_WIDTH + CARD_SPACING),
-              (index + 1) * (CARD_WIDTH + CARD_SPACING)];
+              (index + 1) * (CARD_WIDTH + CARD_SPACING),
+            ];
 
             const scale = scrollX.interpolate({
               inputRange,
               outputRange: [0.9, 1, 0.9],
-              extrapolate: "clamp"
+              extrapolate: "clamp",
             });
 
             const opacity = scrollX.interpolate({
               inputRange,
               outputRange: [0.7, 1, 0.7],
-              extrapolate: "clamp"
+              extrapolate: "clamp",
             });
 
             const isSelected = selectedTemplateId === template.id;
@@ -169,9 +170,10 @@ const EventTemplates = ({ onSelectTemplate, selectedTemplateId }) => {
                     styles.templateCard,
                     {
                       transform: [{ scale }],
-                      opacity
+                      opacity,
                     },
-                    isSelected && styles.templateCardSelected]}
+                    isSelected && styles.templateCardSelected,
+                  ]}
                 >
                   <View style={styles.cardBackground}>
                     <Image
@@ -222,51 +224,55 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2
+    elevation: 2,
   },
   header: {
-    alignSelf: "stretch"
-  },title: {
+    alignSelf: "stretch",
+  },
+  title: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.08,
-    textAlign: "right"
-  },categoriesContainer: {
-    width: "100%"
+  },
+  categoriesContainer: {
+    width: "100%",
   },
   categoriesContent: {
     paddingRight: 0,
     gap: 8,
-    flexDirection: "row-reverse"
-  },  categoryButton: {
+    flexDirection: "row",
+  },
+  categoryButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
-    backgroundColor: "#F2F2F2"
+    backgroundColor: "#F2F2F2",
   },
   categoryButtonActive: {
-    backgroundColor: "#C28E5C"
+    backgroundColor: "#C28E5C",
   },
   categoryText: {
     fontSize: 14,
     fontFamily: "Cairo_500Medium",
     color: "#656565",
     lineHeight: 20,
-    letterSpacing: 0.014
+    letterSpacing: 0.014,
   },
   categoryTextActive: {
-    color: "#FFF"
+    color: "#FFF",
   },
   templatesContainer: {
     width: "100%",
-    alignItems: "center"
+    alignItems: "center",
   },
   templatesContent: {
     paddingHorizontal: 0,
-    gap: CARD_SPACING
-  },  templateCard: {
+    gap: CARD_SPACING,
+    flexDirection: "row-reverse",
+  },
+  templateCard: {
     width: CARD_WIDTH,
     height: 150,
     borderRadius: 6,
@@ -274,7 +280,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0.625 },
     shadowOpacity: 0.1,
     shadowRadius: 1.875,
-    elevation: 3
+    elevation: 3,
   },
   templateCardSelected: {
     borderWidth: 2,
@@ -283,14 +289,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   cardBackground: {
     width: "100%",
     height: "100%",
     borderRadius: 3.738,
     backgroundColor: "#FFFAEA",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   templateImage: {
     width: 103,
@@ -298,7 +304,7 @@ const styles = StyleSheet.create({
     borderRadius: 6.417,
     position: "absolute",
     left: 10,
-    top: 6
+    top: 6,
   },
   selectedOverlay: {
     position: "absolute",
@@ -308,7 +314,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(194, 142, 92, 0.2)",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   checkmarkContainer: {
     width: 32,
@@ -321,12 +327,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5
+    elevation: 5,
   },
   checkmark: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FFF"
+    color: "#FFF",
   },
   //   indicatorsContainer: {
   //     flexDirection: "row",

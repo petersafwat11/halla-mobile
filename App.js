@@ -1,9 +1,11 @@
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, I18nManager } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+
 import {
   Cairo_300Light,
   Cairo_400Regular,
@@ -11,7 +13,6 @@ import {
   Cairo_700Bold,
   Cairo_900Black,
 } from "@expo-google-fonts/cairo";
-import * as SplashScreen from "expo-splash-screen";
 
 import { LanguageProvider, useLanguage } from "./localization";
 import { ToastProvider } from "./contexts/ToastContext";
@@ -19,43 +20,35 @@ import { useAuthStore } from "./stores/authStore";
 import AppNavigator from "./navigation/AppNavigator";
 import LanguageSelector from "./components/languagePrefrence/LanguageSelector";
 
-// Keep the splash screen visible while we fetch resources
+// Keep splash screen visible until assets load
 SplashScreen.preventAutoHideAsync();
 
-// Main app content component
+/* ------------------------------------------------- */
+/*                APP CONTENT (MAIN UI)              */
+/* ------------------------------------------------- */
+
 function AppContent() {
-  const { hasSelectedLanguage, changeLanguage, isRTL } = useLanguage();
+  const { hasSelectedLanguage, changeLanguage } = useLanguage();
   const restoreSession = useAuthStore((state) => state.restoreSession);
 
-  // Set RTL direction based on language
-  React.useEffect(() => {
-    if (I18nManager.isRTL !== isRTL) {
-      I18nManager.forceRTL(isRTL);
-      // Note: In production, you might need to reload the app for RTL changes to take full effect
-      // Updates.reloadAsync(); // Uncomment if using expo-updates
-    }
-  }, [isRTL]);
-
-  // Restore auth session on mount
-  React.useEffect(() => {
+  useEffect(() => {
     restoreSession();
   }, []);
 
-  const handleLanguageSelect = async (languageCode) => {
-    await changeLanguage(languageCode);
+  const handleLanguageSelect = async (code) => {
+    await changeLanguage(code);
   };
 
-  // Show language selector if user hasn't selected a language yet
+  // User must pick a language before using the app
   if (!hasSelectedLanguage) {
     return (
-      <View style={styles.container}>
+      <View style={styles.centered}>
         <LanguageSelector onLanguageSelect={handleLanguageSelect} />
         <StatusBar style="auto" />
       </View>
     );
   }
 
-  // Show main app navigation if language is selected
   return (
     <NavigationContainer>
       <AppNavigator />
@@ -64,13 +57,18 @@ function AppContent() {
   );
 }
 
-export default function App() {
-  const [appIsReady, setAppIsReady] = useState(false);
+/* ------------------------------------------------- */
+/*                  ROOT CONTAINER                   */
+/* ------------------------------------------------- */
 
+function AppRoot() {
+  const { direction } = useLanguage(); // "rtl" or "ltr"
+  const [ready, setReady] = useState(false);
+
+  // Load fonts & prepare app
   useEffect(() => {
     async function prepare() {
       try {
-        // Load fonts
         await Font.loadAsync({
           Cairo_300Light,
           Cairo_400Regular,
@@ -79,50 +77,69 @@ export default function App() {
           Cairo_900Black,
         });
 
-        // Artificially delay for one second to simulate a slow loading
-        // experience. Please remove this if you copy and paste the code!
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      } catch (e) {
-        console.warn(e);
+        // Simulate slow loading (optional)
+        await new Promise((res) => setTimeout(res, 1000));
+      } catch (err) {
+        console.warn(err);
       } finally {
-        // Tell the application to render
-        setAppIsReady(true);
+        setReady(true);
       }
     }
-
     prepare();
   }, []);
 
-  const onLayoutRootView = React.useCallback(async () => {
-    if (appIsReady) {
-      // This tells the splash screen to hide immediately! If we call this after
-      // `setAppIsReady`, then we may see a blank screen while the app is
-      // loading its initial state and rendering its first pixels. So instead,
-      // we hide the splash screen once we know the root view has already
-      // performed layout.
+  // Hide splash screen once layout is ready
+  const onLayout = useCallback(async () => {
+    if (ready) {
       await SplashScreen.hideAsync();
     }
-  }, [appIsReady]);
+  }, [ready]);
 
-  if (!appIsReady) {
-    return null;
-  }
+  // Root container style based on language direction
+  const containerStyle = useMemo(
+    () =>
+      StyleSheet.create({
+        container: {
+          flex: 1,
+          direction: direction,
+        },
+      }),
+    [direction]
+  );
 
+  if (!ready) return null;
+
+  return (
+    <View style={containerStyle.container} onLayout={onLayout}>
+      <AppContent />
+    </View>
+  );
+}
+
+/* ------------------------------------------------- */
+/*                       MAIN APP                    */
+/* ------------------------------------------------- */
+
+export default function App() {
   return (
     <SafeAreaProvider>
       <LanguageProvider>
         <ToastProvider>
-          <View style={styles.container} onLayout={onLayoutRootView}>
-            <AppContent />
-          </View>
+          <AppRoot />
         </ToastProvider>
       </LanguageProvider>
     </SafeAreaProvider>
   );
 }
 
+/* ------------------------------------------------- */
+/*                      STYLES                       */
+/* ------------------------------------------------- */
+
 const styles = StyleSheet.create({
-  container: {
+  centered: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

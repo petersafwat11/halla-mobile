@@ -12,7 +12,7 @@ import {
 import { TopBar } from "../components/plans";
 
 export default function NotificationSettingsScreen({ navigation }) {
-  const { t } = useTranslation("settings");
+  const { t, currentLanguage, isRTL } = useTranslation("settings");
   const toast = useToast();
   const { token } = useAuthStore();
 
@@ -20,7 +20,17 @@ export default function NotificationSettingsScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log(
+      "[NotificationSettingsScreen] Mounted | Language:",
+      currentLanguage,
+      "| RTL:",
+      isRTL
+    );
     loadNotificationPreferences();
+
+    return () => {
+      console.log("[NotificationSettingsScreen] Unmounted");
+    };
   }, []);
 
   const loadNotificationPreferences = async () => {
@@ -72,6 +82,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
+    flexDirection: "row-reverse",
     justifyContent: "center",
     alignItems: "center",
   },

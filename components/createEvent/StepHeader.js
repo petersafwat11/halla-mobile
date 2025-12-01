@@ -48,9 +48,7 @@ const StepHeader = ({ currentStep, totalSteps, title, description }) => {
         />
         <View style={styles.textContainer}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>
-            {description}
-          </Text>
+          <Text style={styles.description}>{description}</Text>
         </View>
       </View>
     </View>
@@ -60,34 +58,38 @@ const StepHeader = ({ currentStep, totalSteps, title, description }) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    paddingVertical: 24
-  },content: {
+    paddingVertical: 24,
+  },
+  content: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 16
-  },textContainer: {
-    flex: 1,
+    gap: 16,
+  },
+  textContainer: {
+    // flex: 1,
     flexDirection: "column",
-    alignItems: "flex-end"
-  },  title: {
+    justifyContent: "flex-start",
+    // alignItems: "flex-start",
+  },
+  title: {
     fontSize: 16,
     fontFamily: "Cairo_700Bold",
     color: "#2C2C2C",
     lineHeight: 24,
     letterSpacing: 0.024,
-    textAlign: "center"
-  },description: {
+  },
+  description: {
     fontSize: 12,
     fontFamily: "Cairo_400Regular",
     color: "#656565",
     lineHeight: 16,
-    textAlign: "center"
-  },indicatorContainer: {
+  },
+  indicatorContainer: {
     width: 45,
     height: 44,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative"
+    position: "relative",
   },
   indicatorText: {
     position: "absolute",
@@ -95,8 +97,8 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo_700Bold",
     color: "#C28E5C",
     lineHeight: 20,
-    letterSpacing: 0.014
-  }
+    letterSpacing: 0.014,
+  },
 });
 
 export default StepHeader;

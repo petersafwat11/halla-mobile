@@ -12,6 +12,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { useNavigation } from "@react-navigation/native";
 import EventsService from "../services/EventsService";
 import { Ionicons } from "@expo/vector-icons";
+import { useLanguage } from "../localization";
+import { useAuthStore } from "../stores/authStore";
 import TopBar from "../components/plans/TopBar";
 import YourEventManagedByUsPopup from "../components/createEvent/yourEventManagedByUsPopup";
 
@@ -32,6 +34,7 @@ const CreateEventScreen = () => {
   const [showInfoPopup, setShowInfoPopup] = useState(false);
   const navigation = useNavigation();
   const { t } = useLanguage();
+  const token = useAuthStore((state) => state.token);
 
   // Initialize form with default values
   const methods = useForm({
@@ -84,26 +87,88 @@ const CreateEventScreen = () => {
       try {
         console.log("Submitting event:", data);
 
-        // TODO: Replace with actual API instance
-        // const result = await EventsService.createEvent(data, apiInstance);
+        // Check if user is authenticated
+        if (!token) {
+          Alert.alert("خطأ", "يجب تسجيل الدخول أولاً");
+          return;
+        }
 
-        // For now, simulate API call
-        const result = await new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              success: true,
-              data: { id: "123", ...data },
-              error: null,
-            });
-          }, 1000);
+        // Transform data to API payload format
+        const payload = EventsService.transformFormDataToPayload(data);
+        console.log("Transformed payload:", payload);
+
+        // Create FormData (backend expects multipart/form-data with JSON strings)
+        const formData = new FormData();
+
+        // Add each field as JSON string (matching web version)
+        if (payload.guestList) {
+          formData.append("guestList", JSON.stringify(payload.guestList));
+        }
+
+        if (payload.eventDetails) {
+          formData.append("eventDetails", JSON.stringify(payload.eventDetails));
+        }
+
+        if (payload.supervisorsList) {
+          formData.append(
+            "supervisorsList",
+            JSON.stringify(payload.supervisorsList)
+          );
+        }
+
+        if (payload.invitationSettings) {
+          // Remove templateImage from invitationSettings (if it's a file)
+          const { templateImage, ...restInvitationSettings } =
+            payload.invitationSettings;
+          formData.append(
+            "invitationSettings",
+            JSON.stringify(restInvitationSettings)
+          );
+
+          // Add templateImage as file if present
+          // Note: In mobile, templateImage is usually a URI string, not a File object
+          // The backend might need to handle this differently
+        }
+
+        if (payload.launchSettings) {
+          formData.append(
+            "launchSettings",
+            JSON.stringify(payload.launchSettings)
+          );
+        }
+
+        // Make API request with FormData
+        const API_BASE_URL =
+          "https://labbe-backend-production.up.railway.app/api";
+        const response = await fetch(`${API_BASE_URL}/events`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            // Don't set Content-Type - let fetch set it with boundary for FormData
+          },
+          body: formData,
         });
 
+        const responseData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(responseData.message || "Request failed");
+        }
+
+        const result = { success: true, data: responseData, error: null };
+        console.log("API Response:", result);
+
         if (result.success) {
+          console.log("Event created successfully:", result.data);
           Alert.alert("نجح", "تم إنشاء المناسبة بنجاح!", [
             {
               text: "حسناً",
-              onPress: () => navigation.navigate("Events"),
-            }]);
+              onPress: () => {
+                // Navigate back to MainTabs, which will show the Events tab
+                navigation.navigate("MainTabs", { screen: "Events" });
+              },
+            },
+          ]);
         } else {
           Alert.alert("خطأ", result.error);
         }
@@ -114,7 +179,7 @@ const CreateEventScreen = () => {
         setIsSubmitting(false);
       }
     },
-    [navigation]
+    [navigation, token]
   );
   // ============================================================================
   // RENDER STEP CONTENT
@@ -201,7 +266,8 @@ const CreateEventScreen = () => {
           text: "إلغاء",
           style: "destructive",
           onPress: () => navigation.goBack(),
-        }]
+        },
+      ]
     );
   };
 

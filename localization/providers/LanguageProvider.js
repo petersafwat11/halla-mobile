@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { I18nManager } from "react-native";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
+import { I18nManager, Alert } from "react-native";
 import { I18nextProvider } from "react-i18next";
 import i18n, { i18nConfig } from "../config/i18nConfig";
 import { languageStorage } from "../../utils/languageStorage";
@@ -20,35 +26,23 @@ export const LanguageProvider = ({ children }) => {
     initializeLanguage();
   }, []);
 
-  // Listen for device locale changes
-  useEffect(() => {
-    const handleLocalizationChange = () => {
-      if (!currentLanguage) {
-        const deviceLocale = i18nConfig.getDeviceLocale();
-        changeLanguage(deviceLocale);
-      }
-    };
-
-    // Note: expo-localization doesn't have event listeners like react-native-localize
-    // The app will use the locale detected at startup
-    // For dynamic locale changes, you'd need to implement app state change detection
-
-    return () => {
-      // Cleanup if needed
-    };
-  }, [currentLanguage]);
+  // Note: Language is only changed when user explicitly selects it
+  // We don't listen for device locale changes to prevent unexpected language switches
 
   const initializeLanguage = async () => {
     try {
+      console.log("[LanguageProvider] Initializing language...");
       // Check if user has already selected a language
       const hasSelected = await languageStorage.hasSelectedLanguage();
       setHasSelectedLanguage(hasSelected);
+      console.log("[LanguageProvider] Has selected language:", hasSelected);
 
       let selectedLang = i18nConfig.defaultLocale;
 
       if (hasSelected) {
         // Use saved language if user has selected one
         const savedLanguage = await languageStorage.getLanguage();
+        console.log("[LanguageProvider] Saved language:", savedLanguage);
         if (savedLanguage && i18nConfig.locales.includes(savedLanguage)) {
           selectedLang = savedLanguage;
           setCurrentLanguage(savedLanguage);
@@ -64,19 +58,23 @@ export const LanguageProvider = ({ children }) => {
         setCurrentLanguage(i18nConfig.defaultLocale);
         await i18n.changeLanguage(i18nConfig.defaultLocale);
       }
+      console.log("[LanguageProvider] Selected language:", selectedLang);
 
-      // Set RTL direction globally
+      // Note: We don't use I18nManager in Expo Go as it doesn't work properly
+      // Instead, we control RTL purely through our context and flexDirection styles
       const shouldBeRTL = i18nConfig.isRTL(selectedLang);
-      if (I18nManager.isRTL !== shouldBeRTL) {
-        I18nManager.forceRTL(shouldBeRTL);
-      }
+      console.log(
+        "[LanguageProvider] Language initialized:",
+        selectedLang,
+        "| RTL:",
+        shouldBeRTL
+      );
     } catch (error) {
       console.error("Error initializing language:", error);
       // Fallback to default locale
       setCurrentLanguage(i18nConfig.defaultLocale);
       await i18n.changeLanguage(i18nConfig.defaultLocale);
       setHasSelectedLanguage(false);
-      I18nManager.forceRTL(false);
     } finally {
       setIsLoading(false);
     }
@@ -84,40 +82,46 @@ export const LanguageProvider = ({ children }) => {
 
   const changeLanguage = async (languageCode) => {
     try {
+      console.log("[LanguageProvider] Changing language to:", languageCode);
       if (i18nConfig.locales.includes(languageCode)) {
         setCurrentLanguage(languageCode);
         await i18n.changeLanguage(languageCode);
         await languageStorage.saveLanguage(languageCode);
         setHasSelectedLanguage(true);
 
-        // Set RTL direction globally
         const shouldBeRTL = i18nConfig.isRTL(languageCode);
-        if (I18nManager.isRTL !== shouldBeRTL) {
-          I18nManager.forceRTL(shouldBeRTL);
-        }
+        console.log(
+          "[LanguageProvider] Language changed to:",
+          languageCode,
+          "| RTL:",
+          shouldBeRTL
+        );
+
+        // Alert user that language will apply immediately
+        Alert.alert(
+          "Language Changed",
+          "The app language has been changed successfully.",
+          [{ text: "OK" }]
+        );
       }
     } catch (error) {
-      console.error("Error changing language:", error);
+      console.error("[LanguageProvider] Error changing language:", error);
     }
   };
 
-  const isRTL = () => {
-    return i18nConfig.isRTL(currentLanguage);
-  };
-
-  const getDirection = () => {
-    return i18nConfig.getDirection(currentLanguage);
-  };
-
-  const contextValue = {
-    currentLanguage,
-    changeLanguage,
-    isRTL: isRTL(),
-    direction: getDirection(),
-    availableLanguages: i18nConfig.locales,
-    isLoading,
-    hasSelectedLanguage,
-  };
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      currentLanguage,
+      changeLanguage,
+      isRTL: i18nConfig.isRTL(currentLanguage),
+      direction: i18nConfig.getDirection(currentLanguage),
+      availableLanguages: i18nConfig.locales,
+      isLoading,
+      hasSelectedLanguage,
+    }),
+    [currentLanguage, isLoading, hasSelectedLanguage]
+  );
 
   if (isLoading) {
     // Return a loading component or null while initializing

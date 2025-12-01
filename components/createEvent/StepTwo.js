@@ -5,10 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  TextInput as RNTextInput,
 } from "react-native";
 import { useFormContext } from "react-hook-form";
 import EventsService from "../../services/EventsService";
-import TextInput from "../commen/TextInput";
 import Button from "../commen/Button";
 import ListOfGuestsORModerators from "./ListOfGuestsORModerators";
 import Svg, { Path } from "react-native-svg";
@@ -65,7 +65,11 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
       phone: guestPhone,
     };
 
-    const result = EventsService.addListItem(guest, formData.guestList, "guest");
+    const result = EventsService.addListItem(
+      guest,
+      formData.guestList,
+      "guest"
+    );
 
     if (result.success) {
       setValue("guestList", result.list, { shouldValidate: true });
@@ -108,7 +112,8 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
             );
             setValue("guestList", updatedList, { shouldValidate: true });
           },
-        }]);
+        },
+      ]);
     },
     [formData.guestList, setValue]
   );
@@ -170,7 +175,8 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
             );
             setValue("moderatorsList", updatedList, { shouldValidate: true });
           },
-        }]);
+        },
+      ]);
     },
     [formData.moderatorsList, setValue]
   );
@@ -190,7 +196,8 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
           <Text
             style={[
               styles.tabText,
-              activeTab === "guests" && styles.tabTextActive]}
+              activeTab === "guests" && styles.tabTextActive,
+            ]}
           >
             الضيوف
           </Text>
@@ -209,7 +216,8 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
           <Text
             style={[
               styles.tabText,
-              activeTab === "moderators" && styles.tabTextActive]}
+              activeTab === "moderators" && styles.tabTextActive,
+            ]}
           >
             المشرفين
           </Text>
@@ -224,21 +232,39 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
       {/* Add Form */}
       {activeTab === "guests" ? (
         <View style={styles.form}>
-          <TextInput
-            label="اسم الضيف"
-            placeholder="أدخل اسم الضيف"
-            value={guestName}
-            onChangeText={setGuestName}
-            error={guestErrors.name}
-          />
-          <TextInput
-            label="رقم الجوال"
-            placeholder="5xxxxxxxx"
-            value={guestPhone}
-            onChangeText={setGuestPhone}
-            keyboardType="phone-pad"
-            error={guestErrors.phone}
-          />
+          <View style={styles.inputWrapper}>
+            <Text style={styles.inputLabel}>اسم الضيف</Text>
+            <RNTextInput
+              style={[
+                styles.textInput,
+                guestErrors.name && styles.textInputError,
+              ]}
+              placeholder="أدخل اسم الضيف"
+              placeholderTextColor="#999"
+              value={guestName}
+              onChangeText={setGuestName}
+            />
+            {guestErrors.name && (
+              <Text style={styles.errorText}>{guestErrors.name}</Text>
+            )}
+          </View>
+          <View style={styles.inputWrapper}>
+            <Text style={styles.inputLabel}>رقم الجوال</Text>
+            <RNTextInput
+              style={[
+                styles.textInput,
+                guestErrors.phone && styles.textInputError,
+              ]}
+              placeholder="5xxxxxxxx"
+              placeholderTextColor="#999"
+              value={guestPhone}
+              onChangeText={setGuestPhone}
+              keyboardType="phone-pad"
+            />
+            {guestErrors.phone && (
+              <Text style={styles.errorText}>{guestErrors.phone}</Text>
+            )}
+          </View>
           <Button
             text="إضافة ضيف"
             onPress={handleAddGuest}
@@ -247,21 +273,39 @@ const StepTwo = ({ guestList = [], moderatorsList = [] }) => {
         </View>
       ) : (
         <View style={styles.form}>
-          <TextInput
-            label="اسم المشرف"
-            placeholder="أدخل اسم المشرف"
-            value={moderatorName}
-            onChangeText={setModeratorName}
-            error={moderatorErrors.name}
-          />
-          <TextInput
-            label="رقم الجوال"
-            placeholder="5xxxxxxxx"
-            value={moderatorPhone}
-            onChangeText={setModeratorPhone}
-            keyboardType="phone-pad"
-            error={moderatorErrors.phone}
-          />
+          <View style={styles.inputWrapper}>
+            <Text style={styles.inputLabel}>اسم المشرف</Text>
+            <RNTextInput
+              style={[
+                styles.textInput,
+                moderatorErrors.name && styles.textInputError,
+              ]}
+              placeholder="أدخل اسم المشرف"
+              placeholderTextColor="#999"
+              value={moderatorName}
+              onChangeText={setModeratorName}
+            />
+            {moderatorErrors.name && (
+              <Text style={styles.errorText}>{moderatorErrors.name}</Text>
+            )}
+          </View>
+          <View style={styles.inputWrapper}>
+            <Text style={styles.inputLabel}>رقم الجوال</Text>
+            <RNTextInput
+              style={[
+                styles.textInput,
+                moderatorErrors.phone && styles.textInputError,
+              ]}
+              placeholder="5xxxxxxxx"
+              placeholderTextColor="#999"
+              value={moderatorPhone}
+              onChangeText={setModeratorPhone}
+              keyboardType="phone-pad"
+            />
+            {moderatorErrors.phone && (
+              <Text style={styles.errorText}>{moderatorErrors.phone}</Text>
+            )}
+          </View>
           <Button
             text="إضافة مشرف"
             onPress={handleAddModerator}
@@ -385,6 +429,38 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Cairo_600SemiBold",
     color: "#C28E5C",
+  },
+  inputWrapper: {
+    marginBottom: 16,
+    width: "100%",
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontFamily: "Cairo_600SemiBold",
+    color: "#2c2c2c",
+    marginBottom: 8,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    minHeight: 50,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 15,
+    fontFamily: "Cairo_400Regular",
+    color: "#2c2c2c",
+    textAlign: "right",
+  },
+  textInputError: {
+    borderColor: "#e74c3c",
+  },
+  errorText: {
+    fontSize: 12,
+    fontFamily: "Cairo_400Regular",
+    color: "#e74c3c",
+    marginTop: 4,
   },
 });
 
